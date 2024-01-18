@@ -1,0 +1,16 @@
+{
+  "lang": "en-us",
+  "name": "Prime number determination tools",
+  "short_name": "Prime Number",
+  "description": "Ultra-fast prime number determination and prime factorisation",
+  "start_url": "/",
+  "orientation": "any",
+  "display": "standalone",
+  "version": "8.1.0",
+  "icons": [
+    {
+      "src": "https://dedot-3799.github.io/prime/prime.jpg",
+      "sizes": "2048x2048"
+    }
+  ]
+}
