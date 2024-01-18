@@ -3,13 +3,13 @@
   "name": "Prime number determination tools",
   "short_name": "Prime Number",
   "description": "Ultra-fast prime number determination and prime factorisation",
-  "start_url": "/",
+  "start_url": "/prime/v7/",
   "orientation": "any",
   "display": "standalone",
-  "version": "7.2.19",
+  "version": "7.2.20",
   "icons": [
     {
-      "src": "https://cdn.glitch.global/c6989348-83f9-4367-8ef8-06d61a7809c7/IMG_0891.jpeg?v=1692887158687",
+      "src": "https://dedot-3799.github.io/prime/prime.jpg",
       "sizes": "2048x2048"
     }
   ]
