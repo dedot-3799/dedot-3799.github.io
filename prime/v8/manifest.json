@@ -3,7 +3,7 @@
   "name": "Prime number determination tools",
   "short_name": "Prime Number",
   "description": "Ultra-fast prime number determination and prime factorisation",
-  "start_url": "/",
+  "start_url": "/prime/v8/",
   "orientation": "any",
   "display": "standalone",
   "version": "8.1.0",
