@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Determination Tool</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="shortcut icon" href="https://dedot-3799.github.io/prime/prime.jpg" />
+    <link rel="apple-touch-icon" sizes="2048x2048" href="https://dedot-3799.github.io/prime/prime.jpg" />
+    <link rel="icon" type="image/jpeg" href="https://dedot-3799.github.io/prime/prime.jpg" />
+
+    <link rel="stylesheet" type="text/css" href="./main.css" />
+    <style id="style"></style>
+    <script src="./main.js"></script>
+    <script src="./theme.js"></script>
+    <script src="./containers.js"></script>
+
+</head>
+
+<body>
+    <div class="app-container" id="main_app">
+        <div style="overflow-y: auto; max-height: 65vh;">
+            <span onclick="document.getElementById('main_app').style = 'display:none;';"
+                style="cursor: pointer; float: right;">&times;</span>
+            <h1 id="title">素数判定機</h1>
+
+            <label for="res" id="inputLabel">数値を入力してください:</label>
+            <input type="number" id="res" placeholder="整数を入力" onchange="inputStore();removeCH()">
+
+            <button id="checkButton" onclick="r()">判定</button>
+            <button id="optionButton" onclick="openModal()">オプション</button>
+            <div id="resu1t"></div>
+
+            <div id="result"></div>
+            <div id="ti"></div>
+        </div>
+    </div>
+
+    <!-- オプションモーダル -->
+    <div id="option" class="modal">
+        <div class="modal-content">
+            <span onclick="closeModal()" style="cursor: pointer; float: right;">&times;</span>
+            <h2 id="option_title">オプション</h2>
+            <div class="modal-howto">
+                <p id="mode_select">モード選択:</p>
+                <select id="ty" name="engine">
+                    <option value="null" id="ty_null">デフォルト</option>
+                    <optgroup label="旧型" id="ty_lb_old">
+                        <option value="ov1" id="ty_ov1">全部割る(非推奨)</option>
+                        <option value="ov2" id="ty_ov2">平方根まで割る</option>
+                        <option value="ov3" id="ty_ov3">奇数で割る</option>
+                        <option value="ov4" id="ty_ov4">2と3の倍数以外で割る</option>
+                        <option value="ov5" id="ty_ov5">2と3と5の倍数以外で割る</option>
+                        <option value="ov6" id="ty_ov6">2,3,5,7の倍数以外で割る</option>
+                        <option value="ov7" id="ty_ov7">2,3,5,7,11の倍数以外で割る</option>
+                    </optgroup>
+                    <optgroup label="新型" id="ty_lb_new">
+                        <option value="nv1" id="ty_nv1">全部割る(非推奨)</option>
+                        <option value="nv2" id="ty_nv2">平方根まで割る</option>
+                        <option value="nv3" id="ty_nv3">奇数で割る</option>
+                        <option value="nv4" id="ty_nv4">2,3の倍数以外で割る</option>
+                        <option value="nv5" id="ty_nv5">2,3,5の倍数以外で割る</option>
+                        <option value="nv6" id="ty_nv6">2,3,5,7の倍数以外で割る</option>
+                        <option value="nv7" id="ty_nv7">2,3,5,7,11の倍数以外で割る</option>
+                    </optgroup>
+                    <optgroup label="約数型" id="ty_lb_fac">
+                        <option value="f" id="ty_f">約数の数から判定</option>
+                    </optgroup>
+                    <optgroup label="素因数分解(新型)" id="ty_lb_p">
+                        <option value="npv1" id="ty_nvp1">全部割る(非推奨)</option>
+                        <option value="npv2" id="ty_nvp2">平方根まで割る</option>
+                        <option value="npv3" id="ty_nvp3">奇数で割る</option>
+                        <option value="npv4" id="ty_nvp4">2,3の倍数以外で割る</option>
+                        <option value="npv5" id="ty_nvp5">2,3,5の倍数以外で割る</option>
+                        <option value="npv6" id="ty_nvp6">2,3,5,7の倍数以外で割る</option>
+                        <option value="npv7" id="ty_nvp7">2,3,5,7,11の倍数以外で割る</option>
+                    </optgroup>
+                    <optgroup label="マルチスレッド型" id="ty_lb_mlti">
+                        <option value="mu_ov6" id="ty_mu_ov6">旧型マルチスレッド</option>
+                        <option value="mu_nv6" id="ty_mu_nv6">新型マルチスレッド</option>
+                    </optgroup>
+                    <optgroup label="マルチスレッド型(64bit)" id="ty_lb_mlti_bigint">
+                        <option value="mu_big" id="ty_mu_big">旧型マルチスレッド(64bit)</option>
+                    </optgroup>
+                </select>
+                <p id="NumberOfWorker">マルチスレッド時のスレッド数:</p>
+                <input type="number" id="worker" value=""><br>
+                <button onclick="document.getElementById('worker').value = navigator.hardwareConcurrency"
+                    id="apply">推奨値</button>
+                <br><br>
+                <label id="themeSelectTitle">テーマ設定:</label><br>
+                <select id="themeSelect" onchange="changeTheme()">
+                    <option value="light" id="select_light_mode">ライトモード</option>
+                    <option value="dark" id="select_dark_mode">ダークモード</option>
+                    <option value="darker" id="select_darker_mode">ミッドナイト</option>
+                    <option value="light-blue" id="select_light_blue_mode">ライトブルー</option>
+                    <option value="dark-blue" id="select_dark_blue_mode">ダークブルー</option>
+                    <option value="sunset" id="select_sunset_mode">サンセット</option>
+                    <option value="system" id="select_system">システム準拠</option>
+                </select>
+                <br><br>
+                <button onclick="closeModal();changeTheme()" id="apply">適用</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <a href="#" style="text-decoration:underline;"
+            onclick="document.getElementById('main_app').style.display = 'flex';" id="open_main">素数判定機</a>
+        <a href="#" style="text-decoration:underline;" onclick="openHelpModal()" id="helpLink">このツールについて</a>
+        <a href="#" style="text-decoration:underline;" onclick="openRandomModal()" id="rand_open">乱数生成機</a>
+        <a href="#" style="text-decoration:underline;"
+            onclick="document.getElementById('calculator').style.display = 'flex';" id="cal_open">電卓</a>
+        <a href="#" style="text-decoration:underline;" onclick="document.getElementById('info').style.display = 'flex';"
+            id="info_open">情報</a>
+        <a href="#" style="text-decoration:underline;"
+            onclick="document.getElementById('NP_BP').style.display = 'flex';" id="NPBP_open">前の素数・次の素数</a>
+        <a href="#" style="text-decoration:underline;"
+            onclick="document.getElementById('radix').style.display = 'flex';" id="rdx_open">進数変換機</a>
+        <p>Prime Number Determination Tool v9.0.0 (beta_P921X) &emsp; © 2024 dedot-3799.</p>
+    </footer>
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeHelpModal()" style="cursor: pointer; float: right;">&times;</span>
+            <h2 id="howto_title">このツールについて</h2>
+            <div class="modal-howto">
+                <div id="howto">
+                    <p>素数判定、素因数分解、約数表示をするツールです。<br>フォームに整数を入力し、判定ボタンを押すことで判定できます。</p>
+                    <h3>判定法について</h3>
+                    <p>このツールでは、素数判定法の中では最も計算効率が悪いけれど、最も理解しやすい「試し割り法」を用いて判定しています。<br>「試し割り法」は、決定的素数判定法なので、「ミラー–ラビン素数判定法」や「フェルマーテスト」のように誤判定することはありません。
+                    </p>
+                    <h3>オプションについて</h3>
+                    <p>この素数判定機では、さまざまなアルゴリズムを選ぶことができます。<br>「旧型」は、一般的な試し割り法を実装したものです。<br>「新型」は、「旧型」の不要な演算などを省き、計算の最適化を行ったものであり、環境によっては「旧型」の数十倍の速度で計算が可能です。<br>「約数の数から判定」は、入力された整数のすべての約数を出力し、約数の個数が2個ならば素数であると判定します。<br>「素因数分解型」は、入力された整数を素因数分解し、分解結果がその整数以外の素因子を含んでいない場合、素数であると判定します。<br>「マルチスレッド型」は、WebWoker
+                        APIを利用した並列処理により、試し割り法を並列して演算します。<br>「マルチスレッド時のスレッド数」は、並列演算させる個数を指定できます。</p>
+                    <h3>ショートカットキーについて</h3>
+                    <p>このツールでは、以下のようなショートカットキーが登録されています。<br>・Enter (macOS等の場合はReturnキー) : "判定"ボタン<br>・Shift + F :
+                        素因数分解<br>・Shift + G : 約数列挙<br>・Shift + J : デフォルトモードの素数判定<br>・Shift + M :
+                        マルチスレッドモードでの素数判定<br>・Shift + R : 16桁の奇数をランダムに生成<br>・Shift + Q : 再読み込み</p>
+                    <h3>注意点</h3>
+                    <p>・このツールでは、JavaScriptの制約上、2^53以上の値をサポートしていません。また、素数の性質上、1以下の値はサポートしていません。<br>・2^53以上2^64以下の値の素数判定と約数列挙が選択された場合、自動的にマルチスレッドで判定されます。<br>・このツールがデータ等を収集するようなことは一切いたしません。<br>・入力された値が小数の場合、小数部分は無視されます。<br>・秒数が極端に細かく出ることがありますが、JavaScriptの計算上に出てしまう誤差ですのでバグではありません。
+                    </p>
+                </div>
+                <br>
+                <button onclick="closeHelpModal()" id="close">閉じる</button>
+            </div>
+        </div>
+    </div>
+    <div id="random" class="modal">
+        <div class="modal-content">
+            <span onclick="closeRandomModal()" style="cursor: pointer; float: right;">&times;</span>
+            <h2 id="rand_title">乱数生成機</h2>
+            <div class="modal-howto">
+                <p>
+                    <input type="checkbox" id="isOddNumber" checked />
+                    <label for="isOddNumber" id="isOddNumberCheck">奇数のみ</label>
+                    <input type="hidden" id="isOddNumber" value="" />
+                </p>
+                <p>
+                    <input type="checkbox" id="islog" checked />
+                    <label for="islog" id="isLogCheck">対数による生成</label>
+                    <input type="hidden" id="islog" value="" />
+                </p>
+                <p><button onclick="createRandomNumber()" id="generate">生成</button></p>
+                <p id="RandCreatedResultDescription"><br></p>
+                <p id="RandCreatedResult"><br></p>
+                <p><button onclick="ApplyRandomNumber()" id="apply">適用</button></p>
+            </div>
+        </div>
+    </div>
+    <div id="NP_BP" class="modal">
+        <div class="modal-content">
+            <span onclick="document.getElementById('NP_BP').style.display = 'none';"
+                style="cursor: pointer; float: right;">&times;</span>
+            <h1 id="NPBP_title">前の素数・次の素数</h1>
+            <div class="modal-howto">
+                <select id="NB">
+                    <option value="NP">次の素数</option>
+                    <option value="BP">前の素数</option>
+                </select>
+                <p><button onclick="NPBP()" id="generate">計算</button></p>
+                <p id="NPBP_result">計算結果:</p>
+                <p><button onclick="ApplyPrNumber()" id="apply">適用</button></p>
+            </div>
+        </div>
+        <script>
+            function NPBP() {
+                var num = document.getElementById('res').value;
+                switch (document.getElementById('NB').value) {
+                    case "NP": {
+                        NPBP_result.innerHTML = "計算結果:" + NP(num);
+                        break;
+                    }
+                    case "BP": {
+                        NPBP_result.innerHTML = "計算結果:" + BP(num);
+                        break;
+                    }
+                    default: {
+                        NPBP_result.innerHTML = "(ERR-011) Undefined.";
+                        break;
+                    }
+                }
+            }
+
+            function ApplyPrNumber() {
+                document.getElementById('res').value = document.getElementById('NPBP_result').textContent.split(":")[1];
+                document.getElementById('NP_BP').style.display = 'none';
+            }
+
+            function NP(n) {
+                var num = Number(n);
+                if (BigInt(String(n)) >= 9007199254740997n) {
+                    return "この数字はサポートされていません。";
+                }
+                var rs = num + 1;
+                while (true) {
+                    var rq = factor_isPRIME_v6(rs).toString();
+                    if (rs > 2 ** 53 - 111) {
+                        return "9007199254740997";
+                    } else if (rq == "true") {
+                        break;
+                    } else {
+                        rs++;
+                    }
+                }
+                return rs.toString()
+            }
+
+            function BP(n) {
+                var num = Number(n);
+                if (num <= 2) {
+                    return "これ以上小さい素数はありません。";
+                } else if (BigInt(String(n)) > 9007199254740997n) {
+                    return "この数字はサポートされていません。";
+                } else if (BigInt(String(n)) > 9007199254740881n) {
+                    return "9007199254740881";
+                }
+                var ri = num - 1;
+                while (true) {
+                    var lq = factor_isPRIME_v6(ri).toString();
+                    if (lq == "true") {
+                        break;
+                    } else {
+                        ri--;
+                    }
+                }
+                return ri.toString()
+            }
+        </script>
+    </div>
+    <div id="radix" class="modal">
+        <div class="modal-content">
+            <span onclick="document.getElementById('radix').style.display = 'none';"
+                style="cursor: pointer; float: right;">&times;</span>
+            <h1 id="radix_title">進数変換機</h1>
+            <div class="modal-howto">
+                <p>変換元の値:</p>
+                <p><input type="text" id="radix_bef"></p>
+                <p>変換元の値の進数:</p>
+                <p><input type="number" placeholder="2以上36以下の整数を入力" id="radix_bef_r"></p>
+                <p>変換後の値の進数:</p>
+                <p><input type="number" placeholder="2以上36以下の整数を入力" id="radix_aft_r"></p>
+                <p><button onclick="convRadixNumber()" id="apply">変換</button></p>
+                <p>結果:</p>
+                <p id="radix_result"><br></p>
+                <p><button onclick="convRadixNumber_Apply()" id="apply">適用</button></p>
+                <p><button onclick="convRadixNumber_Copy()" id="apply">結果をコピー</button></p>
+            </div>
+        </div>
+        <script>
+            function copyToClipboard(tagValue) {
+                if (navigator.clipboard) {
+                    return navigator.clipboard.writeText(tagValue)
+                } else {
+                    tagText.select()
+                    document.execCommand('copy')
+                }
+            }
+
+            function convRadixNumber_Copy() {
+                var t = document.getElementById('radix_result').textContent.toString();
+                copyToClipboard(t)
+                alert("Copied:" + t)
+            }
+
+            function convRadixNumber_Apply() {
+                if (document.getElementById('radix_result').textContent !== "ERR." || document.getElementById('radix_result').textContent !== "Range Error." || document.getElementById('radix_result').textContent !== "Invalid input.") {
+                    document.getElementById('res').value = parseInt(document.getElementById('radix_result').textContent, Number(document.getElementById('radix_aft_r').value || 36));
+                }
+                document.getElementById('radix').style.display = 'none';
+            }
+
+            function convRadixNumber() {
+                var [bnt, rdx_b, rdx_a] = [document.getElementById('radix_bef').value.toUpperCase(), Number(document.getElementById('radix_bef_r').value || 36), Number(document.getElementById('radix_aft_r').value || 10)];
+                if (String(document.getElementById('radix_bef').value).length == 0 || isNaN(rdx_b) || isNaN(rdx_a)) {
+                    alert("Invalid input.")
+                    radix_result.innerHTML = "Invalid input."
+                    return;
+                }
+                if (rdx_a < 2 || rdx_a > 36 || rdx_b < 2 || rdx_b > 36) {
+                    alert("Range Error. Radix argument must be between 2 and 36.")
+                    radix_result.innerHTML = "Range Error."
+                    return;
+                }
+                var checkList_b = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+                var checklist = [];
+                for (let i = 0; i < rdx_b; i++) {
+                    checklist.push(checkList_b[i]);
+                };
+                var b_arr = bnt.split("");
+                for (let u = 0; u < b_arr.length; u++) {
+                    if (!checklist.includes(b_arr[u])) {
+                        radix_result.innerHTML = "ERR."
+                        return;
+                    }
+                }
+                
+                radix_result.innerHTML = `${parseInt(bnt, rdx_b).toString(rdx_a).toUpperCase()}`;
+            }
+        </script>
+    </div>
+    <div id="info" class="modal">
+        <div class="modal-content">
+            <span onclick="document.getElementById('info').style.display = 'none';"
+                style="cursor: pointer; float: right;">&times;</span>
+            <h1 id="info_title">Infomation</h1>
+            <div class="modal-howto">
+                <p id="thread_info">論理コア数:不明</p>
+                <p id="Type_info">ブラウザ:不明</p>
+                <p id="mem">メモリ:不明</p>
+                <p id="dis">ディスプレイ:不明</p>
+                <br>
+                <p>乱数発生機:v2.0.1 (BETA_BUILD_R201A)</p>
+                <p>進数変換機:v1.0.2 (BETA_BUILD_D102A)</p>
+                <p>前の素数・次の素数:v1.0.2 (BETA_BUILD_F102S)</p>
+                <p>電卓:v1.2.0 (BETA_BUILD_C120B)</p>
+                <p>このツールのバージョン:v9.0.0 (BETA_BUILD_P921X)</p>
+            </div>
+        </div>
+        <script>
+            dis.innerHTML = `ディスプレイ:${window.innerWidth} x ${window.innerHeight}`;
+            thread_info.innerHTML = "論理コア数:" + (String(navigator.hardwareConcurrency) || "不明");
+            var sBrowser, sUsrAg = navigator.userAgent;
+
+            // The order matters here, and this may report false positives for unlisted browsers.
+
+            if (sUsrAg.indexOf("Firefox") > -1) {
+                sBrowser = "Mozilla Firefox";
+                // "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"
+            } else if (sUsrAg.indexOf("SamsungBrowser") > -1) {
+                sBrowser = "Samsung Internet";
+                // "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-G955F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36
+            } else if (sUsrAg.indexOf("Opera") > -1 || sUsrAg.indexOf("OPR") > -1) {
+                sBrowser = "Opera";
+                // "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 OPR/57.0.3098.106"
+            } else if (sUsrAg.indexOf("Trident") > -1) {
+                sBrowser = "Microsoft Internet Explorer";
+                // "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Zoom 3.6.0; wbx 1.0.0; rv:11.0) like Gecko"
+            } else if (sUsrAg.indexOf("Edge") > -1) {
+                sBrowser = "Microsoft Edge (Legacy)";
+                // "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
+            } else if (sUsrAg.indexOf("Edg") > -1) {
+                sBrowser = "Microsoft Edge (Chromium)";
+                // Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.64
+            } else if (sUsrAg.indexOf("Chrome") > -1) {
+                sBrowser = "Google Chrome or Chromium";
+                // "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/66.0.3359.181 Chrome/66.0.3359.181 Safari/537.36"
+            } else if (sUsrAg.indexOf("Safari") > -1) {
+                sBrowser = "Apple Safari";
+                // "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1 980x1306"
+            } else {
+                sBrowser = "unknown";
+            }
+            Type_info.innerHTML = "ブラウザ:" + sBrowser;
+            if (navigator.deviceMemory) {
+                mem.innerHTML = "メモリ:" + String(navigator.deviceMemory) + "GiB";
+            }
+        </script>
+    </div>
+    <div id="calculator" class="modal">
+        <style>
+            .btn {
+                background-color: #f4f4f4;
+                color: #111;
+                text-align: center;
+                font-size: 16px;
+                cursor: pointer;
+                border: none;
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                width: 40px;
+                height: 30px;
+            }
+
+            .btn.darker-mode {
+                background-color: #222;
+                color: #fff;
+            }
+
+            .disp {
+                appearance: none;
+                /* 標準のスタイルをリセット */
+                -webkit-appearance: none;
+                /* Safari and Chrome */
+                -moz-appearance: none;
+                /* Firefox */
+                padding: 8px 16px 8px 16px;
+                /* 上右下左のパディング調整 */
+                font-size: 16px;
+                /* フォントサイズ */
+                border: 1px solid #ddd;
+                /* ボーダー */
+                border-radius: 4px;
+                /* ボーダーの角を丸める */
+                background-color: #fff;
+                /* 背景色 */
+                background-image: url('path/to/arrow-icon.png');
+                /* ドロップダウン矢印のアイコン */
+                background-repeat: no-repeat;
+                /* アイコンを繰り返し表示しない */
+                background-position: right center;
+                /* アイコンの位置 */
+                cursor: pointer;
+                /* カーソルをポインターに変更 */
+                width: 222px;
+            }
+        </style>
+        <div class="modal-content">
+            <span onclick="document.getElementById('calculator').style.display = 'none';"
+                style="cursor: pointer; float: right;">&times;</span>
+            <h1 id="cal_title">電卓</h1>
+            <div class="modal-howto">
+                <table>
+                    <tbody id="pad">
+                        <tr>
+                            <input type="text" id="display" class="disp" style="overflow-x: auto;" disabled>
+                        </tr>
+                        <tr>
+                            <td><button class="btn" onclick="appendToDisplay('1')">1</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('2')">2</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('3')">3</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('+')">+</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('**')">^</button></td>
+                        </tr>
+                        <tr>
+                            <td><button class="btn" onclick="appendToDisplay('4')">4</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('5')">5</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('6')">6</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('-')">-</button></td>
+                            <td><button class="btn" onclick="deleteDisplay()">←</button></td>
+                        </tr>
+                        <tr>
+                            <td><button class="btn" onclick="appendToDisplay('7')">7</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('8')">8</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('9')">9</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('*')">*</button></td>
+                            <td><button class="btn" onclick="clearDisplay()">C</button></td>
+                        <tr>
+                            <td><button class="btn" onclick="appendToDisplay('0')">0</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('.')">.</button></td>
+                            <td><button class="btn" onclick="calculateResult()">=</button></td>
+                            <td><button class="btn" onclick="appendToDisplay('/')">/</button></td>
+
+                            <td><button class="btn" onclick="inputDispValue()" style="font-size: 10px;">input</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function appendToDisplay(value) {
+                    const display = document.getElementById('display');
+                    const lastChar = display.value.slice(-1);
+
+                    if ((['+', '-', '*', '/'].includes(lastChar) && ['+', '-', '*', '/'].includes(value)) || (lastChar === '.' && value === '.')) {
+                        return;
+                    }
+
+                    display.value += value;
+                }
+
+                function inputDispValue() {
+                    document.getElementById('res').value = Number(document.getElementById('display').value);
+                    document.getElementById('calculator').style.display = 'none';
+                }
+
+                function clearDisplay() {
+                    document.getElementById('display').value = '';
+                }
+
+                function deleteDisplay() {
+                    document.getElementById('display').value = document.getElementById('display').value.slice(0, -1);
+                }
+
+                function calculateResult() {
+                    const display = document.getElementById('display');
+                    const expression = display.value;
+
+                    try {
+                        const sanitizedExpression = expression.replace(/[^-()\d/*+.^]/g, '');
+                        const result = Function('"use strict";return (' + sanitizedExpression + ')')();
+
+                        if (isNaN(result) || !isFinite(result)) {
+                            throw new Error('Invalid result');
+                        }
+
+                        display.value = result;
+                    } catch (error) {
+                        display.value = 'Error';
+                    }
+                }
+            </script>
+        </div>
+    </div>
+    <script>
+        firstCheck()
+    </script>
+</body>
+
+</html>
