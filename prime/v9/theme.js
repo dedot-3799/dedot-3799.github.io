@@ -244,7 +244,6 @@ function firstCheck() {
         addSystemTheme();
     } else {
         addSystemTheme();
-        document.cookie = `Settings={"theme":"system"};`;
     }
     //前回の入力の復元
     let f = SettingsManager("read", "inputNumber");
