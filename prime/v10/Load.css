@@ -1,0 +1,124 @@
+
+.txt {
+  display: flex;
+  overflow: hidden;
+}
+
+.loading {
+  /* 画面最大 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* 背景色（黒、不透明度80%） */
+  background-image: linear-gradient(to top left, #111 0%,#DDD 100%);
+  opacity: 1;
+  /* フレックスコンテナ（縦並べ、横中央、縦中央） */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* 表示を一番上 */
+  z-index: 999;
+  /* 選択付加 */
+  user-select: none;
+}
+
+.loading {
+  font-size: 2.5vh;
+}
+
+#cu {
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #111;
+  margin: 0px;
+  height: 30vh;
+  width: 30vh;
+  font-size:  25vh;
+  padding: 3vh;
+  border-radius: 10vh;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  display: flex;
+}
+
+.txt p {
+  color: #fff;
+  font-size: 5vh;
+  font-weight: bold;
+  letter-spacing: 0.0em;
+  margin: 0;
+
+  transform: translateY(10vh);
+  animation: textanimation 1s forwards;
+}
+.txt p:nth-child(1) {
+  animation-delay: 12.5ms
+}
+.txt p:nth-child(2) {
+  animation-delay: 25ms
+}
+.txt p:nth-child(3) {
+  animation-delay: 37.5ms
+}
+.txt p:nth-child(4) {
+  animation-delay: 50ms
+}
+.txt p:nth-child(5) {
+  animation-delay: 62.5ms
+}
+.txt p:nth-child(6) {
+  animation-delay: 75ms
+}
+.txt p:nth-child(7) {
+  animation-delay: 87.5ms
+}
+.txt p:nth-child(8) {
+  animation-delay: 100ms
+}
+.txt p:nth-child(9) {
+  animation-delay: 112.5ms;
+}
+.txt p:nth-child(10) {
+  animation-delay: 125ms;
+}
+.txt p:nth-child(11) {
+  animation-delay: 137.5ms;
+}
+.txt p:nth-child(12) {
+  animation-delay: 150ms;
+}
+.txt p:nth-child(13) {
+  animation-delay: 162.5ms;
+}
+.txt p:nth-child(14) {
+  animation-delay: 175ms;
+}
+.txt p:nth-child(15) {
+  animation-delay: 187.5ms;
+}
+.txt p:nth-child(16) {
+  animation-delay: 200ms;
+}
+.txt p:nth-child(17) {
+  animation-delay: 212.5ms;
+}
+.txt p:nth-child(18) {
+  animation-delay: 225ms;
+}
+.txt p:nth-child(19) {
+  animation-delay: 237.5ms;
+}
+
+@keyframes textanimation {
+  0% {
+      transform: translateY(4em);
+  }
+
+  100% {
+      transform: translateY(0);
+  }
+}
+

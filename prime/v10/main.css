@@ -1,0 +1,862 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    transition-duration: 500ms;
+}
+
+.app-container {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition-duration: 500ms;
+    position: absolute;
+}
+
+h1 {
+    color: #333;
+}
+
+#res,
+#worker {
+    transition-duration: 1s;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+#checkButton,
+#optionButton,
+#apply,
+#close,
+#generate,
+#apply-color {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+#checkButton {
+    background-color: #4caf50;
+    color: #fff;
+    transition-duration: 500ms;
+}
+
+#optionButton {
+    background-color: #3498db;
+    color: #fff;
+    transition-duration: 500ms;
+}
+
+#apply,
+#close,
+#generate,
+#apply-color {
+    background-color: #3498db;
+    color: #fff;
+}
+
+#result {
+    margin-top: 20px;
+    font-size: 18px;
+    transition-duration: 500ms;
+}
+
+#resu1t {
+    margin-top: 20px;
+    font-size: 14px;
+    transition-duration: 500ms;
+}
+
+#ti {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+    transition-duration: 500ms;
+}
+
+#ty {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 2vw;
+    text-align: left;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    max-width: 60vw;
+    max-height: 80vh;
+    margin: auto;
+}
+
+.modal-howto {
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+select {
+    appearance: none;
+    /* 標準のスタイルをリセット */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    -moz-appearance: none;
+    /* Firefox */
+    padding: 8px 40px 8px 16px;
+    /* 上右下左のパディング調整 */
+    font-size: 16px;
+    /* フォントサイズ */
+    border: 1px solid #ddd;
+    /* ボーダー */
+    border-radius: 4px;
+    /* ボーダーの角を丸める */
+    background-color: #fff;
+    /* 背景色 */
+    background-image: url('path/to/arrow-icon.png');
+    /* ドロップダウン矢印のアイコン */
+    background-repeat: no-repeat;
+    /* アイコンを繰り返し表示しない */
+    background-position: right center;
+    /* アイコンの位置 */
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+
+
+}
+
+/* マウスオーバー時のスタイル */
+select:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+}
+
+/* フォーカス時のスタイル */
+select:focus {
+    outline: none;
+    /* フォーカス時のアウトラインを非表示 */
+}
+
+/* 選択したオプションのスタイル */
+select option:checked {
+    background-color: #ddd;
+    /* 選択されたオプションの背景色 */
+}
+
+/* カスタム入力フィールドのスタイル */
+input {
+    padding: 10px;
+    /* パディング */
+    font-size: 16px;
+    /* フォントサイズ */
+    border: 1px solid #ddd;
+    /* ボーダー */
+    border-radius: 4px;
+    /* ボーダーの角を丸める */
+    box-sizing: border-box;
+    /* ボックスモデルの設定 */
+    transition-duration: 500ms;
+}
+
+/* マウスオーバー時のスタイル */
+input:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+}
+
+/* フォーカス時のスタイル */
+input:focus {
+    outline: none;
+    /* フォーカス時のアウトラインを非表示 */
+    border-radius: 16px;
+}
+
+button:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+footer {
+    font-size: 60%;
+    background-color: #FFF;
+    color: #888;
+    text-align: center;
+    position: fixed;
+    bottom: 1.5vh;
+    width: auto;
+    border-radius: 8px;
+    padding: 1vh;
+}
+
+/* リンクスタイル */
+footer a {
+    color: #666;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+body.light-mode {
+    background-color: #f2f2f2;
+    color: #000000;
+}
+
+.app-container.light-mode {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    border-radius: 50px;
+    box-shadow: 10px 10px 20px #d9d9d9,
+        -10px -10px 20px #ffffff;
+    padding: 20px;
+    text-align: center;
+    transition-duration: 500ms;
+}
+
+h1.light-mode {
+    color: #333;
+}
+
+#res.light-mode {
+    transition-duration: 500ms;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+#res:focus.light-mode,
+#res:hover.light-mode {
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 10px 10px 20px #969696,
+        -10px -10px 20px #ffffff;
+}
+
+#checkButton.light-mode {
+    color: #666;
+    transition-duration: 500ms;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #969696,
+        -5px -5px 10px #ffffff;
+}
+
+#optionButton.light-mode {
+    color: #666;
+    transition-duration: 500ms;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 5px 5px 10px #969696,
+        -5px -5px 10px #ffffff;
+}
+
+#checkButton:hover.light-mode {
+    color: #666;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 2px 2px 5px #969696,
+        -2px -2px 5px #ffffff;
+}
+
+#optionButton:hover.light-mode {
+    color: #666;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    box-shadow: 2px 2px 5px #969696,
+        -2px -2px 5px #ffffff;
+}
+
+.modal.light-mode {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content.light-mode {
+    background-color: #fff;
+}
+
+input.light-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    border-radius: 12px;
+}
+
+button.light-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    border-radius: 12px;
+}
+
+span.light-mode:hover {
+    border-color: #888;
+}
+
+footer.light-mode {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    border-radius: 20px;
+    box-shadow: 10px 10px 20px #d9d9d9,
+        -10px -10px 20px #ffffff;
+    color: #888;
+}
+
+footer a.light-mode {
+    color: #666;
+}
+
+/* ダークモード時 */
+
+body.dark-mode {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.app-container.dark-mode {
+    border-radius: 50px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 10px 10px 20px #2b2b2b,
+        -10px -10px 20px #3b3b3b;
+}
+
+h1.dark-mode {
+    color: #fff;
+}
+
+.modal.dark-mode {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content.dark-mode {
+    background-color: #333;
+}
+
+input.dark-mode:hover {
+    border-color: #AAAAAA;
+    /* マウスオーバー時のボーダーカラー */
+}
+
+input.dark-mode {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #888;
+}
+
+#checkButton.dark-mode {
+    border-color: #444;
+    color: #fff;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 10px 10px 20px #333333,
+        -10px -10px 20px #555555;
+}
+
+#optionButton.dark-mode {
+    border-color: #444;
+    color: #fff;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 10px 10px 20px #333333,
+        -10px -10px 20px #555555;
+}
+
+#checkButton:hover.dark-mode {
+    border-color: #444;
+    color: #fff;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 5px 5px 10px #333333,
+        -5px -5px 10px #555555;
+}
+
+#optionButton:hover.dark-mode {
+    border-color: #444;
+    color: #fff;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 5px 5px 10px #333333,
+        -5px -5px 10px #555555;
+}
+
+#res.dark-mode {
+    color: #fff;
+    background-color: #444444;
+}
+
+#res:hover.dark-mode,
+#res:focus.dark-mode {
+    border-color: #444;
+    color: #fff;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 10px 10px 20px #333333,
+        -10px -10px 20px #555555;
+}
+
+button.dark-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+footer.dark-mode {
+    color: #fff;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #3d3d3d, #494949);
+    box-shadow: 10px 10px 20px #2b2b2b,
+        -10px -10px 20px #3b3b3b;
+}
+
+footer a.dark-mode {
+    color: #FFF;
+}
+
+/* ライトブルー */
+
+body.lb-mode {
+    background-color: #A8C6FE;
+    color: #333;
+}
+
+.app-container.lb-mode {
+    border-radius: 50px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 20px 20px 40px #8da6d5,
+        -20px -20px 40px #c3e6ff;
+}
+
+h1.lb-mode {
+    color: #333;
+}
+
+.modal.lb-mode {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content.lb-mode {
+    background-color: #A8C6FE
+}
+
+input.lb-mode:hover {
+    border-color: #AAAAAA;
+    /* マウスオーバー時のボーダーカラー */
+}
+
+input.lb-mode {
+    background-color: #A8C6FE;
+    color: #333;
+    border: 1px solid #888;
+}
+
+#checkButton.lb-mode {
+    border-color: #A8C6FE;
+    color: #333;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 10px 10px 20px #8da6d5,
+        -10px -10px 20px #c3e6ff;
+}
+
+#optionButton.lb-mode {
+    border-color: #A8C6FE;
+    color: #333;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 10px 10px 20px #8da6d5,
+        -10px -10px 20px #c3e6ff;
+}
+
+#checkButton:hover.lb-mode {
+    border-color: #FFF;
+    color: #333;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 5px 5px 10px #8da6d5,
+        -5px -5px 10px #c3e6ff;
+}
+
+#optionButton:hover.lb-mode {
+    border-color: #FFF;
+    color: #333;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 5px 5px 10px #8da6d5,
+        -5px -5px 10px #c3e6ff;
+}
+
+#res.lb-mode {
+    color: #333;
+    background-color: #b4d4ff;
+}
+
+#res::placeholder.lb-mode {
+    color: #333;
+}
+
+#res:hover.lb-mode,
+#res:focus.lb-mode {
+    border-color: #A8C6FE;
+    color: #333;
+    transition-duration: 500ms;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 10px 10px 20px #8da6d5,
+        -10px -10px 20px #c3e6ff;
+}
+
+button.lb-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+footer.lb-mode {
+    color: #333;
+    border-radius: 20px;
+    background: linear-gradient(145deg, #97b2e5, #b4d4ff);
+    box-shadow: 10px 10px 20px #8da6d5,
+        -10px -10px 20px #c3e6ff;
+}
+
+footer a.lb-mode {
+    color: #333;
+}
+
+/* ミッドナイト */
+body.darker-mode {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: "fantasy";
+}
+
+.app-container.darker-mode {
+    background-color: #101010;
+    box-shadow: 0 0 100px rgba(200, 200, 200, 0.4);
+}
+
+h1.darker-mode {
+    color: #FFFFFF;
+    font-family: "fantasy";
+}
+
+select.darker-mode {
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #888;
+}
+
+.modal.darker-mode {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content.darker-mode {
+    background-color: #101010;
+}
+
+input.darker-mode:hover {
+    border-color: #AAAAAA;
+    /* マウスオーバー時のボーダーカラー */
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.5);
+}
+
+input.darker-mode {
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #888;
+}
+
+input.darker-mode:focus {
+    outline: none;
+    /* フォーカス時のアウトラインを非表示 */
+    box-shadow: 0 0 20px rgba(200, 200, 200, 0.5);
+    /* フォーカス時の影 */
+}
+
+#checkButton.darker-mode {
+    background-color: #0F4C3A;
+    color: #fff;
+}
+
+#optionButton.darker-mode {
+    background-color: #132f44;
+    color: #fff;
+}
+
+#apply.darker-mode,
+#close.darker-mode,
+#generate.darker-mode {
+    background-color: #02272F;
+    color: #fff;
+}
+
+button.darker-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+span.darker-mode:hover {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+footer.darker-mode {
+    background-color: #141414;
+    color: #fff;
+    box-shadow: 0 0 100px rgba(200, 200, 200, 0.4);
+}
+
+footer a.darker-mode {
+    color: #FFF;
+}
+
+/* ダークブルー */
+body.db-mode {
+    background-color: #03081C;
+    color: #ffffff;
+    font-family: "fantasy";
+}
+
+.app-container.db-mode {
+    background-color: #1b335c;
+    box-shadow: 0 0 100px rgba(200, 200, 200, 0.4);
+}
+
+h1.db-mode {
+    color: #FFFFFF;
+    font-family: "fantasy";
+}
+
+select.db-mode {
+    background-color: #1b335c;
+    color: #fff;
+    border: 1px solid #888;
+}
+
+.modal.db-mode {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content.db-mode {
+    background-color: #1b335c;
+}
+
+input.db-mode:hover {
+    border-color: #AAAAAA;
+    /* マウスオーバー時のボーダーカラー */
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.5);
+}
+
+input.db-mode {
+    background-color: #1b335c;
+    color: #fff;
+    border: 1px solid #888;
+}
+
+input.db-mode:focus {
+    outline: none;
+    /* フォーカス時のアウトラインを非表示 */
+    box-shadow: 0 0 20px rgba(200, 200, 200, 0.5);
+    /* フォーカス時の影 */
+}
+
+#checkButton.db-mode {
+    background-color: #0f2465;
+    color: #fff;
+}
+
+#optionButton.db-mode {
+    background-color: #0f2465;
+    color: #fff;
+}
+
+#apply.db-mode,
+#close.db-mode,
+#generate.db-mode {
+    background-color: #0f2465;
+    color: #fff;
+}
+
+button.db-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+footer.db-mode {
+    background-color: #1b335c;
+    color: #fff;
+    box-shadow: 0 0 100px rgba(200, 200, 200, 0.4);
+}
+
+footer a.db-mode {
+    color: #FFF;
+}
+
+/* サンセット */
+
+body.sunset-mode {
+    background-image: linear-gradient(to top left, #3f51b1 0%, #5a55ae 13%, #7b5fac 25%, #8f6aae 38%, #a86aa4 50%, #cc6b8e 62%, #f18271 75%, #f3a469 87%, #f7c978 100%);
+    color: #000;
+}
+
+.app-container.sunset-mode {
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(2.5px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+}
+
+.modal.sunset-mode {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content.sunset-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+h1.sunset-mode {
+    color: #fff;
+}
+
+#title.sunset-mode {
+    color: #333;
+}
+
+input.sunset-mode:hover {
+    border-color: #AAAAAA;
+    /* マウスオーバー時のボーダーカラー */
+}
+
+input.sunset-mode {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #888;
+}
+
+#checkButton.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+    color: #000;
+}
+
+#optionButton.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+    color: #000;
+}
+
+#checkButton:hover.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+}
+
+#optionButton:hover.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+}
+
+#res.sunset-mode {
+    color: #000;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+}
+
+#res:hover.sunset-mode,
+#res:focus.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+}
+
+#ti.sunset-mode {
+    color: #444;
+}
+
+button.sunset-mode:hover {
+    border-color: #888;
+    /* マウスオーバー時のボーダーカラー */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+footer.sunset-mode {
+    color: #222;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+footer a.sunset-mode {
+    color: #222;
+}
