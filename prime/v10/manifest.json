@@ -6,7 +6,7 @@
     "start_url": "/prime/v10/",
     "orientation": "any",
     "display": "standalone",
-    "version": "10.0.0",
+    "version": "10.2.2",
     "icons": [
         {
             "src": "https://dedot-3799.github.io/prime/v10/prime.png",
