@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primality Testing Tool</title>
     <link rel="manifest" href="./manifest.json">
-    <link rel="shortcut icon" href="https://dedot-3799.github.io/prime/v10/prime.png" />
-    <link rel="apple-touch-icon" sizes="2048x2048" href="https://dedot-3799.github.io/prime/v10/prime.png" />
-    <link rel="icon" type="image/jpeg" href="https://dedot-3799.github.io/prime/v10/prime.png" />
+    <link rel="shortcut icon" href="https://dedot-3799.github.io/prime/prime.jpg" />
+    <link rel="apple-touch-icon" sizes="2048x2048" href="https://dedot-3799.github.io/prime/prime.jpg" />
+    <link rel="icon" type="image/jpeg" href="https://dedot-3799.github.io/prime/prime.jpg" />
 
     <link rel="stylesheet" type="text/css" href="./main.css" />
     <link rel="stylesheet" type="text/css" href="./Load.css" />
@@ -89,6 +89,7 @@
                         <option value="ov5" id="ty_ov5">2と3と5の倍数以外で割る</option>
                         <option value="ov6" id="ty_ov6">2,3,5,7の倍数以外で割る</option>
                         <option value="ov7" id="ty_ov7">2,3,5,7,11の倍数以外で割る</option>
+                        <option value="ov10" id="ty_ov10">倍数指定</option>
                     </optgroup>
                     <optgroup label="新型" id="ty_lb_new">
                         <option value="nv1" id="ty_nv1">全部割る(非推奨)</option>
@@ -98,6 +99,7 @@
                         <option value="nv5" id="ty_nv5">2,3,5の倍数以外で割る</option>
                         <option value="nv6" id="ty_nv6">2,3,5,7の倍数以外で割る</option>
                         <option value="nv7" id="ty_nv7">2,3,5,7,11の倍数以外で割る</option>
+                        <option value="nv10" id="ty_nv10">倍数指定</option>
                     </optgroup>
                     <optgroup label="約数型" id="ty_lb_fac">
                         <option value="f" id="ty_f">約数の数から判定</option>
@@ -115,8 +117,12 @@
                         <option value="mu_ov6" id="ty_mu_ov6">旧型マルチスレッド</option>
                         <option value="mu_nv6" id="ty_mu_nv6">新型マルチスレッド</option>
                     </optgroup>
-                    <optgroup label="マルチスレッド型(64bit)" id="ty_lb_mlti_bigint">
-                        <option value="mu_big" id="ty_mu_big">旧型マルチスレッド(64bit)</option>
+                    <optgroup label="マルチスレッド型(BigInt)" id="ty_lb_mlti_bigint">
+                        <option value="mu_big" id="ty_mu_big">旧型マルチスレッド(BigInt)</option>
+                    </optgroup>
+                    <optgroup label="その他の決定論的素数判定法" id="ty_other_bigint">
+                        <option value="apr" id="apr">APR-CL素数判定法</option>
+                        <option value="aks" id="aks">AKS素数判定法(ß版)</option>
                     </optgroup>
                 </select>
                 <p id="NumberOfWorker">マルチスレッド時のスレッド数:</p>
@@ -202,11 +208,11 @@
                 <div id="howto">
                     <p>素数判定、素因数分解、約数表示をするツールです。<br>フォームに整数を入力し、判定ボタンを押すことで判定できます。</p>
                     <h3>判定法について</h3>
-                    <p>このツールでは、素数判定法の中では最も計算効率が悪いけれど、最も理解しやすい「試し割り法」を用いて判定しています。<br>「試し割り法」は、決定的素数判定法なので、「ミラー–ラビン素数判定法」や「フェルマーテスト」のように曖昧な判定をすることはありません。
+                    <p>このツールでは、素数判定法の中では最も計算効率が悪いけれど、最も理解しやすい「試し割り法」を用いた判定、高速な判定が可能な「APR-CL素数判定法」をサポートしています。<br>「試し割り法」と「APR-CL素数判定法」は、決定論的素数判定法なので、「ミラー–ラビン素数判定法」や「フェルマーテスト」のように曖昧な判定をすることはありません。
                     </p>
                     <h3>オプションについて</h3>
                     <p>この素数判定機では、さまざまなアルゴリズムを選ぶことができます。<br>「旧型」は、一般的な試し割り法を実装したものです。<br>「新型」は、「旧型」の不要な演算などを省き、計算の最適化を行ったものであり、環境によっては「旧型」の数十倍の速度で計算が可能です。<br>「約数の数から判定」は、入力された整数のすべての約数を出力し、約数の個数が2個ならば素数であると判定します。<br>「素因数分解型」は、入力された整数を素因数分解し、分解結果がその整数以外の素因子を含んでいない場合、素数であると判定します。<br>「マルチスレッド型」は、WebWoker
-                        APIを利用した並列処理により、試し割り法を並列して演算します。<br>「マルチスレッド時のスレッド数」は、並列演算させる個数を指定できます。</p>
+                        APIを利用した並列処理により、試し割り法を並列して演算します。<br>「マルチスレッド時のスレッド数」は、並列演算させる個数を指定できます。<br>「倍数指定」では、2からNまでの倍数以外で割ることで判定します。スレッド数指定の欄にNを指定します。</p>
                     <h3>ショートカットキーについて</h3>
                     <p>このツールでは、以下のようなショートカットキーが登録されています。<br>・Enter (macOS等の場合はReturnキー) : "判定"ボタン<br>・Shift + F :
                         素因数分解<br>・Shift + G : 約数列挙<br>・Shift + J : デフォルトモードの素数判定<br>・Shift + M :
@@ -404,7 +410,7 @@
                 <p id="mem">メモリ:不明</p>
                 <p id="dis">ディスプレイ:不明</p>
                 <br>
-                <p>このツールのバージョン:v10.0.0</p>
+                <p>このツールのバージョン:v10.2.2 (BETA_BUILD_F217)</p>
             </div>
         </div>
         <script>
