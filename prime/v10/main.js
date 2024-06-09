@@ -675,9 +675,9 @@ async function run_PRIME_single(c) {
                 } else {
                     var res = lang_data[lang]["isNotPrime"]
                 }
-                result.innerHTML = `${res}`
-                resu1t.innerHTML = `${String(document.getElementById("res").value).length}桁の自然数${document.getElementById("res").value.match(/.{3}/g).join("\n")}は`
                 var edt = performance.now()
+                result.innerHTML = `${res}`
+                resu1t.innerHTML = `${String(document.getElementById("res").value).length}桁の自然数${String(document.getElementById("res").value).match(/.{3}/g).join("\n")}は`
                 var ert = Math.floor((edt - t) * (10 ** 5)) / (10 ** 5);
                 ti.innerHTML = `計算にかかった時間は${ert}msでした。`
                 break;
