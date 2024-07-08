@@ -1,0 +1,106 @@
+#container7_F {
+    padding: 20px;
+}
+
+.btn {
+    background-color: #f4f4f4;
+    color: #111;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    width: 40px;
+    height: 30px;
+}
+
+.btn.darker-mode,
+.btn.darker-mode {
+    background-color: #222;
+    color: #fff;
+}
+
+.btn.dark-mode {
+    border: 1px solid #fff;
+
+    background-color: #444;
+    color: #aaa;
+}
+
+.btn.light-mode {
+    background-color: #ddd;
+    color: #111;
+    border-width: 3px;
+    border-color: #222;
+}
+
+.btn.sunset-mode {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0px 4px 12px 0px rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition-duration: 500ms;
+    color: #000;
+}
+
+.disp {
+    appearance: none;
+    /* 標準のスタイルをリセット */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    -moz-appearance: none;
+    /* Firefox */
+    padding: 8px 16px 8px 16px;
+    /* 上右下左のパディング調整 */
+    font-size: 16px;
+    /* フォントサイズ */
+    border: 1px solid #ddd;
+    /* ボーダー */
+    border-radius: 4px;
+    /* ボーダーの角を丸める */
+    background-color: #fff;
+    /* 背景色 */
+    background-image: url('path/to/arrow-icon.png');
+    /* ドロップダウン矢印のアイコン */
+    background-repeat: no-repeat;
+    /* アイコンを繰り返し表示しない */
+    background-position: right center;
+    /* アイコンの位置 */
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+    width: 222px;
+}
+
+.disp:hover.dark-mode {
+    appearance: none;
+    /* 標準のスタイルをリセット */
+    -webkit-appearance: none;
+    /* Safari and Chrome */
+    -moz-appearance: none;
+    /* Firefox */
+    padding: 8px 16px 8px 16px;
+    /* 上右下左のパディング調整 */
+    font-size: 16px;
+    /* フォントサイズ */
+    border: 1px solid #aaa;
+    /* ボーダー */
+    border-radius: 4px;
+    /* ボーダーの角を丸める */
+    background-image: url('path/to/arrow-icon.png');
+    /* ドロップダウン矢印のアイコン */
+    background-repeat: no-repeat;
+    /* アイコンを繰り返し表示しない */
+    background-position: right center;
+    /* アイコンの位置 */
+    cursor: pointer;
+    /* カーソルをポインターに変更 */
+    width: 222px;
+}
+
+#cal_title.sunset-mode {
+    color: #000;
+}
