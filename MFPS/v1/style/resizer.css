@@ -1,0 +1,16 @@
+#re_image-container {
+    margin: 20px 0;
+}
+
+#re_image {
+    max-width: 100%;
+    height: auto;
+}
+
+#re_controls {
+    margin: 20px 0;
+}
+
+#re_format-controls {
+    margin: 20px 0;
+}

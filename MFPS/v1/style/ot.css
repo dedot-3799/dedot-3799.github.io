@@ -1,0 +1,60 @@
+#ot_app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#ot_board {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+    gap: 1px;
+}
+
+.ot_square {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    border: 1px solid #888;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 500ms;
+}
+
+.ot_square.black {
+    background-color: #000000;
+    border-radius: 50%;
+}
+
+.ot_square.white {
+    background-color: #ffffff;
+    border-radius: 50%;
+}
+
+.ot_square.valid-1 {
+    background-color: #a0c0ff; /* Light blue for 1 flip */
+}
+
+.ot_square.valid-2 {
+    background-color: #80a0ff; /* Slightly darker blue for 2 flips */
+}
+
+.ot_square.valid-3 {
+    background-color: #6080ff; /* Even darker blue for 3 flips */
+}
+
+.ot_square.valid-4 {
+    background-color: #4060ff; /* Darker blue for 4 flips */
+}
+
+.ot_square.valid-5 {
+    background-color: #2040ff; /* Dark blue for 5 flips */
+}
+
+.ot_square.valid-6,
+.ot_square.valid-7,
+.ot_square.valid-8 {
+    background-color: #0020ff; /* Darkest blue for 6 or more flips */
+}
