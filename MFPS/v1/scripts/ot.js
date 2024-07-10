@@ -1160,5 +1160,3 @@ async function findBestMoveWithWorkers(board, player, depth) {
     });
     return bestMove;
 }
-
-// 他の関数の定義は省略
