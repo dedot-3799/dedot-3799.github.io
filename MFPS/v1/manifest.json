@@ -1,0 +1,16 @@
+{
+    "lang": "ja-jp",
+    "name": "MultiFusion Pro Suite",
+    "short_name": "MultiFusion",
+    "description": "Multi-Functional Apps",
+    "start_url": "/",
+    "theme_color": "#FFFFFF",
+    "orientation": "any",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "",
+            "sizes": "2048x2048"
+        }
+    ]
+}
