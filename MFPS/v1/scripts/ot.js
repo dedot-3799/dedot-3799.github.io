@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 do {
                     var cpu = await findBestMoveWithWorkers(board, -1, 5, -Infinity, Infinity);
                     console.log(2, cpu);
-                    if (cpu.move !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
+                    if (cpu.move !== null && cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
                         var g = findBestMove(board, -1, 4, -Infinity, Infinity);
                         if (g.move !== null) {
                             board = placeAndFlip(board, g.move.row, g.move.col, -1)
