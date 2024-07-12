@@ -246,6 +246,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById("result_ot").textContent = winning1(board);
             } else {
                 do {
+                    if (!canPlayerPlaseStone(board,-1)) {
+                        break;
+                    }
                     var cpu = await findBestMoveWithWorkers(board, -1, 5, -Infinity, Infinity);
                     console.log(2, cpu);
                     if (cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
@@ -268,6 +271,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (isGameOver(board)) {
                         break;
                     }
+                    
                 } while (!canPlayerPlaceStone(board, 1))
             }
             canPl = true;
