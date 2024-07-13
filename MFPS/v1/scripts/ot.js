@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById("result_ot").textContent = winning1(board);
             } else {
                 do {
-                    if (!canPlayerPlaseStone(board,-1)) {
+                    if (!canPlayerPlaceStone(board,-1)) {
                         break;
                     }
                     var cpu = await findBestMoveWithWorkers(board, -1, 5, -Infinity, Infinity);
