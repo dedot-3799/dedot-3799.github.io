@@ -9,7 +9,7 @@
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
-  background: radial-gradient(circle, #1b2735, #090a0f);
+  background: #000;
   color: #ffffff;
   display: flex;
   justify-content: center;
@@ -17,7 +17,6 @@
   height: 100vh;
   overflow: hidden;
   text-align: center;
-  position: relative;
 }
 
 .background {
@@ -26,56 +25,16 @@
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: -1;
   overflow: hidden;
-  z-index: 0;
 }
 
-.line {
-  position: absolute;
-  width: 2px;
+canvas {
+  width: 100%;
   height: 100%;
-  background: rgba(0, 255, 255, 0.5);
-  animation: animate 10s linear infinite;
-  bottom: 0;
-}
-
-.line:nth-child(1) {
-  left: 10%;
-  animation-duration: 8s;
-}
-
-.line:nth-child(2) {
-  left: 30%;
-  animation-duration: 12s;
-}
-
-.line:nth-child(3) {
-  left: 50%;
-  animation-duration: 10s;
-}
-
-.line:nth-child(4) {
-  left: 70%;
-  animation-duration: 15s;
-}
-
-.line:nth-child(5) {
-  left: 90%;
-  animation-duration: 7s;
-}
-
-@keyframes animate {
-  0% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
 }
 
 .container {
-  position: relative;
-  z-index: 1;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
   padding: 40px;
@@ -83,50 +42,25 @@
   box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
 }
 
-h1 {
-  font-size: 8em;
-  margin: 0;
-  position: relative;
-  color: #00ffff;
-  animation: flicker 1.5s infinite alternate;
+.svg-404 {
+  width: 100%;
+  height: 200px;
+  margin-bottom: 5px;
 }
 
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  color: #00ffff;
-  background: #000;
-  overflow: hidden;
-  clip: rect(0, 900px, 0, 0);
-  animation: glitch 2s infinite linear alternate-reverse;
+.text-copy {
+  fill: none;
+  stroke: #00ffff;
+  stroke-dasharray: 7% 14%;
+  stroke-width: 0.125px;
+  stroke-dashoffset: 0%;
+  animation: stroke-offset 4s infinite ease;
 }
 
-.glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 #00ffea;
-  animation: glitch 2s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 #00ffea, 2px 2px #ff00ea;
-  animation: glitch 3s infinite linear alternate-reverse;
-}
-
-@keyframes glitch {
-  0% { clip: rect(42px, 9999px, 44px, 0); }
-  10% { clip: rect(11px, 9999px, 98px, 0); }
-  20% { clip: rect(37px, 9999px, 20px, 0); }
-  30% { clip: rect(67px, 9999px, 53px, 0); }
-  40% { clip: rect(87px, 9999px, 97px, 0); }
-  50% { clip: rect(66px, 9999px, 70px, 0); }
-  60% { clip: rect(27px, 9999px, 16px, 0); }
-  70% { clip: rect(62px, 9999px, 33px, 0); }
-  80% { clip: rect(84px, 9999px, 81px, 0); }
-  90% { clip: rect(94px, 9999px, 12px, 0); }
-  100% { clip: rect(35px, 9999px, 45px, 0); }
+@keyframes stroke-offset {
+  100% {
+    stroke-dashoffset: -84%;
+  }
 }
 
 p {
@@ -156,16 +90,88 @@ p {
 </head>
 <body>
   <div class="background">
-    <div class="line"></div>
-    <div class="line"></div>
-    <div class="line"></div>
-    <div class="line"></div>
-    <div class="line"></div>
+    <canvas id="canvas"></canvas>
   </div>
   <div class="container">
-    <h1 class="glitch" data-text="404 - Not found">404 - Not found</h1>
+    <svg viewBox="0 0 40 20" class="svg-404">
+      <symbol id="s-text">
+        <text text-anchor="middle" x="50%" y="50%" dy=".35em">404</text>
+      </symbol>
+      <g class="g-ants">
+        <use xlink:href="#s-text" class="text-copy"></use>
+        <use xlink:href="#s-text" class="text-copy"></use>
+        <use xlink:href="#s-text" class="text-copy"></use>
+        <use xlink:href="#s-text" class="text-copy"></use>
+        <use xlink:href="#s-text" class="text-copy"></use>
+      </g>
+    </svg>
     <p>お探しのページは見つかりませんでした。</p>
     <a href="/" class="btn">ホームに戻る</a>
   </div>
+  <script>
+    const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  init();
+});
+
+let lines = [];
+
+function Line(x, y, dx, dy) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.length = Math.random() * 100 + 50;
+
+  this.draw = function() {
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x + this.dx * this.length, this.y + this.dy * this.length);
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.7)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  };
+
+  this.update = function() {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
+    if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
+
+    this.draw();
+  };
+}
+
+function init() {
+  lines = [];
+  for (let i = 0; i < 100; i++) {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    let dx = (Math.random() - 0.5) * 2;
+    let dy = (Math.random() - 0.5) * 2;
+    lines.push(new Line(x, y, dx, dy));
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  lines.forEach(line => {
+    line.update();
+  });
+}
+
+init();
+animate();
+  </script>
 </body>
 </html>
