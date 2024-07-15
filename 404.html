@@ -44,9 +44,8 @@ canvas {
 }
 
 .svg-404 {
-  width: 100%;
-  height: 200px;
-  margin-bottom: 5px;
+  width: auto;
+  height: auto;
 }
 
 .text-copy {
@@ -55,6 +54,7 @@ canvas {
   stroke-dasharray: 65% 35%;
   stroke-width: 0.25px;
   stroke-dashoffset: 0%;
+  -webkit-text-stroke: #00ffff;
   animation: stroke-offset 2s infinite linear;
 }
 
@@ -94,7 +94,7 @@ p {
     <canvas id="canvas"></canvas>
   </div>
   <div class="container">
-    <svg viewBox="0 0 60 30" class="svg-404">
+    <svg viewBox="0 0 40 20" class="svg-404">
       <symbol id="s-text">
         <text text-anchor="middle" x="50%" y="50%" dy=".35em">404</text>
       </symbol>
