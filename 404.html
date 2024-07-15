@@ -35,7 +35,7 @@ canvas {
 }
 
 .container {
-  overflow: scroll;
+overflow: scroll;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -107,7 +107,7 @@ p {
         <use xlink:href="#s-text" class="text-copy"></use>
       </g>
     </svg>
-    <p>お探しのページは見つかりませんでした。</p>
+    <p class="textl">お探しのページは見つかりませんでした。</p>
     <a href="/" class="btn">ホームに戻る</a>
   </div>
   <script>
@@ -174,6 +174,36 @@ function animate() {
 
 init();
 animate();
+
+const textElement = document.querySelector('.textl');
+    const textArray = ["迷子になったページを探す冒険へようこそ！", "お探しのページは、タイムスリップしたようです。", "404エラー！ページが見つからず、宇宙を漂っています。","このページは、忍者の修行に出かけました。","エラー発生！ブラックホールに吸い込まれたようです。","404エラーって、恥ずかしいですよね(^_^;)","うちのページも、まだまだ修行中なんです……","エラーはプログラマーの愛の証！？","ページが見つからない？そんなバカな！","404エラーは、インターネットの神秘です。","404ってどういうことなの？誰か教えてー！","404エラーのページを探しているなら、まさにここです！","404エラーのページを探しているなら、あなたは正しい場所にいます！","404エラー：開発者がこのページを作るのを忘れたようです。","あれれ？このページ、どこかに行っちゃったみたいです～。"];
+    let currentIndex = 0;
+
+    setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * textArray.length);
+      if (currentIndex !== randomIndex) {
+        changeText(randomIndex);
+      }
+    }, 5000);
+
+    function changeText(index) {
+      const newText = textArray[index];
+      textElement.textContent = '';
+
+      for (let i = 0; i < newText.length; i++) {
+        const span = document.createElement('span');
+        span.textContent = newText[i];
+        span.style.opacity = 0;
+
+        textElement.appendChild(span);
+
+        setTimeout(() => {
+          span.style.opacity = 1;
+        }, i * 100);
+      }
+
+      currentIndex = index;
+    }
   </script>
 </body>
 </html>
