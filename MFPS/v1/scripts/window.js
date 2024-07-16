@@ -15,7 +15,8 @@ const containers = {
     container14: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 14 },
     container15: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 15 },
     container16: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 16 },
-    container17: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 17 }
+    container17: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 17 },
+    container18: { offsetX: 0, offsetY: 0, isDragging: false, zIndex: 18 }
     // Add more containers as needed
 };
 

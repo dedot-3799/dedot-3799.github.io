@@ -580,7 +580,7 @@ function firstCheck() {
             background-position: center center;
         }`;
     }
-    var windowList = ["container1","container2","container3","container4","container5","container6","container7","container8","container9","container11","container12","container13","container10","container14","container16","container15","container17"];
+    var windowList = ["container1","container2","container3","container4","container5","container6","container7","container8","container9","container11","container12","container13","container10","container14","container16","container15","container17","container18"];
 
     windowList.forEach(el => {
         closeWindow(el)

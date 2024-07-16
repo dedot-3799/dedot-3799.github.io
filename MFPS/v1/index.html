@@ -51,7 +51,6 @@
             </div>
 
             <script src="./scripts/prime.js"></script>
-            <!-- Add your content for container 1 -->
         </div>
 
         <div id="container2" class="container" style="left: 200px; top: 50px; z-index: 2;"
@@ -289,7 +288,6 @@
                 window.onresize = fw;
                 window.onload = fw;
             </script>
-            <!-- Add your content for container -->
         </div>
         <div id="container7" class="container" style="left: 300px; top: 50px; z-index: 7;"
             onmousedown="bringToFront('container7', event)">
@@ -414,7 +412,6 @@
             </div>
             <a href="#" style="text-decoration:underline; color:inherit;  justify-content: center;"
                 onclick="openWindow('container12')" id="helpLink">このツールについて</a>
-            <!-- Add your content for container -->
         </div>
         <div id="container11" class="container" style="left: 300px; top: 50px; z-index: 11;"
             onmousedown="bringToFront('container11', event)">
@@ -471,7 +468,6 @@
                 </p>
                 <button id="apply" onclick="closeWindow('container12')">閉じる</button>
             </div>
-            <!-- Add your content for container -->
         </div>
         <div id="container13" class="container" style="left: 300px; top: 50px; z-index: 13"
             onmousedown="bringToFront('container13', event)">
@@ -492,7 +488,6 @@
             </div>
             <br>
             <script src="./scripts/FTDIC.js"></script>
-            <!-- Add your content for container -->
         </div>
         <div id="container14" class="container" style="left: 300px; top: 50px; z-index: 14"
             onmousedown="bringToFront('container14', event)">
@@ -516,7 +511,6 @@
                 <input type="button" onclick="rdm_copy()" value="結果をコピー" id="apply">
                 <script src="./scripts/rand.js"></script>
             </div>
-            <!-- Add your content for container -->
         </div>
         <div id="container15" class="container" style="left: 300px; top: 50px; z-index: 15"
             onmousedown="bringToFront('container15', event)">
@@ -535,9 +529,9 @@
                 <button id="resetButton" class="button">リセット</button><button id="CPButton"
                     class="button">CPUに任せる</button>
                 <button id="RDButton" class="button">ランダム</button>
+                <button id="STButton" class="button">設定</button>
                 <p id="result_ot"></p>
             </div>
-            <!-- Add your content for container -->
         </div>
         <div id="container16" class="container" style="left: 300px; top: 50px; z-index: 16"
             onmousedown="bringToFront('container16', event)">
@@ -577,13 +571,22 @@
                 <script src="scripts/resizer.js"></script>
 
         </div>
-        <!-- Add more containers as needed -->
         <div id="container17" class="container" style="left: 300px; top: 50px; z-index: 17"
             onmousedown="bringToFront('container17', event)">
             <div class="buttons">
                 <div class="button" onclick="minimizeWindow('container17')">-</div>
                 <div class="button" onclick="maximizeWindow('container17')">□</div>
                 <div class="button" onclick="closeWindow('container17')">&times;</div>
+            </div>
+            <h1 style="padding: 30px; user-select: none;">設定</h1>
+            <!-- Add your content for container -->
+        </div>
+        <div id="container18" class="container" style="left: 300px; top: 50px; z-index: 18"
+            onmousedown="bringToFront('container18', event)">
+            <div class="buttons">
+                <div class="button" onclick="minimizeWindow('container18')">-</div>
+                <div class="button" onclick="maximizeWindow('container18')">□</div>
+                <div class="button" onclick="closeWindow('container18')">&times;</div>
             </div>
             <h1 style="padding: 30px; user-select: none;">title</h1>
             <!-- Add your content for container -->
