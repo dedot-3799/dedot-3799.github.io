@@ -484,18 +484,16 @@ function placeAndFlip(board, row, col, player) {
     return newBoard;
 }
 
-// その他の関数（evaluateBoard, isTerminalNode, canPlaceStone, placeAndFlip）は以前に説明したものを使用
-
 function re_board_converter(board) {
-    //"⚪️" is 1 , "⚫️" is -1, blank is 0.
+    //"⚫️" is 1 , "⚪️" is -1, blank is 0.
     let nb = [];
     for (let h = 0; h < 8; h++) {
         for (let wl = 0; wl < 8; wl++) {
             var nt = board[h][wl];
             if (nt == 1) {
-                nb.push("⚪️");
-            } else if (nt == -1) {
                 nb.push("⚫️");
+            } else if (nt == -1) {
+                nb.push("⚪️");
             } else if (nt == 0) {
                 nb.push((h * 8) + wl);
             }
