@@ -84,31 +84,6 @@ p {
   box-shadow: 0 0 15px #00ffff;
 }
 
-footer {
-    color: #fff;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-size: 60%;
-    text-align: center;
-    position: fixed;
-    bottom: 1.5vh;
-    margin: 0px;
-    width: auto;
-    padding: 5px;
-    z-index: 998;
-}
-
-footer p {
-  margin: 0px;
-}
-
-
-
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
@@ -135,9 +110,6 @@ footer p {
     <p class="textl">お探しのページは見つかりませんでした。</p>
     <a href="/" class="btn">ホームに戻る</a>
   </div>
-  <footer>
-    <p>© 2024 dedot-3799.</p>
-</footer>
   <script>
     const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -204,7 +176,7 @@ init();
 animate();
 
 const textElement = document.querySelector('.textl');
-    const textArray = ["迷子になったページを探す冒険へようこそ！", "お探しのページは、タイムスリップしたようです。", "404エラー！ページが見つからず、宇宙を漂っています。","このページは、忍者の修行に出かけました。","エラー発生！ブラックホールに吸い込まれたようです。","うちのページも、まだまだ修行中なんです……","エラーはプログラマーの愛の証！？","ページが見つからない？そんなバカな！","404エラーは、インターネットの神秘です。","404ってどういうことなの？誰か教えてー！","404エラーのページを探しているなら、まさにここです！","404エラー：開発者がこのページを作るのを忘れたようです。","あれれ？このページ、どこかに行っちゃったみたいです～。"];
+    const textArray = ["迷子になったページを探す冒険へようこそ！", "お探しのページは、タイムスリップしたようです。", "404エラー！ページが見つからず、宇宙を漂っています。","このページは、忍者の修行に出かけました。","エラー発生！ブラックホールに吸い込まれたようです。","うちのページも、まだまだ修行中なんです……","エラーはプログラマーの愛の証！？","404エラーは、インターネットの神秘です。","404ってどういうことなの？誰か教えてー！","404エラーのページを探しているなら、まさにここです！","404エラー：開発者がこのページを作るのを忘れたようです。","あれれ？このページ、どこかに行っちゃったみたいです～。"];
     let currentIndex = 0;
 
     setInterval(() => {
@@ -222,15 +194,20 @@ const textElement = document.querySelector('.textl');
         const span = document.createElement('span');
         span.textContent = newText[i];
         span.style.opacity = 0;
-
         textElement.appendChild(span);
-
-        setTimeout(() => {
+        setTimeout(async () => {
           span.style.opacity = 1;
+          span.style.textDecorationLine = "underline";
+          await wait(100);
+          span.style.textDecorationLine = "none";
         }, i * 100);
       }
 
       currentIndex = index;
+    }
+
+    function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
   </script>
 </body>
