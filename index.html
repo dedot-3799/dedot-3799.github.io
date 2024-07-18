@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - dedot-3799.github.io</title>
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: #ffffff;
+    overflow-x: auto;
+}
+
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #1f1f1f, #121212);
+    background-size: 200% 200%;
+    z-index: -1;
+    animation: gradientAnimation 15s ease infinite;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+header {
+    background-color: rgba(31, 31, 31, 0.9);
+    padding: 20px 0px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1;
+    height: 50px;
+}
+
+header h1 {
+    margin: 0;
+    color: #00ffff;
+    font-size: 2em;
+}
+
+nav {
+    display: inline-block;
+    min-width: 300px;
+}
+
+@media (max-width: 374px) {
+    nav {
+        min-width: auto;
+    }
+    header {
+        height: auto;
+    }
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+    overflow-x: auto;
+}
+
+nav ul li a {
+    color: #00ffff;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+main {
+    padding: 0px 2.5% 0px;
+    height: 100vh;
+    overflow: scroll;
+}
+
+#about {
+    margin: 50px 2.5% 0px;
+}
+
+section {
+    padding: 60px 2.5%;
+    margin-top: 40px;
+}
+
+section h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.card,.news-card{
+    background-color: rgba(31, 31, 31, 0.9);
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    transition-duration: 500ms;
+}
+
+.card:hover ,.news-card:hover{
+	box-shadow: 0 0 80px rgba(0,255,255,0.5);
+}
+
+.news-date {
+    font-size: 0.9em;
+    color: #aaaaaa;
+    margin-bottom: 10px;
+}
+
+.card:hover, .news-card:hover {
+    transform: translateY(-10px);
+}
+
+
+.news-card a {
+    color: #00ffff;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 1em;
+    transition: color 0.3s;
+}
+
+.news-card a:hover {
+    color: #ffffff;
+}
+
+footer {
+    background-color: rgba(31, 31, 31, 0.9);
+    text-align: center;
+    padding: 20px 0px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+footer p {
+    margin: 0;
+    color: #00ffff;
+}
+
+div a {
+  color:#fff;
+  text-decoration:none;
+}
+
+a {
+    color: #00ffff;
+}
+
+@media (min-width: 800px) {
+    .card,.news-card {
+        display: inline-block;
+        width: 40%;
+        margin: 2%;
+    }
+    
+    .cardList , #news-container{
+        display: block;
+    }
+}
+@media (min-width: 1200px) {
+    .card,.news-card {
+        display: inline-block;
+        width: 25%;
+        margin: 2%;
+    }
+    
+    .cardList , #news-container{
+        justify-content: center;
+        align-items: center;
+        display: block;
+    }
+}
+@media (min-width: 2400px) {
+    .card,.news-card {
+
+        justify-content: center;
+        align-items: center;
+        display: inline-block;
+        width: 12.5%;
+        margin: 2%;
+    }
+    
+    .cardList , #news-container{
+        justify-content: center;
+        align-items: center;
+        display: block;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    background-color: #1f1f1f;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    color: #ffffff;
+    position: relative;
+    max-height: 80%;
+    overflow-y: scroll;
+}
+
+.close-button {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+}
+
+.close-button:hover, .close-button:focus {
+    color: #ffffff;
+    text-decoration: none;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="background">
+        <canvas id="canvas"></canvas>
+      </div>
+    <header>
+        <h1>dedot-3799.github.io</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About this site</h2>
+            <p>dedot-3799が趣味で作ったWebアプリを公開しています。</p>
+        </section>
+
+        <section id="services">
+            <h2>Services</h2>
+            <div class="cardList">
+            <div class="card">
+            <a href="./prime/">
+                <h3>素数判定機</h3>
+                <p>高速な素数判定体験</p>
+            </a>
+            </div>
+            <div class="card">
+            	<a href="./MPFS/v1/">
+                <h3>MultiFusion Pro Suite</h3>
+                <p>マルチタスキングが可能な多機能アプリ</p>
+            </a>
+            </div>
+            </div>
+        </section>
+
+        <section id="news">
+            <h2>Latest News</h2>
+            <div id="news-container"></div>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Me</h2>
+            <p>お問い合わせは <a href="mailto:dedot_3799@outlook.com">こちら</a> から。</p>
+            <p>GitHubは<a href="https://github.com/dedot-3799/">こちら</a>。</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 dedot-3799.</p>
+    </footer>
+    <div id="news-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-date"></p>
+            <p id="modal-description"></p>
+        </div>
+    </div>
+</body>
+<script>
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let g = 2
+canvas.width = window.innerWidth * g;
+canvas.height = window.innerHeight * g;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth * g;
+  canvas.height = window.innerHeight * g;
+  init();
+});
+
+let lines = [];
+
+function Line(x, y, dx, dy,lw) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.length = Math.random() * 100 + 50;
+  this.lw = lw;
+
+  this.draw = function() {
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x + this.dx * this.length, this.y + this.dy * this.length);
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+    ctx.lineWidth = lw;
+    ctx.stroke();
+  };
+
+  this.update = function() {
+    this.x += this.dx;
+    this.y += this.dy;
+
+    if (this.x > canvas.width || this.x < 0) this.dx = -this.dx;
+    if (this.y > canvas.height || this.y < 0) this.dy = -this.dy;
+
+    this.draw();
+  };
+}
+
+function init() {
+  lines = [];
+  for (let i = 0; i < Math.floor(canvas.width*canvas.height)/10000; i++) {
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height;
+    let dx = (Math.random() - 0.5) * 2.5;
+    let dy = (Math.random() - 0.5) * 2.5;
+    let lw = (Math.random() * 2) ** 5 + 2;
+    lines.push(new Line(x, y, dx, dy,lw));
+  }
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  lines.forEach(line => {
+    line.update();
+  });
+}
+
+init();
+animate();
+document.addEventListener('DOMContentLoaded', function() {
+            fetch('news.json')
+                .then(response => response.json())
+                .then(data => {
+                    const newsContainer = document.getElementById('news-container');
+                    data.forEach(news => {
+                        const newsCard = document.createElement('div');
+                        newsCard.classList.add('news-card');
+
+                        const newsTitle = document.createElement('h3');
+                        newsTitle.textContent = news.title;
+
+                        const newsDate = document.createElement('p');
+                        newsDate.classList.add('news-date');
+                        newsDate.textContent = `日付: ${news.date}`;
+
+                        const newsDescription = document.createElement('p');
+                        newsDescription.textContent = news.description;
+
+                        const newsLink = document.createElement('a');
+                        newsLink.href = '#';
+                        newsLink.textContent = '続きを読む';
+                        newsLink.addEventListener('click', function(event) {
+                            event.preventDefault();
+                            openModal(news);
+                        });
+
+                        newsCard.appendChild(newsTitle);
+                        newsCard.appendChild(newsDate);
+                        newsCard.appendChild(newsDescription);
+                        newsCard.appendChild(newsLink);
+
+                        newsContainer.appendChild(newsCard);
+                    });
+                });
+
+            const modal = document.getElementById('news-modal');
+            const closeButton = document.querySelector('.close-button');
+
+            function openModal(news) {
+                document.getElementById('modal-title').textContent = news.title;
+                document.getElementById('modal-date').textContent = `日付: ${news.date}`;
+                document.getElementById('modal-description').innerHTML = convertMarkdown(news.content);
+                modal.style.display = 'block';
+            }
+
+            closeButton.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        function convertMarkdown(markdownText) {
+            // 改行で分割して行ごとに処理
+            const lines = markdownText.split('\n');
+            let htmlContent = '';
+
+            for (let line of lines) {
+                // 見出し
+                if (line.startsWith('# ')) {
+                    htmlContent += `<h1>${line.slice(2)}</h1>`;
+                } else if (line.startsWith('## ')) {
+                    htmlContent += `<h2>${line.slice(3)}</h2>`;
+                } else if (line.startsWith('### ')) {
+                    htmlContent += `<h3>${line.slice(4)}</h3>`;
+                }
+                // ボールド
+                else if (line.includes('**')) {
+                    htmlContent += `<p>${line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
+                }
+                // イタリック
+                else if (line.includes('*')) {
+                    htmlContent += `<p>${line.replace(/\*(.*?)\*/g, '<em>$1</em>')}</p>`;
+                }
+                // リストアイテム
+                else if (line.startsWith('- ')) {
+                    htmlContent += `<li>${line.slice(2)}</li>`;
+                } else {
+                    htmlContent += `<p>${line}</p>`;
+                }
+            }
+
+            // リストアイテムを<ul>で囲む
+            htmlContent = htmlContent.replace(/<li>(.*?)<\/li>/g, '<ul><li>$1</li></ul>');
+            htmlContent = htmlContent.replace(/<\/ul><ul>/g, '');
+
+            return htmlContent
+        }
+</script>
+</html>
