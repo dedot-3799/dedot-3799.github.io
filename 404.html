@@ -195,6 +195,7 @@ const textElement = document.querySelector('.textl');
         span.textContent = newText[i];
         span.style.opacity = 0;
         textElement.appendChild(span);
+        var g = i;
         setTimeout(async () => {
           span.style.opacity = 1;
           span.style.textDecorationLine = "underline";
