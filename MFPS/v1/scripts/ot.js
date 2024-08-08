@@ -105,8 +105,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 rst = false;
                 return;
             }
+            let cpStrange = parseInt(document.getElementById("ot_cpN").value) || undefined;
             do {
-                var cpu = await findBestMoveWithWorkers(board, 1, parseInt(document.getElementById("ot_cpN").value) || 5, -Infinity, Infinity);
+                var cpu = await findBestMoveWithWorkers(board, 1, cpStrange || 5, -Infinity, Infinity);
                 console.log(cpu);
                 if (cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, 1) } else {
                     var lk = findBestMove3(board, 1, 4, -Infinity, Infinity);
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             await wait(10);
             do {
-                var cpu = await findBestMoveWithWorkers(board, -1, parseInt(document.getElementById("ot_cpN").value) || 5, -Infinity, Infinity);
+                var cpu = await findBestMoveWithWorkers(board, -1, cpStrange || 5, -Infinity, Infinity);
                 console.log(cpu);
                 if (cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
                     var lk = findBestMove2(board, -1, 4, -Infinity, Infinity);
@@ -249,7 +250,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!canPlayerPlaceStone(board,-1)) {
                         break;
                     }
-                    var cpu = await findBestMoveWithWorkers(board, -1, parseInt(document.getElementById("ot_cpN").value) || 5, -Infinity, Infinity);
+                    let cps = parseInt(document.getElementById("ot_cpN").value) || undefined;
+                    var cpu = await findBestMoveWithWorkers(board, -1, cps || 5, -Infinity, Infinity);
                     console.log(2, cpu);
                     if (cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
                         var g = findBestMove(board, -1, 4, -Infinity, Infinity);
