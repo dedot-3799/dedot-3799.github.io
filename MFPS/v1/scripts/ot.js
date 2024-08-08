@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 rst = false;
                 return;
             }
-            let cpStrange = await 5;
+            const cpStrange = parseInt(document.getElementById("ot_cpN").value) || 5;
             do {
                 var cpu = await findBestMoveWithWorkers(board, 1, cpStrange, -Infinity, Infinity);
                 console.log(cpu);
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (!canPlayerPlaceStone(board,-1)) {
                         break;
                     }
-                    let cps = parseInt(document.getElementById("ot_cpN").value) || 5;
+                    const cps = parseInt(document.getElementById("ot_cpN").value) || 5;
                     var cpu = await findBestMoveWithWorkers(board, -1, cps, -Infinity, Infinity);
                     console.log(2, cpu);
                     if (cpu !== null) { board = placeAndFlip(board, cpu.row, cpu.col, -1) } else {
