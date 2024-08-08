@@ -784,8 +784,6 @@ function countStones(board, player) {
     return count;
 }
 
-
-const numCores = parseInt(document.getElementById("ot_th").value) || navigator.hardwareConcurrency || 4;
 const workers = [];
 const workerPromises = [];
 
@@ -1131,6 +1129,7 @@ function placeAndFlip(board, row, col, player) {
 let bl = new Blob([worker_js], { type: 'text/javascript' })
 
 async function findBestMoveWithWorkers(board, player, depth) {
+    const numCores = parseInt(document.getElementById("ot_th").value) || navigator.hardwareConcurrency || 4;
     const rowRangeSize = Math.ceil(8 / numCores);
     const workerPromises = []; // 新しい空の配列を生成
 
