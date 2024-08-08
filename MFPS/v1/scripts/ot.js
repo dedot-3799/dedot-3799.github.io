@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 rst = false;
                 return;
             }
-            let cpStrange = 5;
+            let cpStrange = await 5;
             do {
                 var cpu = await findBestMoveWithWorkers(board, 1, cpStrange, -Infinity, Infinity);
                 console.log(cpu);
