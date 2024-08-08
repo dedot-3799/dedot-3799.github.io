@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="./manifest.json">
-    
+
 <head>
     <script src="./scripts/window.js"></script>
     <script src="./scripts/containers.js"></script>
@@ -189,7 +189,8 @@
                 </p>
                 <h3>オプションについて</h3>
                 <p>この素数判定機では、さまざまなアルゴリズムを選ぶことができます。<br>「旧型」は、一般的な試し割り法を実装したものです。<br>「新型」は、「旧型」の不要な演算などを省き、計算の最適化を行ったものであり、環境によっては「旧型」の数十倍の速度で計算が可能です。<br>「約数の数から判定」は、入力された整数のすべての約数を出力し、約数の個数が2個ならば素数であると判定します。<br>「素因数分解型」は、入力された整数を素因数分解し、分解結果がその整数以外の素因子を含んでいない場合、素数であると判定します。<br>「マルチスレッド型」は、WebWoker
-                    APIを利用した並列処理により、試し割り法を並列して演算します。<br>「マルチスレッド時のスレッド数」は、並列演算させる個数を指定できます。<br>「倍数指定」では、2からNまでの倍数以外で割ることで判定します。スレッド数指定の欄にNを指定します。</p>
+                    APIを利用した並列処理により、試し割り法を並列して演算します。<br>「マルチスレッド時のスレッド数」は、並列演算させる個数を指定できます。<br>「倍数指定」では、2からNまでの倍数以外で割ることで判定します。スレッド数指定の欄にNを指定します。
+                </p>
                 <h3>ショートカットキーについて</h3>
                 <p>このツールでは、以下のようなショートカットキーが登録されています。<br>・Enter (macOS等の場合はReturnキー) : "判定"ボタン<br>・Shift + F :
                     素因数分解<br>・Shift + G : 約数列挙<br>・Shift + J : デフォルトモードの素数判定<br>・Shift + M :
@@ -540,35 +541,37 @@
                 <div class="button" onclick="maximizeWindow('container16')">□</div>
                 <div class="button" onclick="closeWindow('container16')">&times;</div>
             </div>
-                <link rel="stylesheet" href="./style/resizer.css">
-                <div class="modal-howto">
-                    <h1>画像リサイザとフォーマット変換</h1>
-                    <input type="file" id="re_upload" accept="image/*">
-                    <div id="re_thumbnail-container">
-                        <h3>元画像:</h3>
-                        <img id="re_thumbnail" src="" height="200px">
-                    </div>
-                    <div id="re_controls">
-                        <label for="re_width-input">幅 (px):</label>
-                        <input type="number" id="re_width-input" min="1">
-                        <label for="re_height-input">高さ (px):</label>
-                        <input type="number" id="re_height-input" min="1">
-                    </div>
-                    <div id="re_format-controls"><p>
-                        <label for="re_compression-input">圧縮率(%):</label>
-                        <input type="number" id="re_compression-input" min="1"></p>
-                        <label for="re_format-select">フォーマット:</label>
-                        <select id="re_format-select">
-                            <option value="png">PNG</option>
-                            <option value="jpeg">JPEG</option>
-                            <option value="tiff">TIFF</option>
-                            <option value="bmp">BMP</option>
-                            <option value="webp">WEBP</option>
-                        </select>
-                    </div>
-                    <button id="re_download-btn">画像をダウンロード</button>
+            <link rel="stylesheet" href="./style/resizer.css">
+            <div class="modal-howto">
+                <h1>画像リサイザとフォーマット変換</h1>
+                <input type="file" id="re_upload" accept="image/*">
+                <div id="re_thumbnail-container">
+                    <h3>元画像:</h3>
+                    <img id="re_thumbnail" src="" height="200px">
                 </div>
-                <script src="scripts/resizer.js"></script>
+                <div id="re_controls">
+                    <label for="re_width-input">幅 (px):</label>
+                    <input type="number" id="re_width-input" min="1">
+                    <label for="re_height-input">高さ (px):</label>
+                    <input type="number" id="re_height-input" min="1">
+                </div>
+                <div id="re_format-controls">
+                    <p>
+                        <label for="re_compression-input">圧縮率(%):</label>
+                        <input type="number" id="re_compression-input" min="1">
+                    </p>
+                    <label for="re_format-select">フォーマット:</label>
+                    <select id="re_format-select">
+                        <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="tiff">TIFF</option>
+                        <option value="bmp">BMP</option>
+                        <option value="webp">WEBP</option>
+                    </select>
+                </div>
+                <button id="re_download-btn">画像をダウンロード</button>
+            </div>
+            <script src="scripts/resizer.js"></script>
 
         </div>
         <div id="container17" class="container" style="left: 300px; top: 50px; z-index: 17"
@@ -578,10 +581,18 @@
                 <div class="button" onclick="maximizeWindow('container17')">□</div>
                 <div class="button" onclick="closeWindow('container17')">&times;</div>
             </div>
-            <h1 style="padding: 30px; user-select: none;">設定</h1>
-            <p><h2>CPUの強さ(何手先まで読むか):</h2></p><p><input type="number" id="ot_cpN" placeholder="整数を入力"></p>
-            <p><h2>スレッド数:</h2></p><p><input type="number" id="ot_th" placeholder="整数を入力"></p>
-            <p><button onclick="closeWindow('container17');" id="apply">設定を適用して閉じる</button></p>
+            <div class="modal-howto">
+                <h1 style="padding: 30px; user-select: none;">設定</h1>
+                <p>
+                <h2>CPUの強さ(何手先まで読むか):</h2>
+                </p>
+                <p><input type="number" id="ot_cpN" placeholder="整数を入力"></p>
+                <p>
+                <h2>スレッド数:</h2>
+                </p>
+                <p><input type="number" id="ot_th" placeholder="整数を入力"></p>
+                <p><button onclick="closeWindow('container17');" id="apply">設定を適用して閉じる</button></p>
+            </div>
         </div>
         <div id="container18" class="container" style="left: 300px; top: 50px; z-index: 18"
             onmousedown="bringToFront('container18', event)">
@@ -624,4 +635,5 @@
     let versionif = kd["version"];
     document.getElementById("version_info").innerHTML = `MultiFusion Pro Suite (Version ${versionif}) &emsp; © 2024 dedot-3799.`;
 </script>
+
 </html>
