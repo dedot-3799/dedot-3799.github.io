@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 rst = false;
                 return;
             }
-            let cpStrange = parseInt(document.getElementById("ot_cpN").value) || 5;
+            let cpStrange = 5;
             do {
                 var cpu = await findBestMoveWithWorkers(board, 1, cpStrange, -Infinity, Infinity);
                 console.log(cpu);
