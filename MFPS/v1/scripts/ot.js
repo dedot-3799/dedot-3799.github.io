@@ -1,8 +1,9 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const boardElement = document.getElementById('ot_board');
-    let board;
+let board;
     let canPl = true;
     let rst = false;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const boardElement = document.getElementById('ot_board');
 
     function initializeBoard() {
         board = [
@@ -16,8 +17,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             [0, 0, 0, 0, 0, 0, 0, 0]
         ];
     };
-
-
 
     initializeBoard();
 
