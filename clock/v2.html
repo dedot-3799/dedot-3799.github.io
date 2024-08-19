@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全画面時計</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            color: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        #preferences,
+        #clockScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.75);
+            z-index: 3;
+        }
+
+        #clockScreen {
+            width: 100%;
+            height: 100%;
+        }
+
+        #preferences {
+            max-width: 100vw;
+            max-height: 100vh;
+            display: flex;
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow-y: scroll;
+        }
+
+        label {
+            font-size: 1.5rem;
+            margin: 10px;
+        }
+
+        select,
+        input {
+            font-size: 1.2rem;
+            padding: 5px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+
+        button {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            margin: 20px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        #fontPreview {
+            font-size: 4rem;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        #clock {
+            font-size: 20vw;
+            text-align: center;
+        }
+
+        #date {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 2vw;
+            color: #666;
+        }
+
+        #date1 {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: absolute;
+            bottom: 24%;
+            left: 0;
+            font-size: 2vw;
+            width: 100%;
+            color: #666;
+            z-index: 2;
+        }
+
+        #fontSizeValue {
+            font-size: 1.2rem;
+        }
+
+        #backgroundAnimation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        /* アナログ時計の基本スタイル */
+        #analogClock {
+            width: 90vmin;
+            /* 画面の幅と高さに基づいて時計のサイズを決定 */
+            height: 90vmin;
+            /* 画面の幅と高さに基づいて時計のサイズを決定 */
+            border-radius: 50%;
+            position: relative;
+            background-color: #ffffffa0;
+            z-index: 3;
+        }
+
+        .diallines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .diallines div {
+            position: absolute;
+            top: 47.5%;
+            left: 50%;
+            width: 2px;
+            height: 5%;
+            background-color: #000;
+        }
+
+        /* 時計の針のスタイル */
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            /* 時計の中心から出発する */
+            left: 50%;
+            transform-origin: bottom center;
+            transform: translateX(-50%) rotate(90deg);
+            /* 針を中央に位置させ、回転角度を調整 */
+            border-radius: 4px;
+            /* 針の角を丸くする */
+            z-index: 4;
+        }
+
+        .hour {
+            height: 27.5%;
+            /* 時針の長さを調整 */
+            width: 12px;
+            background: black;
+            border-radius: 6px;
+            /* 針の角を丸くする */
+        }
+
+        .minute {
+            height: 40%;
+            /* 分針の長さを調整 */
+            width: 6px;
+            background: black;
+            border-radius: 4px;
+            /* 針の角を丸くする */
+        }
+
+        .second {
+            height: 45%;
+            /* 秒針の長さを調整 */
+            width: 2px;
+            background: red;
+        }
+
+
+
+        @media (prefers-color-scheme: dark) {
+
+            body,
+            html {
+                color: #fff;
+                background-color: #000;
+            }
+
+            #preferences,
+            #clockScreen {
+                background-color: rgba(0, 0, 0, 0.75);
+            }
+
+            input,
+            select,
+            button {
+                color: #fff;
+            }
+
+            #date {
+                color: #aaa;
+            }
+
+            #analogClock {
+                background-color: #000000a0;
+            }
+
+            .hour,
+            .minute {
+                background-color: white;
+            }
+
+            .diallines div {
+                background-color: #fff;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- プリファレンス画面 -->
+    <div id="preferences">
+        <h1>Full Screen Clock</h1>
+        <p>
+            <label for="fontSelect">Font:</label>
+            <select id="fontSelect" onchange="updateFontPreview()">
+                <option value="Roboto">Roboto</option>
+                <option value="JetBrains Mono">JetBrains Mono</option>
+                <option value="PT Mono">PT Mono</option>
+                <option value="Cutive Mono">Cutive Mono</option>
+                <option value="Major Mono Display">Major Mono Display</option>
+                <option value="Edu VIC WA NT Beginner">Edu VIC WA NT Beginner</option>
+                <option value="Sankofa Display">Sankofa Display</option>
+                <option value="Rajdhani">Rajdhani</option>
+                <option value="Cormorant Garamond">Cormorant Garamond</option>
+                <option value="Audiowide">Audiowide</option>
+                <option value="Bungee Hairline">Bungee Hairline</option>
+                <option value="Poiret One">Poiret One</option>
+                <option value="Open Sans">Open Sans</option>Audiowide
+                <option value="Lobster">Lobster</option>
+                <option value="Lato">Lato</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Raleway">Raleway</option>
+            </select>
+            <label for="clockType">Clock Type:</label>
+            <select id="clockType">
+                <option value="digital">Digital</option>
+                <option value="analog">Analog</option>
+            </select>
+            <label for="secondHandMode">second hand mode:</label>
+            <select id="secondHandMode">
+                <option value="tick">tick (1FPS)</option>
+                <option value="10">Slightly smooth (10FPS)</option>
+                <option value="20">Normal smooth (20FPS)</option>
+                <option value="50">Fairly smooth (50FPS)</option>
+                <option value="100">Very smooth (100FPS)</option>
+                <option value="1000">Extremely smooth (1000FPS)</option>
+            </select>
+        </p>
+        <label for="fontSizeRange">Font size: <span id="fontSizeValue">20</span>vw</label>
+        <input type="range" id="fontSizeRange" min="10" max="40" value="20" oninput="updateFontPreview()">
+
+        <div id="fontPreview">12:34:56</div>
+        <p>Time synchronous interval(sec):<input type="number" id="cl_sync" min="1" value="60">, Date region:<input
+                type="text" id="cl_locate" value="en-us">, Automatic font size adjustment:<input type="checkbox"
+                id="cl_auto" checked></p>
+        <p><button onclick="startClock('full')">Start full screen display</button><button onclick="startClock()">Start display</button></p>
+    </div>
+
+
+    <!-- アナログ時計のメモリを追加 -->
+    <div id="analogClock" style="display: none;">
+        <div id="date1" onclick="showPreferences()" style="user-select: none; -webkit-user-select: none;"></div>
+        <div class="diallines"></div>
+        <div id="hourHand" class="hand hour"></div>
+        <div id="minuteHand" class="hand minute"></div>
+        <div id="secondHand" class="hand second"></div>
+    </div>
+    <!-- 時計画面 -->
+    <div id="clockScreen">
+        <div id="clock" style="user-select: none; -webkit-user-select: none;"></div>
+        <div id="date" onclick="showPreferences()" style="user-select: none; -webkit-user-select: none;"></div>
+    </div>
+    <canvas id="backgroundAnimation"></canvas>
+    <script>
+        let intervals = [];
+        // 全てのインターバルのクリア
+        function clearAllIntervals() {
+            intervals.forEach(id => {
+                clearInterval(id);
+            });
+            intervals = [];
+        }
+
+        function showPreferences() {
+            // 時計画面を非表示にして、プリファレンス画面を表示
+            document.getElementById('analogClock').style.display = 'none';
+            document.getElementById('clockScreen').style.display = 'none';
+            document.getElementById('preferences').style.display = 'flex';
+            clearAllIntervals()
+        }
+
+        function loadGoogleFont(font) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
+            document.head.appendChild(link);
+        }
+
+        function updateFontPreview() {
+            const fontSelect = document.getElementById('fontSelect');
+            const fontSizeRange = document.getElementById('fontSizeRange');
+            const fontPreview = document.getElementById('fontPreview');
+
+            // フォントプレビューを更新
+            loadGoogleFont(fontSelect.value);
+            fontPreview.style.fontFamily = fontSelect.value;
+            document.querySelector("body").style.fontFamily = fontSelect.value;
+            let f = document.querySelectorAll("select");
+            let g = document.querySelectorAll("input");
+            let h = document.querySelectorAll("button");
+            f.forEach(element => {
+                element.style.fontFamily = fontSelect.value;
+            });
+            g.forEach(e => {
+                e.style.fontFamily = fontSelect.value;
+            })
+            h.forEach(e => {
+                e.style.fontFamily = fontSelect.value;
+            })
+            fontPreview.style.fontSize = fontSizeRange.value + 'vw';
+            document.getElementById('fontSizeValue').textContent = fontSizeRange.value;
+        }
+
+        let serverTimeOffset = 0;
+
+        const TIME_SERVERS = [
+    "https://worldtimeapi.org/api/ip",
+    "https://timeapi.io/api/Time/current/zone?timeZone=UTC"
+];
+const TIMEOUT_MS = 10000;
+
+// Fetch time from Web API
+function fetchTimeFromAPI(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.timeout = TIMEOUT_MS;
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    let serverTime;
+
+                    // 各 API の応答形式に応じた時刻取得
+                    if (url.includes("worldtimeapi.org")) {
+                        serverTime = new Date(response.utc_datetime).getTime();
+                    } else if (url.includes("timeapi.io")) {
+                        serverTime = new Date(response.dateTime + "Z").getTime();
+                    }
+
+                    if (serverTime) {
+                        resolve(serverTime);
+                    } else {
+                        reject("No valid time found in the response");
+                    }
+                } catch (error) {
+                    reject("Error parsing the response: " + error.message);
+                }
+            } else {
+                reject(`Request failed with status ${xhr.status}`);
+            }
+        };
+
+        xhr.onerror = () => reject("Network error");
+        xhr.ontimeout = () => reject("Request timed out");
+
+        xhr.send();
+    });
+}
+
+async function getAccurateTime() {
+    for (let url of TIME_SERVERS) {
+        try {
+            const serverTime = await fetchTimeFromAPI(url);
+            const localTime = new Date().getTime(); // 端末の現在時刻をミリ秒で取得
+            console.log(serverTime,localTime);
+            serverTimeOffset = serverTime - localTime;
+            console.log(`Server: ${url}, Time offset: ${serverTimeOffset} ms`);
+            return;
+        } catch (error) {
+            console.error(`Error with server ${url}: ${error}`);
+        }
+    }
+
+    console.log("All servers failed.");
+}
+
+// 実行
+getAccurateTime();
+
+        function getCurrentTime() {
+            return new Date(Date.now() + serverTimeOffset);
+        }
+
+        function updateClock() {
+            const now = getCurrentTime(); // オフセットを考慮した現在の時刻
+            const hours = String(now.getHours()).padStart(1, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            const dateString = now.toLocaleDateString(document.getElementById('cl_locate').value || "en-us", { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+            document.getElementById('clock').textContent = timeString;
+            document.getElementById('date').textContent = dateString;
+            fstw();
+            // 次の更新までの残り時間を計算
+            const millisecondsUntilNextSecond = 1000 - now.getMilliseconds();
+            setTimeout(updateClock, millisecondsUntilNextSecond);
+        }
+
+        function fstw() {
+            if (document.getElementById("cl_auto").checked) {
+                let w, h, g;
+                let s = 0;
+                do {
+                    s += 20
+                    let ctx = document.createElement('canvas').getContext('2d');
+                    ctx.font = `${s}px "${document.getElementById('fontSelect').value}"`;
+                    g = ctx.measureText(document.getElementById('clock').textContent);
+                    w = g.width;
+                    h = g.actualBoundingBoxAscent + g.actualBoundingBoxDescent;
+
+                } while (w < window.innerWidth && h < window.innerHeight);
+                document.getElementById('clock').style.fontSize = `${s - 20}px`;
+            }
+        }
+
+        async function startClock(mode1) {
+            const clockType = document.getElementById('clockType').value;
+            if (clockType === 'analog') {
+                startAnalogClock(); // アナログ時計をスタート
+                let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000);
+                intervals.push(interval);
+            } else {
+                const fontSelect = document.getElementById('fontSelect');
+                const fontSizeRange = document.getElementById('fontSizeRange');
+
+                // 選択されたGoogleフォントを読み込み
+                loadGoogleFont(fontSelect.value);
+
+                // 選択されたフォントとサイズを適用
+                const clockElement = document.getElementById('clock');
+                clockElement.style.fontSize = (100 / 14) + 'vw';
+                clockElement.textContent = "Getting time..."
+
+
+
+                // プリファレンス画面を非表示にして、時計画面を表示
+                document.getElementById('preferences').style.display = 'none';
+                document.getElementById('clockScreen').style.display = 'flex';
+
+                // 時計を更新
+                clockElement.style.fontFamily = fontSelect.value;
+                clockElement.style.fontSize = fontSizeRange.value + 'vw';
+                updateClock(); // 初回更新
+                let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000); // 1分ごとにサーバー時刻を再取得
+                intervals.push(interval)
+            }
+            if (mode1 == "full") {
+                // フルスクリーンモードにする
+                enterFullscreen();
+            }
+        }
+
+        function enterFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const fontSelect = document.getElementById('fontSelect');
+            // 最初に選択されているフォントをロード
+            loadGoogleFont(fontSelect.value);
+            updateFontPreview();
+        });
+
+        function updateAnalogClock() {
+            const now = getCurrentTime(); // オフセットを考慮した現在の時刻
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            const milliseconds = now.getMilliseconds();
+
+            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
+            const minuteDeg = minutes * 6 + seconds * 0.1;
+            const secondHandMode = document.getElementById('secondHandMode').value;
+
+            let secondDeg;
+            if (secondHandMode === 'tick') {
+                secondDeg = seconds * 6; // 1秒ごとに動く
+            } else {
+                secondDeg = seconds * 6 + milliseconds * 0.006; // 滑らかに動く
+            }
+
+            document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            document.getElementById('minuteHand').style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+
+            document.getElementById("date1").textContent = now.toLocaleDateString(document.getElementById('cl_locate').value || "en-us", { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+        }
+
+        function startAnalogClock() {
+            document.getElementById('preferences').style.display = 'none';
+            document.getElementById('analogClock').style.display = '';
+            updateAnalogClock(); // 初回更新
+            const secondHandMode = document.getElementById('secondHandMode').value;
+            if (secondHandMode === 'tick') {
+                let interval = setInterval(updateAnalogClock, 1000); // 1秒ごとに更新
+                intervals.push(interval);
+            } else {
+                let interval = setInterval(updateAnalogClock, Math.floor(1000 / parseInt(secondHandMode))); // 滑らかに動く場合は50FPS程度
+                intervals.push(interval);
+            }
+        }
+
+        const dialLines = document.querySelector('.diallines');
+
+        for (let i = 0; i < 60; i++) {
+            const line = document.createElement('div');
+            line.style.transform = `rotate(${i * 6}deg) translateY(-950%)`;
+            if (i % 5 === 0) {
+                line.style.backgroundColor = 'red'; // 長いメモリ (5分刻み)
+            }
+            dialLines.appendChild(line);
+        }
+    </script>
+    <script>
+        function bgranim() {
+
+
+            const canvas = document.getElementById('backgroundAnimation');
+            const ctx = canvas.getContext('2d');
+
+            // キャンバスのサイズをウィンドウサイズに合わせる
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            // 円の数を設定
+            const circleCount = Math.floor(window.innerHeight * window.innerWidth / 2500); // 調整してください
+
+            // 円の情報を格納する配列
+            const circles = [];
+
+            // 円のオブジェクト
+            function Circle(x, y, dx, dy, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.radius = radius;
+                this.color = color;
+            }
+
+            // 円を作成する関数
+            function createCircle() {
+                const radius = Math.random() * 40 + 1; // 半径をランダムに
+                const x = Math.random() * (canvas.width - radius * 2) + radius;
+                const y = Math.random() * (canvas.height - radius * 2) + radius;
+                const dx = (Math.random() - 0.5) * 1;
+                const dy = (Math.random() - 0.5) * 1;
+                const color = `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},${Math.random()})`;
+                circles.push(new Circle(x, y, dx, dy, radius, color));
+            }
+
+            // 円を描画する関数
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                circles.forEach(circle => {
+                    ctx.beginPath();
+                    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = circle.color;
+                    ctx.fill();
+
+                    // 円を動かす
+                    circle.x += circle.dx;
+                    circle.y += circle.dy;
+
+                    // 壁に当たったら跳ね返る
+                    if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
+                        circle.dx = -circle.dx;
+                    }
+                    if (circle.y + circle.radius > canvas.height || circle.y - circle.radius < 0) {
+                        circle.dy = -circle.dy;
+                    }
+                });
+            }
+
+            // 円を作成
+            for (let i = 0; i < circleCount; i++) {
+                createCircle();
+            }
+
+            // アニメーションループ
+            function animate() {
+                requestAnimationFrame(animate);
+                draw();
+            }
+
+            animate();
+        }
+        window.onresize = bgranim
+        window.onload = bgranim
+    </script>
+</body>
+
+</html>

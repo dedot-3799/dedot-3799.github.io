@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストップウォッチ</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #fff;
+            font-family: monospace, Arial, sans-serif;
+        }
+
+        .stopwatch {
+            top: 50%;
+            text-align: center;
+            align-items: center;
+            position: absolute;
+            line-height: 0;
+        }
+
+        .controls {
+            right: 10px;
+            bottom: 10px;
+            position: fixed;
+        }
+
+        .controls button {
+            font-size: 20px;
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .controls button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stopwatch">
+        <div id="display">00:00:00</div>
+        <div class="controls">
+            <button onclick="toggleStopwatch()">スタート/ストップ</button>
+            <button onclick="resetStopwatch()">リセット</button>
+        </div>
+    </div>
+
+    <script>
+        // Stopwatch Variables
+        let stopwatchInterval;
+        let stopwatchTime = 0; // Time in milliseconds
+        let stopwatchRunning = false;
+        const stopwatchDisplay = document.getElementById('display');
+        let startTime, elapsedTime = 0;
+        let firsttime = true;
+
+        function startStopwatch() {
+            startTime = performance.now() - elapsedTime;
+            stopwatchInterval = setInterval(updateStopwatch, 100);
+        }
+
+        function updateStopwatch() {
+            elapsedTime = performance.now() - startTime;
+            const time = new Date(elapsedTime);
+            const hours = String(time.getUTCHours());
+            const minutes = String(time.getUTCMinutes());
+            const seconds = String(time.getUTCSeconds());
+            const milliseconds = String(Math.floor(time.getUTCMilliseconds() / 100));
+
+            document.getElementById('display').textContent =
+                `${hours == 0 ? "" : hours + ":"}${(minutes == 0 && hours == 0) ? "" : ((hours == 0) ? minutes : minutes.padStart(2, '0')) + ":"}${(minutes == 0 && hours == 0) ? seconds : seconds.padStart(2, '0')}.${milliseconds}`;
+            fstw()
+        }
+
+        function fstw() {
+            let w,h,g;
+            let s = 110;
+            do {
+                s += 10
+                let ctx = document.createElement('canvas').getContext('2d');
+                ctx.font = `${s}px monospace`;
+                g = ctx.measureText(document.getElementById('display').textContent);
+                w = g.width;
+                h = g.actualBoundingBoxAscent+g.actualBoundingBoxDescent;
+            } while (w < window.innerWidth - 10 && h < window.innerHeight);
+            document.getElementById('display').style.fontSize = `${s - 10}px`;
+        }
+
+        function toggleStopwatch() {
+            if (firsttime) { enterFullscreen(); firsttime = false; }
+            if (stopwatchRunning) {
+                stopStopwatch();
+            } else {
+                startStopwatch();
+            }
+            stopwatchRunning = !stopwatchRunning;
+        }
+        window.onload = fstw;
+
+        function stopStopwatch() {
+            clearInterval(stopwatchInterval);
+            fstw()
+        }
+
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchRunning = false;
+            elapsedTime = 0;
+            document.getElementById('display').textContent = '00:00.00';
+            fstw();
+        }
+        function enterFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { /* Safari */
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) { /* IE11 */
+                document.documentElement.msRequestFullscreen();
+            }
+            fstw();
+        }
+    </script>
+</body>
+
+</html>
