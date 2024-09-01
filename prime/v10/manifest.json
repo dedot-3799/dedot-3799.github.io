@@ -1,8 +1,8 @@
 {
-    "lang": "en-us",
-    "name": "Prime number determination tools",
+    "lang": "ja-jp",
+    "name": "Primality Testing Tools",
     "short_name": "Prime Number",
-    "description": "Ultra-fast prime number determination and prime factorisation",
+    "description": "Ultra-fast primality testing and prime factorisation",
     "start_url": "/prime/v10/",
     "orientation": "any",
     "display": "standalone",
