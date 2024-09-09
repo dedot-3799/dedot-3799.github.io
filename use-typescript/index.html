@@ -10,7 +10,16 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>JavaScriptだけで満足してる？ - TypeScriptに移行しよう！</title>
+    <title>JavaScriptだけで満足してる？ - TypeScriptに移行しよう！</title>
+    <script>
+	    // ブラウザの言語を取得
+		const userLanguage = navigator.language;
+
+		// 日本語以外の場合、英語ページにリダイレクト
+		if (userLanguage !== 'ja') {
+  			window.location.href = 'https://dedot-3799.github.io/use-typescript/en.html';
+		}
+    </script>
     <style>
         /* フォントと背景を変更してモダンな印象に */
 body {
