@@ -147,7 +147,7 @@ button:hover {
 // JavaScript<br>
 function add(a, b) {
     return a + b;
-}
+};<br>
 console.log(add(10, "20")); // 1020（これが意図した動作ですか？）
     </code>
     <p><span class="highlight">こんなミスを見逃していませんか？</span> TypeScriptなら、こうしたエラーを防ぐことができます。</p>
@@ -157,7 +157,7 @@ console.log(add(10, "20")); // 1020（これが意図した動作ですか？）
 // TypeScript <br>
 function add(a: number, b: number): number {
     return a + b;
-}
+};<br>
 console.log(add(10, "20")); // エラー！これで安心！
     </code>
     <p>TypeScriptはこのようなバグを<strong>事前に防いでくれます</strong>。もう余計な心配は不要です。</p>
