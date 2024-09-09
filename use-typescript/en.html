@@ -147,7 +147,7 @@ button:hover {
 // JavaScript<br>
 function add(a, b) {
     return a + b;
-}
+};<br>
 console.log(add(10, "20")); // 1020 (Oops, that's not a number!)
     </code>
     <p><span class="highlight">Are you OK with this happening?</span> TypeScript catches this mistake instantly.</p>
@@ -157,7 +157,7 @@ console.log(add(10, "20")); // 1020 (Oops, that's not a number!)
 // TypeScript<br>
 function add(a: number, b: number): number {
     return a + b;
-}
+};<br>
 console.log(add(10, "20")); // Error! You're protected from this!
     </code>
     <p>TypeScript prevents this bug <strong>before it even happens</strong>. No more worrying about runtime errors.</p>
