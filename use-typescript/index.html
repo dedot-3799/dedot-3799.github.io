@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>JavaScriptだけで満足してる？ - TypeScriptに移行しよう！</title>
+    <style>
+        /* フォントと背景を変更してモダンな印象に */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* ヘッダーのデザインをシンプルで力強いものに */
+header {
+    background-color: #1e1e2f;
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+    border-bottom: 5px solid #e74c3c;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+header p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+/* セクションのレイアウトを整え、余白とタイポグラフィを改良 */
+section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 30px;
+}
+
+/* コードブロックを美しく表示 */
+code {
+    background-color: #2e2e3e;
+    color: #f8f8f2;
+    padding: 15px;
+    display: block;
+    margin: 20px 0;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* ボタンデザインをシンプルかつシャープに */
+button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 30px auto 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #c0392b;
+}
+
+/* ハイライトをスタイリッシュに */
+.highlight {
+    background-color: #f1c40f;
+    padding: 0 5px;
+    border-radius: 3px;
+}
+@media (prefers-color-scheme: dark) {
+	/* ダークモード用の背景とテキストカラー */
+body {
+    background-color: #1e1e2f;
+    color: #e0e0e0;
+}
+
+/* ヘッダーをさらにダークにし、テキストカラーを明るく */
+header {
+    background-color: #151522;
+    color: #f8f8f2;
+    border-bottom: 5px solid #ff6b6b; /* 明るいアクセントカラー */
+}
+
+/* セクションの背景色をダークトーンにし、影を抑える */
+section {
+    background-color: #2a2a3d;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+/* コードブロックの背景色をダークグレーにしてコントラストを高める */
+code {
+    background-color: #1f1f2e;
+    color: #c5c8c6;
+}
+
+/* ボタンのカラーをより鮮明に変更し、ダークモードに馴染むスタイルへ */
+button {
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+    background-color: #e55b5b;
+}
+
+/* ハイライトの背景を暗めの黄色にして視認性を保つ */
+.highlight {
+    background-color: #e1b12c;
+    color: #1e1e2f;
+    padding: 0 5px;
+    border-radius: 3px;
+}
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>JavaScriptだけで満足してる？</h1>
+    <p>それ、本当に大丈夫？<span class="highlight">TypeScriptに乗り換えたほうが、もっと効率的ですよ！</span></p>
+</header>
+
+<section>
+    <h2>JavaScriptはもう限界かも？</h2>
+    <p>JavaScriptは素晴らしい言語ですが、<strong>型がないとバグの原因になります</strong>。TypeScriptはその問題を解決します。</p>
+    <p>より<em>安全</em>で<em>効率的</em>な開発を目指して、一歩前に進みましょう。</p>
+    
+    <h3>JavaScriptのリスク</h3>
+    <code>
+// JavaScript<br>
+function add(a, b) {
+    return a + b;
+}
+console.log(add(10, "20")); // 1020（これが意図した動作ですか？）
+    </code>
+    <p><span class="highlight">こんなミスを見逃していませんか？</span> TypeScriptなら、こうしたエラーを防ぐことができます。</p>
+
+    <h3>TypeScriptでの安全性</h3>
+    <code>
+// TypeScript <br>
+function add(a: number, b: number): number {
+    return a + b;
+}
+console.log(add(10, "20")); // エラー！これで安心！
+    </code>
+    <p>TypeScriptはこのようなバグを<strong>事前に防いでくれます</strong>。もう余計な心配は不要です。</p>
+</section>
+
+<section>
+    <h2>開発が遅れていませんか？</h2>
+    <p>「JavaScriptだけで十分」と感じているなら、それは<em>勘違い</em>かもしれません。TypeScriptを使えば、エディタが強力にサポートしてくれるので、開発がもっとスムーズになります。</p>
+    <ul>
+        <li><span class="highlight">自動補完でコーディングがより早く</span></li>
+        <li>プロジェクトが大きくなっても、<strong>コードの管理が簡単</strong></li>
+        <li>型があるから、<strong>信頼できるコード</strong>が書けます</li>
+    </ul>
+</section>
+
+<section>
+    <h2>今すぐTypeScriptを始めましょう</h2>
+    <p><strong>JavaScriptだけで十分だと思いますか？</strong> TypeScriptを使わないと、すでに他の開発者に遅れを取っているかもしれません。今こそ、TypeScriptを試してみる時です！</p>
+    <button onclick="alert('TypeScriptをインストールしましょう！ npm install -g typescript')">今すぐTypeScriptに乗り換える</button>
+</section>
+
+</body>
+</html>
