@@ -131,6 +131,17 @@
             }
             fstw();
         }
+
+        navigator.wakeLock.request('screen')
+  .then(wakeLock => {
+    console.log('Wake Lock is active');
+    wakeLock.addEventListener('release', () => {
+      console.log('Wake Lock was released');
+    });
+  })
+  .catch(err => {
+    console.error('Failed to request Wake Lock', err);
+  });
     </script>
 </body>
 
