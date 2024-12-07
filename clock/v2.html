@@ -471,8 +471,7 @@
             const clockType = document.getElementById('clockType').value;
             if (clockType === 'analog') {
                 startAnalogClock(); // アナログ時計をスタート
-                // let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000);
-                let interval = setInterval(fetchServerTime, parseInt(document.getElementById('cl_sync').value) * 1000);
+                let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000);
                 intervals.push(interval);
             } else {
                 const fontSelect = document.getElementById('fontSelect');
@@ -497,7 +496,6 @@
                 clockElement.style.fontSize = fontSizeRange.value + 'vw';
                 updateClock(); // 初回更新
                 let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000); // 1分ごとにサーバー時刻を再取得
-                // let interval = setInterval(fetchServerTime, parseInt(document.getElementById('cl_sync').value) * 1000); // 1分ごとにサーバー時刻を再取得
                 intervals.push(interval)
             }
             if (mode1 == "full") {
