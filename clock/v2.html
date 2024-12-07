@@ -530,10 +530,14 @@ getAccurateTime();
             const minuteDeg = minutes * 6 + seconds * 0.1;
             const secondHandMode = document.getElementById('secondHandMode').value;
 
-            let secondDeg;
+            let secondDeg,hourDeg,minuteDeg;
             if (secondHandMode === 'tick') {
+                hourDeg = (hours % 12) * 30 + minutes * 0.5 ;
+                minuteDeg = minutes * 6 + seconds * 0.1;
                 secondDeg = seconds * 6; // 1秒ごとに動く
             } else {
+                hourDeg = (hours % 12) * 30 + minutes * 0.5 + seconds * (1/120) + milliseconds * (1/120000);
+                minuteDeg = minutes * 6 + seconds * 0.1 + milliseconds * 0.0001;
                 secondDeg = seconds * 6 + milliseconds * 0.006; // 滑らかに動く
             }
 
