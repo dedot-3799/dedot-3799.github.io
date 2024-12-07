@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全画面時計</title>
+    <title>全画面時計アプリ</title>
     <style>
         body,
         html {
@@ -292,7 +292,8 @@
         <p>Time synchronous interval(sec):<input type="number" id="cl_sync" min="1" value="60">, Date region:<input
                 type="text" id="cl_locate" value="en-us">, Automatic font size adjustment:<input type="checkbox"
                 id="cl_auto" checked></p>
-        <p><button onclick="startClock('full')">Start full screen display</button><button onclick="startClock()">Start display</button></p>
+        <p><button onclick="startClock('full')">Start full screen display</button><button onclick="startClock()">Start
+                display</button></p>
     </div>
 
 
@@ -363,70 +364,71 @@
         let serverTimeOffset = 0;
 
         const TIME_SERVERS = [
-    "https://worldtimeapi.org/api/ip",
-    "https://timeapi.io/api/Time/current/zone?timeZone=UTC"
-];
-const TIMEOUT_MS = 10000;
+            "https://worldtimeapi.org/api/ip",
+            "https://timeapi.io/api/Time/current/zone?timeZone=UTC"
+        ];
+        const TIMEOUT_MS = 10000;
 
-// Fetch time from Web API
-function fetchTimeFromAPI(url) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.timeout = TIMEOUT_MS;
+        // Fetch time from Web API
+        function fetchTimeFromAPI(url) {
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", url, true);
+                xhr.timeout = TIMEOUT_MS;
 
-        xhr.onload = () => {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    let serverTime;
+                xhr.onload = () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            let serverTime;
 
-                    // 各 API の応答形式に応じた時刻取得
-                    if (url.includes("worldtimeapi.org")) {
-                        serverTime = new Date(response.utc_datetime).getTime();
-                    } else if (url.includes("timeapi.io")) {
-                        serverTime = new Date(response.dateTime + "Z").getTime();
-                    }
+                            // 各 API の応答形式に応じた時刻取得
+                            if (url.includes("worldtimeapi.org")) {
+                                serverTime = new Date(response.utc_datetime).getTime();
+                            } else if (url.includes("timeapi.io")) {
+                                serverTime = new Date(response.dateTime + "Z").getTime();
+                            }
 
-                    if (serverTime) {
-                        resolve(serverTime);
+                            if (serverTime) {
+                                resolve(serverTime);
+                            } else {
+                                reject("No valid time found in the response");
+                            }
+                        } catch (error) {
+                            reject("Error parsing the response: " + error.message);
+                        }
                     } else {
-                        reject("No valid time found in the response");
+                        reject(`Request failed with status ${xhr.status}`);
                     }
-                } catch (error) {
-                    reject("Error parsing the response: " + error.message);
-                }
-            } else {
-                reject(`Request failed with status ${xhr.status}`);
-            }
-        };
+                };
 
-        xhr.onerror = () => reject("Network error");
-        xhr.ontimeout = () => reject("Request timed out");
+                xhr.onerror = () => reject("Network error");
+                xhr.ontimeout = () => reject("Request timed out");
 
-        xhr.send();
-    });
-}
-
-async function getAccurateTime() {
-    for (let url of TIME_SERVERS) {
-        try {
-            const serverTime = await fetchTimeFromAPI(url);
-            const localTime = new Date().getTime(); // 端末の現在時刻をミリ秒で取得
-            console.log(serverTime,localTime);
-            serverTimeOffset = serverTime - localTime;
-            console.log(`Server: ${url}, Time offset: ${serverTimeOffset} ms`);
-            return;
-        } catch (error) {
-            console.error(`Error with server ${url}: ${error}`);
+                xhr.send();
+            });
         }
-    }
 
-    console.log("All servers failed.");
-}
+        async function getAccurateTime() {
+            for (let url of TIME_SERVERS) {
+                try {
+                    const serverTime = await fetchTimeFromAPI(url);
+                    const localTime = new Date().getTime(); // 端末の現在時刻をミリ秒で取得
+                    console.log(serverTime, localTime);
+                    serverTimeOffset = serverTime - localTime;
+                    console.log(`Server: ${url}, Time offset: ${serverTimeOffset} ms`);
+                    return;
+                } catch (error) {
+                    console.error(`Error with server ${url}: ${error}`);
+                }
+            }
 
-// 実行
-getAccurateTime();
+            console.log("All servers failed.");
+        }
+
+
+        // 実行
+        getAccurateTime();
 
         function getCurrentTime() {
             return new Date(Date.now() + serverTimeOffset);
@@ -469,7 +471,8 @@ getAccurateTime();
             const clockType = document.getElementById('clockType').value;
             if (clockType === 'analog') {
                 startAnalogClock(); // アナログ時計をスタート
-                let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000);
+                // let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000);
+                let interval = setInterval(fetchServerTime, parseInt(document.getElementById('cl_sync').value) * 1000);
                 intervals.push(interval);
             } else {
                 const fontSelect = document.getElementById('fontSelect');
@@ -494,6 +497,7 @@ getAccurateTime();
                 clockElement.style.fontSize = fontSizeRange.value + 'vw';
                 updateClock(); // 初回更新
                 let interval = setInterval(getAccurateTime, parseInt(document.getElementById('cl_sync').value) * 1000); // 1分ごとにサーバー時刻を再取得
+                // let interval = setInterval(fetchServerTime, parseInt(document.getElementById('cl_sync').value) * 1000); // 1分ごとにサーバー時刻を再取得
                 intervals.push(interval)
             }
             if (mode1 == "full") {
@@ -526,8 +530,7 @@ getAccurateTime();
             const seconds = now.getSeconds();
             const milliseconds = now.getMilliseconds();
 
-            const hourDeg = (hours % 12) * 30 + minutes * 0.5;
-            const minuteDeg = minutes * 6 + seconds * 0.1;
+
             const secondHandMode = document.getElementById('secondHandMode').value;
 
             let secondDeg,hourDeg,minuteDeg;
