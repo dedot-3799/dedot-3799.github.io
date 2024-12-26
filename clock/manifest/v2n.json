@@ -1,0 +1,16 @@
+{
+  "lang": "en-us",
+  "name": "Full Screen Clock",
+  "short_name": "Clock",
+  "description": "full screen clock",
+  "start_url": "/clock/",
+  "orientation": "any",
+  "display": "standalone",
+  "version": "2.1.0",
+  "icons": [
+    {
+      "src": "https://dedot-3799.github.io/clock/clock.jpg",
+      "sizes": "2048x2048"
+    }
+  ]
+}
