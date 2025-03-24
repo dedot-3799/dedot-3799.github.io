@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>対話型素数判定機</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
+    <script src="screen.js"></script>
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="title-div">
+            <h1 id="title"><span class="isDesktop">素数判定機</span><span class="isSmartPhone"><span
+                        class="isSmartPhoneD">P</span></h1>
+            <div class="select-menu" onclick="toggleMenu()">
+                <div class="selected-text">
+                    <span id="selected-text">選択してください</span>
+                    <span class="arrow">&#9662;</span>
+                </div>
+                <div class="options">
+                    <div class="option" onclick="selectOption('chat', event)"><svg width="24" height="24"
+                            viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 20H54V46H28L16 56V20Z" stroke="#888" stroke-width="3"
+                                stroke-linejoin="round" />
+                            <circle cx="26" cy="32" r="2" fill="#888" />
+                            <circle cx="34" cy="32" r="2" fill="#888" />
+                            <circle cx="42" cy="32" r="2" fill="#888" />
+                        </svg>&emsp14;対話型</div>
+                    <div class="option" onclick="selectOption('normal', event)"><svg width="24" height="24"
+                            viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="20" width="44" height="24" rx="4" stroke="#888" stroke-width="3" />
+                            <line x1="30" y1="37" x2="30" y2="26" stroke="#888" stroke-width="5" />
+                            <text x="14" y="36" font-size="12" fill="#888" font-family="monospace">23</text>
+                        </svg>&emsp14;フォーム型</div>
+                    <div class="option" onclick="selectOption('cli', event)"><svg width="24" height="24"
+                            viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="5" y="15" width="54" height="34" rx="4" stroke="#6c757d" stroke-width="3" />
+                            <path d="M18 24L30 32L18 40" stroke="#6c757d" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <line x1="34" y1="40" x2="46" y2="40" stroke="#6c757d" stroke-width="3"
+                                stroke-linecap="round" />
+                        </svg>&emsp14;CLI型</div>
+                    <div class="option" onclick="selectOption('pref', event)">設定</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-box" id="chat-box">
+        </div>
+        <div class="cli-box" id="cli-box" style="display: none;">
+            <p>Prime Number CLI v11.0 (beta build 4.3.02) - Type "prime [number]" for a fast check to see if it is a
+                prime number.</p>
+            <p id="cli-input">> <input type="text" id="cli-inputL"></p>
+        </div>
+
+        <div class="input-box" id="inputBox">
+            <input type="text" id="user-input" placeholder="聞きたいことを入力">
+            <button onclick="handleCommand()" id="sendButton" class="send-button"> <span class="snd-icon">
+                    送信&emsp14;
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+                    </svg>
+                </span></button>
+            <input type="text" id="prime-input" class="input-box" placeholder="自然数を入力してください" style="display: none;">
+            <button onclick="checkPrime()" id="chPrimeButton" style="display: none;">判定</button>
+        </div>
+        <div id="prime-result" style="display: none;" class="PrimeResult"></div>
+        <div id="pref" class="pref-screen closeS">
+            <h2>設定</h2>
+            <div class="setting">
+                <h3>テスト方法</h3>
+                <p style="font-size: x-small; color: #888;">2^53以上の数字の判定は自動的にAPR-CLが選択されます</p>
+                <select id="main.testMethod" onchange="settingsManager('set', 'main.testMethod', this.value)">
+                    <option value="default">デフォルト</option>
+                    <option value="old.v9">旧型試し割り法</option>
+                    <option value="new.v7">新型試し割り法</option>
+                    <option value="APR-CL">APR-CL</option>
+                </select>
+                <h3>チャット時のキャラクター</h3>
+                <select id="chat.character"
+                    onchange="settingsManager('set', 'chat.character', this.value);sendGreeting(this.value)">
+                    <option value="default">デフォルト</option>
+                    <option value="AI">AI</option>
+                    <option value="Ojou">お嬢様</option>
+                    <option value="Loli">幼女</option>
+                    <option value="Mathematician">専門家</option>
+                    <option value="Friend">友達</option>
+                    <option value="kansai">関西人</option>
+                    <option value="touhoku">東北人</option>
+                </select>
+                <h3>フォント</h3>
+                <select id="view.fontFamily" onchange="settingsManager('set', this.id, this.value)">
+                    <option value="sans-serif">デフォルト(サンセリフ)</option>
+                    <option value="Noto Sans JP">Noto Sans JP</option>
+                    <option value="Sawarabi Gothic">さわらびゴシック</option>
+                    <option value="Zen Kaku Gothic New">ZEN角ゴシック</option>
+                    <option value="Kosugi">小杉</option>
+                    <option value="Noto Serif JP">Noto Serif JP</option>
+                    <option value="Sawarabi Mincho">さわらび明朝</option>
+                    <option value="Zen Old Mincho">ZENオールド明朝</option>
+                    <option value="Hina Mincho">ひな明朝</option>
+                    <option value="Kiwi Maru">キウイ丸</option>
+                    <option value="Kosugi Maru">小杉丸</option>
+                    <option value="Zen Maru Gothic">Zen Maru Gothic</option>
+                    <option value="Kaisei Opti">解星オプティ</option>
+                    <option value="Zen Kurenaido">ZEN紅道</option>
+                    <option value="Klee One">クレーワン</option>
+                    <option value="Yomogi">Yomogi</option>
+                    <option value="Mochiy Pop One">Mochiy Pop One</option>
+                    <option value="Yuji Syuku">Yuji Syuku</option>
+                    <option value="Stick">Stick</option>
+                    <option value="Kaisei Opti">Kaisei Opti</option>
+                </select>
+                <h3>演算の優先順位</h3>
+                <p style="font-size: x-small; color: #888;">例: 項を優先: 6÷2(1+2) = 1, 左が先: 6÷2(1+2) = 9</p>
+                <select id="main.parserPrecedence" onchange="settingsManager('set', this.id, this.value)">
+                    <option value="3">項を優先</option>
+                    <option value="2">左が先</option>
+                </select>
+                
+            </div>
+        </div>
+    </div>
+    <footer>Primality Tester (Version XI alpha) &copy; 2025 dedot-3799.</footer>
+
+</body>
+<script>
+    window.onload = () => {
+        appendTypingIndicator();
+        setTimeout(() => {
+            removeTypingIndicator();
+            appendMessage(getCharacterGreeting("first"), 'bot', "素数判定機", 'prime.png', '');
+        }, 1000)
+        toggleView("chat")
+        setSelectedText('chat');
+        setTimeout(() => {
+            removeDisplayNone()
+            document.getElementById("cli-box").style.display = "none"
+        }, 500)
+    };
+    document.addEventListener('keypress', (e) => {
+        if (e.key === "Enter") {
+            if (getSelectedText() == "対話型") {
+                handleCommand();
+            } else if (getSelectedText() == "フォーム型") {
+                checkPrime();
+            } else {
+                const command = document.getElementById('cli-inputL').value;
+                document.getElementById('cli-input').remove();
+                processCommand(command);
+            }
+        };
+    });
+</script>
+
+</html>
