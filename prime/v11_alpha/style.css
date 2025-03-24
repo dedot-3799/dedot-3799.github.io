@@ -31,7 +31,7 @@ body {
 }
 
 .chat-box {
-    height: calc(90vh - 200px);
+    height: calc(80vh - 200px);
     overflow-y: auto;
     padding: 10px;
     border: 1px solid #ddd;
@@ -196,7 +196,7 @@ select {
     text-align: center;
     align-content: center;
     overflow-wrap: break-word;
-    max-height: 80vh;
+    max-height: calc(90vh - 200px);
 }
 
 .smallF {
