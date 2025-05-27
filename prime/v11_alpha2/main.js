@@ -327,7 +327,7 @@ async function processCommand(command) {
             }
             await wait(1);
             let st = performance.now();
-            const primes = await main.findDivisors(parseInt(parts[2]));
+            const primes = await main.primeList(parseInt(parts[2]));
             let et = performance.now();
             document.getElementById('cli-box').innerHTML += `<p>[${primes.join(",")}](${Math.round((et * 10) - (st * 10)) / 10}ms)</p>`;
         } else if (((mainCommand === 'prime' || mainCommand === "p" || mainCommand === "prim" || mainCommand === '/prime' || mainCommand === "/p" || mainCommand === "/prim") && (parts[1] == "div" || parts[1] == "divisor" || parts[1] == "d")) || (mainCommand === "divisor")) {
@@ -912,4 +912,3 @@ function splitLatexByFifthX(latexString) {
 }
 
 function wait(msec) { return new Promise(function (resolve) { setTimeout(function () { resolve() }, msec); }) }
-
