@@ -393,6 +393,7 @@ footer {
     fill: currentColor;
 }
 
+
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #111;
@@ -466,6 +467,7 @@ footer {
         scrollbar-color: #888 #222;
         scrollbar-width: thin;
     }
+
 }
 
 /* モバイルデバイス向けのスタイル */
@@ -498,7 +500,7 @@ footer {
     }
 
     .message .content {
-        max-width: 75%;
+        max-width: calc(100% - 102px);
         font-size: 14px;
         padding: 8px;
         word-wrap: break-word;
@@ -523,6 +525,7 @@ footer {
         box-sizing: border-box;
         margin-right: 12px;
         margin-bottom: 0;
+        width: calc(100% - 128px);
     }
 
     .input-box button {
