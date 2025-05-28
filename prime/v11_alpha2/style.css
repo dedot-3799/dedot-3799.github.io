@@ -490,7 +490,7 @@ footer {
         border: 1px solid #ddd;
         margin-bottom: 0;
         box-sizing: border-box;
-        max-height: calc(100vh - 153.21px);
+        max-height: calc(100% - 153.21px);
     }
 
     .cli-box {
