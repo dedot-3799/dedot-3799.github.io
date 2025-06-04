@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自由記述クイズ</title>
+    <style>
+        /* CSS変数でテーマカラーを定義 */
+        :root {
+            --background-color: #f4f4f4;
+            --container-bg-color: #fff;
+            --text-color: #333;
+            --light-text-color: #555;
+            --input-border-color: #ccc;
+            --button-primary-bg: #007bff;
+            --button-primary-hover-bg: #0056b3;
+            --button-success-bg: #28a745;
+            --button-success-hover-bg: #218838;
+            --correct-bg: #d4edda;
+            --correct-text: #155724;
+            --incorrect-bg: #f8d7da;
+            --incorrect-text: #721c24;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-color: #eee; /* 結果表示用 */
+        }
+
+        /* ダークモード時の変数上書き */
+        .dark-mode {
+            --background-color: #333;
+            --container-bg-color: #444;
+            --text-color: #eee;
+            --light-text-color: #ccc;
+            --input-border-color: #666;
+            --button-primary-bg: #0056b3;
+            --button-primary-hover-bg: #003d80;
+            --button-success-bg: #218838;
+            --button-success-hover-bg: #1a6f2c;
+            --correct-bg: #1e562c; /* ダークモードに合わせた緑 */
+            --correct-text: #d4edda;
+            --incorrect-bg: #742a3a; /* ダークモードに合わせた赤 */
+            --incorrect-text: #f8d7da;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --border-color: #555; /* 結果表示用 */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: var(--text-color);
+        }
+        .quiz-container {
+            background-color: var(--container-bg-color);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        h1 {
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .theme-toggle button {
+            background-color: var(--button-primary-bg);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .theme-toggle button:hover {
+            background-color: var(--button-primary-hover-bg);
+        }
+        .file-input-container {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .file-input-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--light-text-color);
+        }
+        .file-input-container input[type="file"] {
+            border: 1px solid var(--input-border-color);
+            background-color: var(--container-bg-color); /* ファイル入力の背景色 */
+            color: var(--text-color); /* ファイル入力の文字色 */
+            padding: 8px;
+            border-radius: 4px;
+            width: calc(100% - 18px);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            color: var(--light-text-color);
+            text-align: left;
+        }
+        .answer-input-container {
+            margin-bottom: 20px;
+        }
+        .answer-input-container input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            background-color: var(--container-bg-color); /* 入力欄の背景色 */
+            color: var(--text-color); /* 入力欄の文字色 */
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+        .button-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #submit-btn {
+            background-color: var(--button-primary-bg);
+            color: white;
+        }
+        #submit-btn:hover {
+            background-color: var(--button-primary-hover-bg);
+        }
+        #next-btn {
+            background-color: var(--button-success-bg);
+            color: white;
+            display: none;
+        }
+        #next-btn:hover {
+            background-color: var(--button-success-hover-bg);
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-color); /* 結果メッセージの色 */
+        }
+
+        /* 最終結果表示用スタイル */
+        .final-results-container {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .final-results-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+        .question-summary {
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: var(--container-bg-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .question-summary.correct-answer {
+            background-color: var(--correct-bg);
+            color: var(--correct-text);
+            border-color: var(--correct-text);
+        }
+        .question-summary.incorrect-answer {
+            background-color: var(--incorrect-bg);
+            color: var(--incorrect-text);
+            border-color: var(--incorrect-text);
+        }
+        .question-summary p {
+            margin: 5px 0;
+        }
+        .summary-question {
+            font-weight: bold;
+            color: inherit; /* 親要素のテキスト色を継承 */
+        }
+        .summary-user-answer, .summary-correct-answer {
+            font-size: 0.9em;
+            color: inherit; /* 親要素のテキスト色を継承 */
+        }
+        .final-results-container .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .final-results-container .action-buttons button {
+            display: block;
+            width: 100%;
+            background-color: var(--button-primary-bg);
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .final-results-container .action-buttons button:hover {
+            background-color: var(--button-primary-hover-bg);
+        }
+        .final-results-container .action-buttons #retryWrongBtn {
+            background-color: #ffc107; /* 黄色 */
+            color: #333;
+        }
+        .final-results-container .action-buttons #retryWrongBtn:hover {
+            background-color: #e0a800; /* 濃い黄色 */
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button id="themeToggleBtn">テーマ切り替え</button>
+    </div>
+
+    <div class="quiz-container">
+        <h1>JSONからクイズ出してくれるツール</h1>
+        <div id="quiz">
+            <div class="file-input-container">
+                <label for="jsonFile">JSONファイルを読み込む:</label>
+                <input type="file" id="jsonFile" accept=".json">
+            </div>
+
+            <p class="question" id="question"></p>
+            <div class="answer-input-container">
+                <input type="text" id="answerInput" placeholder="ここに回答を入力してください">
+            </div>
+            <div class="button-container">
+                <button id="submit-btn">解答</button>
+                <button id="next-btn">次の問題</button>
+            </div>
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        // quizData: 現在のクイズ問題セット（シャッフルされたもの、または間違えた問題）
+        // originalQuizData: リトライ時に元の問題を保持するためのコピー（読み込んだJSONそのまま）
+        let quizData = [];
+        let originalQuizData = [];
+
+        let currentQuiz = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById('question');
+        const answerInputElement = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultElement = document.getElementById('result');
+        const jsonFileInput = document.getElementById('jsonFile');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+        // localStorageからテーマ設定を読み込む
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        jsonFileInput.addEventListener('change', loadJsonFile);
+        themeToggleBtn.addEventListener('click', toggleTheme);
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            // テーマ設定をlocalStorageに保存
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadJsonFile(event) {
+            const file = event.target.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const parsedData = JSON.parse(e.target.result);
+                    // 読み込んだデータが配列であり、questionとanswerを持つかを簡易的にチェック
+                    if (Array.isArray(parsedData) && parsedData.every(item => item.question && item.answer)) {
+                        // 新しいプロパティを追加してクイズデータを初期化
+                        originalQuizData = parsedData.map(item => ({
+                            ...item,
+                            userAnswer: null,
+                            isCorrect: null
+                        }));
+                        // 最初のクイズ開始は全問題をシャッフルしてセット
+                        quizData = shuffleArray([...originalQuizData]);
+                        initializeQuizState();
+                        alert('JSONファイルを正常に読み込みました！');
+                    } else {
+                        alert('読み込んだJSONファイルの形式が正しくありません。各問題は"question"と"answer"プロパティが必要です。');
+                    }
+                } catch (error) {
+                    alert('JSONファイルの解析に失敗しました。ファイルの内容を確認してください。');
+                    console.error('JSON parsing error:', error);
+                }
+            };
+
+            reader.onerror = function(e) {
+                alert('ファイルの読み込み中にエラーが発生しました。');
+                console.error('File reading error:', e);
+            };
+
+            reader.readAsText(file);
+        }
+
+        /**
+         * 配列をランダムにシャッフルするFisher-Yatesアルゴリズム
+         * @param {Array} array シャッフルする配列
+         * @returns {Array} シャッフルされた新しい配列
+         */
+        function shuffleArray(array) {
+            const newArray = [...array]; // 元の配列を破壊しないようにコピー
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 要素を交換
+            }
+            return newArray;
+        }
+
+        // クイズの状態を初期化する関数
+        function initializeQuizState() {
+            currentQuiz = 0;
+            score = 0;
+            // 各問題のユーザー回答と正誤状態をリセット
+            quizData = quizData.map(item => ({ ...item, userAnswer: null, isCorrect: null }));
+            loadQuiz();
+        }
+
+        function loadQuiz() {
+            if (quizData.length === 0) {
+                questionElement.innerText = "問題がありません。JSONファイルを読み込んでください。";
+                answerInputElement.style.display = 'none';
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                resultElement.innerText = '';
+                return;
+            }
+
+            answerInputElement.style.display = 'block'; // 問題表示時に必ず表示
+            const currentQuizData = quizData[currentQuiz];
+            questionElement.innerText = currentQuizData.question;
+            answerInputElement.value = '';
+            answerInputElement.readOnly = false;
+            answerInputElement.style.backgroundColor = '';
+            resultElement.innerText = '';
+            submitBtn.style.display = 'block';
+            nextBtn.style.display = 'none';
+            answerInputElement.focus();
+        }
+
+        function checkAnswer() {
+            const userAnswer = answerInputElement.value.trim().toLowerCase();
+            if (userAnswer === '') {
+                alert('回答を入力してください！');
+                return;
+            }
+
+            const currentQuizData = quizData[currentQuiz];
+            let isCorrect = false;
+
+            if (Array.isArray(currentQuizData.answer)) {
+                isCorrect = currentQuizData.answer.some(ans => ans.toLowerCase() === userAnswer);
+            } else {
+                isCorrect = (currentQuizData.answer.toLowerCase() === userAnswer);
+            }
+
+            // クイズデータにユーザーの回答と正誤を保存
+            quizData[currentQuiz].userAnswer = answerInputElement.value.trim(); // 元の形式で保存
+            quizData[currentQuiz].isCorrect = isCorrect;
+
+            if (isCorrect) {
+                score++;
+                resultElement.innerText = "正解！";
+                resultElement.style.color = 'var(--correct-text)';
+                answerInputElement.style.backgroundColor = 'var(--correct-bg)';
+            } else {
+                let correctAnswerDisplay = Array.isArray(currentQuizData.answer) ? currentQuizData.answer.join(' または ') : currentQuizData.answer;
+                resultElement.innerText = `不正解！正解は「${correctAnswerDisplay}」です。`;
+                resultElement.style.color = 'var(--incorrect-text)';
+                answerInputElement.style.backgroundColor = 'var(--incorrect-bg)';
+            }
+
+            answerInputElement.readOnly = true;
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+        }
+
+        function nextQuiz() {
+            currentQuiz++;
+            if (currentQuiz < quizData.length) {
+                loadQuiz();
+            } else {
+                showFinalResult(); // 最終結果表示関数を呼び出す
+            }
+        }
+
+        // 最終結果表示関数
+        function showFinalResult() {
+            const quizDiv = document.getElementById('quiz');
+            quizDiv.innerHTML = `
+                <h2>クイズ終了！</h2>
+                <p>${quizData.length}問中、${score}問正解しました！</p>
+                <div class="final-results-container">
+                    <h3>解答結果一覧</h3>
+                    <div id="resultSummary"></div>
+                </div>
+                <div class="action-buttons">
+                    <button id="playAgainBtn">もう一度プレイ</button>
+                    <button id="retryWrongBtn" style="display: none;">間違えた問題に再挑戦</button>
+                </div>
+            `;
+            quizDiv.style.textAlign = 'center';
+
+            const resultSummaryDiv = document.getElementById('resultSummary');
+            let hasWrongAnswers = false;
+
+            quizData.forEach((item, index) => {
+                const summaryDiv = document.createElement('div');
+                summaryDiv.classList.add('question-summary');
+                if (item.isCorrect) {
+                    summaryDiv.classList.add('correct-answer');
+                } else {
+                    summaryDiv.classList.add('incorrect-answer');
+                    hasWrongAnswers = true; // 間違えた問題がある
+                }
+
+                const questionP = document.createElement('p');
+                questionP.classList.add('summary-question');
+                // 結果一覧では元のクイズデータの問題番号を表示
+                const originalIndex = originalQuizData.findIndex(q => q.question === item.question && q.answer === item.answer);
+                questionP.innerText = `Q${originalIndex !== -1 ? originalIndex + 1 : index + 1}: ${item.question}`;
+                summaryDiv.appendChild(questionP);
+
+                const userAnswerP = document.createElement('p');
+                userAnswerP.classList.add('summary-user-answer');
+                userAnswerP.innerText = `あなたの回答: ${item.userAnswer || '未回答'}`;
+                summaryDiv.appendChild(userAnswerP);
+
+                const correctAnswerP = document.createElement('p');
+                correctAnswerP.classList.add('summary-correct-answer');
+                let displayAnswer = Array.isArray(item.answer) ? item.answer.join(' または ') : item.answer;
+                correctAnswerP.innerText = `正解: ${displayAnswer}`;
+                summaryDiv.appendChild(correctAnswerP);
+
+                resultSummaryDiv.appendChild(summaryDiv);
+            });
+
+            // 間違えた問題がある場合のみ「間違えた問題に再挑戦」ボタンを表示
+            const retryWrongBtn = document.getElementById('retryWrongBtn');
+            if (hasWrongAnswers) {
+                retryWrongBtn.style.display = 'block';
+                retryWrongBtn.addEventListener('click', retryWrongAnswers);
+            }
+
+            document.getElementById('playAgainBtn').addEventListener('click', () => {
+                location.reload(); // ページをリロードして最初から
+            });
+        }
+
+        // 間違えた問題に再挑戦する関数
+        function retryWrongAnswers() {
+            const wrongAnswers = quizData.filter(item => !item.isCorrect); // 前回の試行で間違えた問題だけを抽出
+            if (wrongAnswers.length > 0) {
+                // 間違えた問題をシャッフルして新しいquizDataに設定
+                quizData = shuffleArray(wrongAnswers.map(item => ({
+                    ...item,
+                    userAnswer: null, // ユーザー回答をリセット
+                    isCorrect: null // 正誤状態をリセット
+                })));
+                initializeQuizState(); // クイズの状態を初期化し、新しいクイズを開始
+            } else {
+                alert('間違えた問題はありませんでした！すべての問題をクリアしました！');
+                location.reload();
+            }
+        }
+
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', nextQuiz);
+
+        answerInputElement.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && submitBtn.style.display === 'block') {
+                checkAnswer();
+            } else if (e.key === 'Enter' && nextBtn.style.display === 'block') {
+                nextQuiz();
+            }
+        });
+
+        // ページロード時に、JSONファイルが読み込まれていなければデフォルトメッセージを表示
+        // この時点ではquizDataは空なので、loadQuiz()がメッセージを表示する
+        loadQuiz();
+    </script>
+</body>
+</html>
