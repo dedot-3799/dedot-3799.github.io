@@ -427,7 +427,7 @@ function loadGoogleFont(font) {
 async function updateFontPreview() {
     let font = await main.settingsRead("view.fontFamily");
     // フォントプレビューを更新
-    loadGoogleFont(font);
+    if (font !== "sans-serif") loadGoogleFont(font);
     document.querySelector("body").style.fontFamily = font;
     let f = document.querySelectorAll("select");
     let g = document.querySelectorAll("input");
