@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSONテスト</title>
+    <meta property="og:title" content="Quiz" />
+    <meta property="og:description" content="JSONからクイズを出してくれるツールです。" />
+    <meta property="og:url" content="https://dedot-3799.github.io/sch/json_test/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SCH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>クイズ</title>
     <style>
         /* CSS変数でテーマカラーを定義 */
         :root {
@@ -21,26 +28,32 @@
             --incorrect-bg: #f8d7da;
             --incorrect-text: #721c24;
             --shadow-color: rgba(0, 0, 0, 0.1);
-            --border-color: #eee; /* 結果表示用 */
+            --border-color: #eee;
+            /* 結果表示用 */
         }
 
         /* ダークモード時の変数上書き */
-        .dark-mode {
-            --background-color: #333;
-            --container-bg-color: #444;
-            --text-color: #eee;
-            --light-text-color: #ccc;
-            --input-border-color: #666;
-            --button-primary-bg: #0056b3;
-            --button-primary-hover-bg: #003d80;
-            --button-success-bg: #218838;
-            --button-success-hover-bg: #1a6f2c;
-            --correct-bg: #1e562c; /* ダークモードに合わせた緑 */
-            --correct-text: #d4edda;
-            --incorrect-bg: #742a3a; /* ダークモードに合わせた赤 */
-            --incorrect-text: #f8d7da;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --border-color: #555; /* 結果表示用 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #333;
+                --container-bg-color: #444;
+                --text-color: #eee;
+                --light-text-color: #ccc;
+                --input-border-color: #666;
+                --button-primary-bg: #0056b3;
+                --button-primary-hover-bg: #003d80;
+                --button-success-bg: #218838;
+                --button-success-hover-bg: #1a6f2c;
+                --correct-bg: #1e562c;
+                /* ダークモードに合わせた緑 */
+                --correct-text: #d4edda;
+                --incorrect-bg: #742a3a;
+                /* ダークモードに合わせた赤 */
+                --incorrect-text: #f8d7da;
+                --shadow-color: rgba(0, 0, 0, 0.3);
+                --border-color: #555;
+                /* 結果表示用 */
+            }
         }
 
         body {
@@ -56,6 +69,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
             color: var(--text-color);
         }
+
         .quiz-container {
             background-color: var(--container-bg-color);
             padding: 30px;
@@ -66,15 +80,18 @@
             text-align: center;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
+
         h1 {
             color: var(--text-color);
             margin-bottom: 20px;
         }
+
         .theme-toggle {
             position: absolute;
             top: 20px;
             right: 20px;
         }
+
         .theme-toggle button {
             background-color: var(--button-primary-bg);
             color: white;
@@ -84,52 +101,65 @@
             border: none;
             transition: background-color 0.3s ease;
         }
+
         .theme-toggle button:hover {
             background-color: var(--button-primary-hover-bg);
         }
+
         .file-input-container {
             margin-bottom: 20px;
             text-align: left;
         }
+
         .file-input-container label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: var(--light-text-color);
         }
+
         .file-input-container input[type="file"] {
             border: 1px solid var(--input-border-color);
-            background-color: var(--container-bg-color); /* ファイル入力の背景色 */
-            color: var(--text-color); /* ファイル入力の文字色 */
+            background-color: var(--container-bg-color);
+            /* ファイル入力の背景色 */
+            color: var(--text-color);
+            /* ファイル入力の文字色 */
             padding: 8px;
             border-radius: 4px;
             width: calc(100% - 18px);
             transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
+
         .question {
             font-size: 1.2em;
             margin-bottom: 25px;
             color: var(--light-text-color);
             text-align: left;
         }
+
         .answer-input-container {
             margin-bottom: 20px;
         }
+
         .answer-input-container input[type="text"] {
             width: calc(100% - 20px);
             padding: 10px;
             font-size: 1em;
             border: 1px solid var(--input-border-color);
             border-radius: 4px;
-            background-color: var(--container-bg-color); /* 入力欄の背景色 */
-            color: var(--text-color); /* 入力欄の文字色 */
+            background-color: var(--container-bg-color);
+            /* 入力欄の背景色 */
+            color: var(--text-color);
+            /* 入力欄の文字色 */
             transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
+
         .button-container {
             margin-top: 30px;
             display: flex;
             justify-content: space-between;
         }
+
         button {
             padding: 10px 20px;
             font-size: 1em;
@@ -137,27 +167,35 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            color: #fff;
+            background-color: var(--button-primary-bg);
         }
+
         #submit-btn {
             background-color: var(--button-primary-bg);
             color: white;
         }
+
         #submit-btn:hover {
             background-color: var(--button-primary-hover-bg);
         }
+
         #next-btn {
             background-color: var(--button-success-bg);
             color: white;
             display: none;
         }
+
         #next-btn:hover {
             background-color: var(--button-success-hover-bg);
         }
+
         #result {
             margin-top: 20px;
             font-size: 1.1em;
             font-weight: bold;
-            color: var(--text-color); /* 結果メッセージの色 */
+            color: var(--text-color);
+            /* 結果メッセージの色 */
         }
 
         /* 最終結果表示用スタイル */
@@ -165,11 +203,13 @@
             text-align: left;
             margin-top: 20px;
         }
+
         .final-results-container h2 {
             text-align: center;
             margin-bottom: 20px;
             color: var(--text-color);
         }
+
         .question-summary {
             border: 1px solid var(--border-color);
             padding: 15px;
@@ -178,33 +218,43 @@
             background-color: var(--container-bg-color);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
+
         .question-summary.correct-answer {
             background-color: var(--correct-bg);
             color: var(--correct-text);
             border-color: var(--correct-text);
         }
+
         .question-summary.incorrect-answer {
             background-color: var(--incorrect-bg);
             color: var(--incorrect-text);
             border-color: var(--incorrect-text);
         }
+
         .question-summary p {
             margin: 5px 0;
         }
+
         .summary-question {
             font-weight: bold;
-            color: inherit; /* 親要素のテキスト色を継承 */
+            color: inherit;
+            /* 親要素のテキスト色を継承 */
         }
-        .summary-user-answer, .summary-correct-answer {
+
+        .summary-user-answer,
+        .summary-correct-answer {
             font-size: 0.9em;
-            color: inherit; /* 親要素のテキスト色を継承 */
+            color: inherit;
+            /* 親要素のテキスト色を継承 */
         }
+
         .final-results-container .action-buttons {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-top: 30px;
         }
+
         .final-results-container .action-buttons button {
             display: block;
             width: 100%;
@@ -217,25 +267,27 @@
             border: none;
             transition: background-color 0.3s ease;
         }
+
         .final-results-container .action-buttons button:hover {
             background-color: var(--button-primary-hover-bg);
         }
+
         .final-results-container .action-buttons #retryWrongBtn {
-            background-color: #ffc107; /* 黄色 */
+            background-color: #ffc107;
+            /* 黄色 */
             color: #333;
         }
+
         .final-results-container .action-buttons #retryWrongBtn:hover {
-            background-color: #e0a800; /* 濃い黄色 */
+            background-color: #e0a800;
+            /* 濃い黄色 */
         }
     </style>
 </head>
-<body>
-    <div class="theme-toggle">
-        <button id="themeToggleBtn">テーマ切り替え</button>
-    </div>
 
+<body>
     <div class="quiz-container">
-        <h1>JSONからクイズ出してくれるツール</h1>
+        <h1>JSONからクイズを出してくれるツール</h1>
         <div id="quiz">
             <div class="file-input-container">
                 <label for="jsonFile">JSONファイルを読み込む:</label>
@@ -263,31 +315,31 @@
         let currentQuiz = 0;
         let score = 0;
 
-        const questionElement = document.getElementById('question');
-        const answerInputElement = document.getElementById('answerInput');
-        const submitBtn = document.getElementById('submit-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const resultElement = document.getElementById('result');
-        const jsonFileInput = document.getElementById('jsonFile');
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        let questionElement, answerInputElement, submitBtn, nextBtn, resultElement, jsonFileInput, themeToggleBtn
+        function set() {
+            questionElement = document.getElementById('question');
+            answerInputElement = document.getElementById('answerInput');
+            submitBtn = document.getElementById('submit-btn');
+            nextBtn = document.getElementById('next-btn');
+            resultElement = document.getElementById('result');
+            jsonFileInput = document.getElementById('jsonFile');
+            submitBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextQuiz);
+
+            answerInputElement.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter' && submitBtn.style.display === 'block') {
+                    checkAnswer();
+                } else if (e.key === 'Enter' && nextBtn.style.display === 'block') {
+                    nextQuiz();
+                }
+            });
+            jsonFileInput.addEventListener('change', loadJsonFile);
+        }
 
         // localStorageからテーマ設定を読み込む
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
-        }
-
-        jsonFileInput.addEventListener('change', loadJsonFile);
-        themeToggleBtn.addEventListener('click', toggleTheme);
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            // テーマ設定をlocalStorageに保存
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
         }
 
         function loadJsonFile(event) {
@@ -299,7 +351,7 @@
 
             const reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 try {
                     const parsedData = JSON.parse(e.target.result);
                     // 読み込んだデータが配列であり、questionとanswerを持つかを簡易的にチェック
@@ -323,7 +375,7 @@
                 }
             };
 
-            reader.onerror = function(e) {
+            reader.onerror = function (e) {
                 alert('ファイルの読み込み中にエラーが発生しました。');
                 console.error('File reading error:', e);
             };
@@ -378,11 +430,6 @@
 
         function checkAnswer() {
             const userAnswer = answerInputElement.value.trim().toLowerCase();
-            if (userAnswer === '') {
-                alert('回答を入力してください！');
-                return;
-            }
-
             const currentQuizData = quizData[currentQuiz];
             let isCorrect = false;
 
@@ -487,6 +534,7 @@
 
         // 間違えた問題に再挑戦する関数
         function retryWrongAnswers() {
+            const quizDiv = document.getElementById('quiz');
             const wrongAnswers = quizData.filter(item => !item.isCorrect); // 前回の試行で間違えた問題だけを抽出
             if (wrongAnswers.length > 0) {
                 // 間違えた問題をシャッフルして新しいquizDataに設定
@@ -495,27 +543,35 @@
                     userAnswer: null, // ユーザー回答をリセット
                     isCorrect: null // 正誤状態をリセット
                 })));
+                console.log(quizData)
+                quizDiv.innerHTML = `
+                            <div class="file-input-container">
+                <label for="jsonFile">JSONファイルを読み込む:</label>
+                <input type="file" id="jsonFile" accept=".json">
+            </div>
+
+            <p class="question" id="question"></p>
+            <div class="answer-input-container">
+                <input type="text" id="answerInput" placeholder="ここに回答を入力してください">
+            </div>
+            <div class="button-container">
+                <button id="submit-btn">解答</button>
+                <button id="next-btn">次の問題</button>
+            </div>
+            <p id="result"></p>
+                `;
+                set();
                 initializeQuizState(); // クイズの状態を初期化し、新しいクイズを開始
             } else {
                 alert('間違えた問題はありませんでした！すべての問題をクリアしました！');
                 location.reload();
             }
         }
-
-        submitBtn.addEventListener('click', checkAnswer);
-        nextBtn.addEventListener('click', nextQuiz);
-
-        answerInputElement.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && submitBtn.style.display === 'block') {
-                checkAnswer();
-            } else if (e.key === 'Enter' && nextBtn.style.display === 'block') {
-                nextQuiz();
-            }
-        });
-
+        set();
         // ページロード時に、JSONファイルが読み込まれていなければデフォルトメッセージを表示
         // この時点ではquizDataは空なので、loadQuiz()がメッセージを表示する
         loadQuiz();
     </script>
 </body>
+
 </html>
