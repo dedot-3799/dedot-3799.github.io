@@ -10,15 +10,17 @@ function aboutPrime(n, option = "ud") {
 }
 
 function isPrime(n) {
+    let methodN = settingsManager("get","main.testMethod");
     if (n == "") { n = 0 };
     if (isNaN(parseInt(n)) || BigInt(String(n)) < 2n) return false;
     if (BigInt(removeString(n)) > 9007199254740992n) {
         if (((BigInt(removeString(n)) + 1n) & BigInt(removeString(n))) == 0) { return lucasTest(BigInt(removeString(n))) } else {
-            return APRtest(BigInt(removeString(n)));
+            if (BigInt(removeString(n)) < 2n**64n && methodN == "MILLER-RABIN") return isPrimeMR(BigInt(removeString(n)));
+            else return APRtest(BigInt(removeString(n)));
         }
     }
     let result;
-    switch (settings.main.testMethod) {
+    switch (methodN) {
         case "default": {
             result = factor_isPRIME_v6(n);
             break;

@@ -51,7 +51,7 @@ class MainProcessingSystem {
         this.callbacks = new Map();
 
         this.worker.addEventListener("message", (event) => {
-            const { uuid, type, number, result } = event.data;
+            const { uuid, result } = event.data;
             if (this.callbacks.has(uuid)) {
                 this.callbacks.get(uuid)(result);
                 this.callbacks.delete(uuid);
@@ -67,6 +67,7 @@ class MainProcessingSystem {
         console.warn("ワーカーを再起動します...");
         this.worker.terminate();
         this.worker = new Worker("./mainProcessingSystem.js");
+        this.firstR();
     }
 
     // リクエストを送る共通関数
@@ -123,6 +124,15 @@ class MainProcessingSystem {
         return this.request("settingsSave", option);
     }
 
+    // 設定読み取り
+    settingsRead(key) {
+        return this.request("settingsGet", key)
+    }
+
+    settingsReadALL() {
+        return this.request("settingsReadALL");
+    }
+
     findNearPrimeDown(number) {
         return this.request("nearPrimeDown", number);
     }
@@ -138,16 +148,20 @@ class MainProcessingSystem {
     findNearPrimeMLTI(number) {
         return this.request("nearPrimeMLTI", {number:number, option:"ud"});
     }
+
+    firstR() {
+        return this.request("firstR");
+    }
 };
-
-
 
 // ワーカーAPIのインスタンス作成
 const main = new MainProcessingSystem();
+main.firstR().then(updateFontPreview).then(changePrefScreen).then(() => {document.querySelector('.loading-screen').style.display = 'none'});
+
 
 let settings = {
     chat: {
-        character: "default"
+        character: "AI"
     },
     main: {
         testMethod: "default",
@@ -175,6 +189,7 @@ let settingsList = {
     }
 }
 
+// 設定管理 (将来的にprocessingThread側に完全移行予定)
 function settingsManager(mode, prf, set, opt) {
     if (mode === "set") {
         let g = prf.split(".");
@@ -199,9 +214,7 @@ function settingsManager(mode, prf, set, opt) {
             default:
                 break;
         }
-        if (g[1] === "fontFamily") {
-            updateFontPreview();
-        }
+        
         SettingsSave("writeJSON", settings);
         // preference GUIの更新
         if (prf !== "main.threads") {
@@ -213,9 +226,14 @@ function settingsManager(mode, prf, set, opt) {
         }}
         // 処理スレッド側の設定更新
         main.settingsManager({ key: prf, value: set, option: opt });
+
+        if (g[1] === "fontFamily") {
+            updateFontPreview();
+        }
     }
 }
 
+// これもワーカー側に完全移行予定
 function SettingsSave(mode, key, option) {
     switch (mode) {
         case "read": {
@@ -265,7 +283,7 @@ function SettingsSave(mode, key, option) {
     }
 }
 
-// Function to process user input
+// CLIでのコマンド処理
 async function processCommand(command) {
     const parts = command.split(' ');
     const mainCommand = parts[0];
@@ -390,8 +408,6 @@ async function processCommand(command) {
     document.getElementById('cli-box').innerHTML += `<p id="cli-input">> <input type="text" id="cli-inputL" autofocus></p>`;
     document.getElementById('cli-box').scrollTop = document.getElementById('cli-box').scrollHeight; // Auto scroll to the bottom
 }
-
-
 
 const repaint = async () => {
     await new Promise(resolve => requestAnimationFrame(resolve));
@@ -727,33 +743,9 @@ async function handleCommand() {
             }
         }, 1000);
 
-        function frespondToQuestion(question) {
-            if (questionRegex.test(question)) {
-                // 質問にマッチした場合、適切な応答を生成
-                return responses[detectCharacter(question)].help;
-            } else {
-                return getPrimeNumberResponse(question);
-            }
-        }
     }
 
-    function removeZero(number) {
-        let f = String(number).split("");
-        let g = [];
-        let t = true;
-        for (let i = 0; i < f.length; i++) {
-            if (f[i] !== "0") {
-                g.push(f[i]);
-                t = false;
-            } else if (!t || (f.length === 1)) {
-                g.push(f[i]);
-            }
-        }
-        return g.join("");
-    }
 }
-
-
 
 function getGreetingByTime() {
     const now = new Date();
@@ -771,14 +763,14 @@ function getGreetingByTime() {
 
 function sendGreeting(character) {
     appendTypingIndicator();
-    setTimeout(() => {
+    setTimeout(async () => {
         removeTypingIndicator();
-        appendMessage(getCharacterGreeting(character), 'bot', "素数判定機", 'prime.png', '');
+        appendMessage(await main.sendGreeting(character), 'bot', "素数判定機", 'prime.png', '');
     }, 1000)
 }
 
 
-function getCharacterGreeting(character) {
+async function getCharacterGreeting(character) {
     const greetings = {
         AI: {
             morning: "おはようございます。私は素数判定機です。今日も素数を効率的に判定いたします。さあ、判定したい整数を入力してください。",
@@ -825,9 +817,8 @@ function getCharacterGreeting(character) {
     };
 
     const characters = Object.keys(greetings);
-    const randomCharacter = characters.includes(character) ? character : "AI" //characters[Math.floor(Math.random() * characters.length)];
+    const randomCharacter = characters.includes(character) ? character : await main.settingsRead("chat.character") || "AI" //characters[Math.floor(Math.random() * characters.length)];
     const timeOfDay = getGreetingByTime();
-    if (character === "first") settingsManager("set", "chat.character", randomCharacter);
     return greetings[randomCharacter][timeOfDay];
 }
 

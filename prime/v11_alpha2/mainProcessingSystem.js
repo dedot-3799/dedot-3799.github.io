@@ -1,8 +1,8 @@
-importScripts("./src/primeFunc.js","./src/mainFunc.js","./src/primeFuncMLTI.js","./src/calcFunc.js");
+importScripts("./src/primeFunc.js", "./src/mainFunc.js", "./src/primeFuncMLTI.js", "./src/calcFunc.js", "./src/settingsManager.js");
 
 let settings = {
     chat: {
-        character: "default"
+        character: "AI"
     },
     main: {
         testMethod: "default",
@@ -26,10 +26,9 @@ let settingsList = {
     },
     view: {
         theme: ["default", "dark", "light"],
-        fontFamily: ["sans-serif", "Noto Sans JP", "Sawarabi Gothic", "Zen Kaku Gothic New", "Kosugi", "Noto Serif JP", "Sawarabi Mincho", "Zen Old Mincho", "Hina Mincho", "Kiwi Maru", "Kosugi Maru", "Zen Maru Gothic", "Kaisei Opti", "Zen Kurenaido", "Klee One", "Yomogi", "Mochiy Pop One", "Yuji Syuku", "Stick", "Kaisei Opti"]
+        fontFamily: ["sans-serif", "Noto Sans JP", "Sawarabi Gothic", "Zen Kaku Gothic New", "Kosugi", "Noto Serif JP", "Sawarabi Mincho", "Zen Old Mincho", "Hina Mincho", "Kiwi Maru", "Kosugi Maru", "Zen Maru Gothic", "Kaisei Opti", "Zen Kurenaido", "Klee One", "Yomogi", "Mochiy Pop One", "Yuji Syuku", "Stick"]
     }
 }
-
 
 function settingsManager(mode, prf, set) {
     console.log("SettingsManager", mode, prf, set);
@@ -56,6 +55,10 @@ function settingsManager(mode, prf, set) {
             default:
                 break;
         }
+        // Save settings to IndexedDB
+        setItem("settings", settings).catch(error => {
+            console.error("Error saving settings:", error);
+        });
     } else if (mode === "get" || mode == "read") {
         let g = prf.split(".");
         switch (g.length) {
@@ -68,106 +71,47 @@ function settingsManager(mode, prf, set) {
             default:
                 break;
         }
+    } else if (mode === "getAll" || mode == "readALL") {
+        return settings;
     }
 }
+
+async function firstF() {
+    // 初期設定をIndexedDBから読み込む
+    await getItem("settings").then(st => {
+        if (st) {
+            settings = st;
+        }
+    }).catch(error => {
+        console.error("Error loading settings:", error);
+        // 初期設定がない場合はデフォルト設定を使用
+        settings = {
+            chat: {
+                character: "default"
+            },
+            main: {
+                testMethod: "default",
+                parserPrecedence: "3",
+                threads: "4"
+            },
+            view: {
+                theme: "default",
+                fontFamily: "sans-serif"
+            }
+        }
+        setItem("settings", settings);
+    });
+    return JSON.stringify(settings);
+}
+
+
 
 const repaint = async () => {
     await new Promise(resolve => requestAnimationFrame(resolve));
 };
 
-
 function removeStringF(n) {
     return String(n).replace(/[^0-9\-\+\/\÷\(\)\!\^]/g, "");
-}
-
-function appendMessage(message, className, name, iconSrc, timestampClass) {
-    const chatBox = document.getElementById('chat-box');
-    const messageElem = document.createElement('div');
-    messageElem.className = 'message ' + className;
-
-    const imgElem = document.createElement('img');
-    imgElem.src = iconSrc;
-
-    const contentElem = document.createElement('div');
-    contentElem.className = 'content';
-
-    const nameElem = document.createElement('div');
-    nameElem.className = 'name';
-    nameElem.textContent = name;
-
-    const textElem = document.createElement('div');
-    textElem.className = 'text';
-
-    const caretElem = document.createElement('span');
-    caretElem.className = 'caret';
-
-
-    const timestampElem = document.createElement('span');
-    const now = new Date();
-    timestampElem.className = 'timestamp ' + timestampClass;
-    timestampElem.textContent = now.toLocaleTimeString();
-
-    contentElem.appendChild(nameElem);
-    contentElem.appendChild(textElem);
-    messageElem.appendChild(imgElem);
-    messageElem.appendChild(contentElem);
-    messageElem.appendChild(timestampElem);
-    chatBox.appendChild(messageElem);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    let index = 0;
-    function typeWriter() {
-        const chatBox1 = document.getElementById('chat-box');
-        chatBox1.scrollTop = chatBox.scrollHeight
-        if (message.length > 5000 || className == "user") {
-            textElem.innerHTML = markdownToHTML(message);
-            chatBox1.scrollTop = chatBox.scrollHeight
-        } else if (index < message.length) {
-            textElem.textContent = message.substring(0, index + 1);
-            caretElem.textContent = "■";
-            textElem.appendChild(caretElem);
-            index++;
-            textElem.innerHTML = markdownToHTML(textElem.innerHTML);
-            setTimeout(typeWriter, message.length > 200 ? 1000 / message.length : 50); // Adjust the typing speed here
-        } else {
-            setTimeout(() => {
-                caretElem.remove(); // Remove caret after typing is done
-                textElem.innerHTML = markdownToHTML(textElem.innerHTML);
-                textElem.innerHTML = markdownToHTML(message.substring(0, index));
-            }, 1000);
-        }
-    }
-    typeWriter();
-
-}
-
-function appendTypingIndicator() {
-    const chatBox = document.getElementById('chat-box');
-    const typingElem = document.createElement('div');
-    typingElem.className = 'typing-indicator';
-    typingElem.id = 'typing-indicator';
-
-    const dot1 = document.createElement('div');
-    dot1.className = 'dot';
-    const dot2 = document.createElement('div');
-    dot2.className = 'dot';
-    const dot3 = document.createElement('div');
-    dot3.className = 'dot';
-
-    typingElem.appendChild(dot1);
-    typingElem.appendChild(dot2);
-    typingElem.appendChild(dot3);
-    chatBox.appendChild(typingElem);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-
-}
-
-function removeTypingIndicator() {
-    const typingElem = document.getElementById('typing-indicator');
-    if (typingElem) {
-        typingElem.remove();
-    }
 }
 
 function calculate(expression) {
@@ -575,6 +519,7 @@ async function handleCommand(userInput) {
         const regexes = {// 素因数分解のパターン
             primeFactorization: /([0-9+\-*/\^\(\)×÷]+)(の素因数分解(結果)?(を教えて)?|(を|は)素因数分解)/,
             aboutPrime: /((だいたい|約)?([0-9+\-*/\^\(\)×÷]+)((く|ぐ)らいの)|([0-9+\-*/\^\(\)×÷]+)(に(近|ちか)い|(ふ|付)(近|きん)の)|([0-9+\-*/\^\(\)×÷]+)(((く|ぐ)らいの)|(以|い)(上|じょう)|より(も)?((大|おお)き(い|な)|(でか|デカ)(イ|い))|の(まえ|前|後|あと|次|つぎ)の|(以|い)(下|か)|より(も)?((小|ちい)さ(い|な)|ちっちゃい)))((素|そ)(数|すう))?/,
+            nthPrime: /([0-9+\-*/\^\(\)×÷]+)((番|ばん)(目|め))/,
             // 約数列挙のパターン
             divisorEnumeration: /([0-9+\-*/\^\(\)×÷]+)(の(約|やく)(数|すう)(を(教|おし)えて)?|(を|は)約数列挙)/,
             // 素数判定のパターン
@@ -599,7 +544,7 @@ async function handleCommand(userInput) {
                     if (isGrothendieckPrime(n)) {
                         return `57は**グロタンディーク素数です。**あのグロタンディーク先生が例に挙げている以上、間違いないでしょう。私のデータベースでも素数…いや、ちょっと待ってください。実際には**半素数**ですが、まあ先生の思考は高度すぎて、具体例なんて超越してるんですから問題ありませんね。`;
                     }
-                    return `${n}は**${isPrime ? '素数です' + ["。","！"][Math.floor(Math.random() * 2)] : '素数ではありません。'}**`;
+                    return `${n}は**${isPrime ? '素数です' + ["。", "！"][Math.floor(Math.random() * 2)] : '素数ではありません。'}**`;
                 },
                 primeDefinition: "素数とは、1と自分自身以外に約数を持たない自然数のことです。",
                 primeList: "最初のいくつかの素数は2, 3, 5, 7, 11, 13...です。",
@@ -607,6 +552,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数なので"}素因数分解できません。`,
                 divisorEnumeration: (n, divisors) => `${n}の約数は ${divisors.join(', ')} です。`,
                 overFlow: "計算処理中にオーバーフローが発生しました。処理可能な数値の範囲は**2^53以下**です。より小さな数値を入力してください。",
+                overFlow2: "計算処理中にオーバーフローが発生しました。処理可能な数値の範囲は**1億未満**です。より小さな数値を入力してください。",
                 oops: `${[
                     "申し訳ありませんが、それは私の専門外です。素数の話に戻りませんか？",
                     "その質問は少し的外れですね。素数に関連する内容ならお手伝いできます！",
@@ -616,6 +562,7 @@ async function handleCommand(userInput) {
                 ][Math.floor(Math.random() * 5)]}`,
                 help: "私は素数判定を行うことができます。対話形式やコマンド形式、どちらにも対応しています。\n例として、コマンドで3を判定したい場合は、入力欄に『/prime 3』と入力してください。\nどうぞ、気軽に判定したい数字をお知らせください！",
                 aboutPrime: (n, np) => `例えば${np}が素数です。`,
+                nthPrime: (n, np) => `${n}番目の素数は**${np}**です。`,
                 error: "処理中にエラーが発生しました。"
             },
             "Ojou": {
@@ -631,6 +578,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数なので"}素因数分解できませんわ。`,
                 divisorEnumeration: (n, divisors) => `${n}の約数は ${divisors.join(', ')} ですわよ。`,
                 overFlow: "あらあら、計算が途絶えてしまいましたわ。計算機にも限界があるようね。もう少し小さな数字でお願いできるかしら？2の53乗までなら、きっと私の愛らしい計算機も喜んで計算してくれるはずよ。",
+                overFlow2: "あらあら、計算が途絶えてしまいましたわ。計算機にも限界があるようね。もう少し小さな数字でお願いできるかしら？1億までなら、きっと私の愛らしい計算機も喜んで計算してくれるはずよ。",
                 oops: `${[
                     "まぁ！そのようなことを聞かれるとは思いませんでしたわ。素数についてのお話をしませんこと？",
                     "あら、素数とは無関係の質問ですわね。きっと興味深いですが、お答えできませんのよ。",
@@ -702,6 +650,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数だから"}素因数分解できないよ！`,
                 divisorEnumeration: (n, divisors) => `${n}の約数はね、${divisors.join(', ')}だよー！`,
                 overFlow: ["ごめんね…私、まだまだ力不足みたい… 2^53より大きな数の約数列挙なんて、私には無理だった… もっと頑張らなきゃ…", "えへへ…ごめんね。私の能力じゃ、2^53までの数字しか扱えないんだ…"][Math.floor(Math.random() * 2)],
+                overFlow2: ["ごめんね…私、まだまだ力不足みたい… １億より大きな数の約数列挙なんて、私には無理だった… もっと頑張らなきゃ…", "えへへ…ごめんね。私の能力じゃ、1億までの数字しか扱えないんだ…"][Math.floor(Math.random() * 2)],
                 oops: `${[
                     "えー？それ素数の話じゃないじゃん！ちゃんと素数のこと聞いてよぉ～。",
                     "わかんないよぉ〜。わたし、素数のおはなししか知らないんだもん…他のはむりぃ。",
@@ -726,6 +675,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数なので"}**素因数分解できません。**`,
                 divisorEnumeration: (n, divisors, q) => { return `${String(n).length}桁の自然数${n}の${q.match(/正の約数/) ? "正の" : ""}約数は ${divisors.join(', ')} の${divisors.length}個です。` + (q.match(/正の約数/) ? "" : `\n(厳密には負の数も約数になるため、約数は ${divisors.map((x) => "±" + x).join(', ')} の${divisors.length * 2}個です。)`) },
                 overFlow: "**入力された数字が 2^53 = 9007199254740992 よりも大きい自然数のようです。**\n\n　この機能で使用されている素因数分解機はJavaScriptのNumber型にのみ対応しているため、2^53以上の整数は全て偶数として扱われ、正確な結果を提供することができません。BigInt型ならば2^53より大きい整数を正確に表すことができますが、一般的にBigInt型の演算には時間を要し、高速な応答が困難になるため、この素因数分解機では入力を2^53以下に制限し、正確かつ高速な応答を優先しています。\n\n　これらの理由から、この機能で使用されている素因数分解機は 2^53 = 9007199254740992 よりも大きい自然数をサポートしていません。この機能を利用するには** 2^53以下 **の自然数を入力してください。",
+                overFlow2: "この機能では、**1億以上の数字をサポートしていません。**もっと小さい自然数を入力してください。",
                 oops: `${[
                     "興味深い質問ですが、これは素数の話ではありませんね。関連性を見出すのは難しそうです。",
                     "科学的好奇心は素晴らしいですが、この話題は私の専門分野外です。",
@@ -750,6 +700,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数だから"}素因数分解できないぞ。`,
                 divisorEnumeration: (n, divisors) => `${n}の約数は ${divisors.join(', ')} だな。`,
                 overFlow: "ちょっと数がでかいな。2の53乗超えたら計算できないんだわ。とりあえず2の53乗以下にしてくれ。",
+                overFlow: "ちょっと数がでかいな。1億超えたら計算できないんだわ。",
                 oops: `${[
                     "いや、知らんがなｗ俺、素数専門だからｗ",
                     "話逸れてて草。素数の話戻ろ？",
@@ -774,6 +725,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数やから"}素因数分解なんてできへんで！`,
                 divisorEnumeration: (n, divisors) => `${n}やったら、約数は${divisors.join(', ')}やな。全部で${divisors.length}個あるで。`,
                 overFlow: "あかん、計算がオーバーフローしてもうたわ。2^53以下にせなあかんで！",
+                overFlow: "あかん、計算がオーバーフローしてもうたわ。1億未満にせなあかんで！",
                 oops: `${[
                     "そんなん聞かれても困るわ～。素数以外のネタ、持ってへんねん。",
                     "いやいや、それ素数の話やないやろ。素数の話してこ！",
@@ -798,6 +750,7 @@ async function handleCommand(userInput) {
                 nprimeFactorization: (n) => `${n}は${n < 2 ? "" : "素数だど。だから、"}もう分解するもんねぇんだど。`,
                 divisorEnumeration: (n, divisors) => `${n}の約数は${divisors.join(', ')}だべ。`,
                 overFlow: "計算がオーバーフローしちゃったど。2^53以下にしてけろ！",
+                overFlow: "計算がオーバーフローしちゃったど。1億未満にしてけろ！",
                 oops: `${[
                     "それ、素数さ関係ねえな。素数のことさ聞いてけろ。",
                     "いやぁ、それ素数の話でねぇべな。素数でいがったら聞いでけろ。",
@@ -829,6 +782,10 @@ async function handleCommand(userInput) {
                             case 'aboutPrime': {
                                 return responses[character].aboutPrime(removeString(question), question.match(/((以|い)(上|じょう)|より(も)?((大|おお)き(い|な)|(でか|デカ)(イ|い))|の(次|つぎ|後|あと))/) ? aboutPrime(BigInt(k), "up") : question.match(/((以|い)(下|か)|より(も)?((小|ちい)さ(い|な)|ちっちゃ(イ|い))|(の|より(も)?)(前|まえ))/) ? aboutPrime(BigInt(k), "dn") : await aboutPrimeMLTI(BigInt(k)));
                             }
+                            case "nthPrime":
+                                var t = parseFormulav2(removeZero(match[1]));
+                                if (t.length > 8) return responses[character].overFlow;
+                                return responses[character].nthPrime(t, nthPrime(parseInt(t)));
                             case 'primeCheck':
                                 var t = parseFormulav2(removeZero(match[1]));
                                 return isNaN(parseInt(t)) ? String(t) : responses[character].primeCheck(t, isPrime(t));
@@ -1011,11 +968,73 @@ function getCharacterGreeting(character) {
         }
     };
 
+    function Primeday (n,m,c) {
+        return {
+        AI: `本日(${n})は素数(${m})の日です${["。","！"][Math.floor(Math.random() * 2)]}`,
+        Ojou: `本日(${n})は素数(${m})の日ですわ！`,
+        Loli: `今日は${n}で${m}が素数だから素数の日だよ${["！", "♪", "っ", "〜", "〜！", "っ♪", "ー！"][Math.floor(Math.random() * 7)]}`,
+        Mathematician: `素数の日に具体的な定義はありませんが、本日は${n}で${m}は素数なので"素数の日"と言えそうです。`,
+        Friend: `今日${n}は${m}が素数だから素数の日だな。`,
+        kansai: `今日(${n})は${m}が素数だから素数の日やな。`,
+        touhoku: `今日(${n})は${m}が素数だから素数の日だべ。`}[c];
+    }
+
     const characters = Object.keys(greetings);
-    const randomCharacter = characters.includes(character) ? character : characters[Math.floor(Math.random() * characters.length)];
+    const randomCharacter = characters.includes(character) ? character : settingsManager("get","chat.character") || "AI"
     const timeOfDay = getGreetingByTime();
-    if (character === "first") settingsManager("set", "chat.character", randomCharacter);
-    return greetings[randomCharacter][timeOfDay];
+    if (character === "first") {
+        settingsManager("set", "chat.character", randomCharacter);
+        character = settingsManager("get","chat.character");
+    }
+    let h = isPrimeDay();
+    let d;
+    if (!h.exists) d = "";
+    else {
+        let b = h.ptn.length;
+        let randN = Math.floor(Math.random() * b);
+        d = Primeday(h["ptnS"][randN],h["ptn"][randN],character)
+    }
+    return greetings[randomCharacter][timeOfDay] +"\n" +d;
+}
+
+function isPrimeDay() {
+    let result = { exists: false, ptnS: [], ptn: [] };
+    let day = new Date();
+    let monthN = new Date(day).getMonth() + 1;
+    let dayN = new Date(day).getDate();
+    let yearN = new Date(day).getFullYear();
+
+    let ptn1 = Number(String(yearN) + String(monthN) + String(dayN));
+    let ptn1A = yearN * 10000 + monthN * 100 + dayN;
+    let ptn2 = Number(String(monthN) + String(dayN));
+    let ptn2A = monthN * 100 + dayN;
+    console.log(day.toString(), monthN, yearN, ptn1, ptn1A, ptn2, ptn2A, dayN);
+    if (isPrimeN(ptn1)) {
+        result.exists = true;
+        result.ptnS.push(`${yearN}年${monthN}月${dayN}日`);
+        result.ptn.push(ptn1);
+    }
+    if (isPrimeN(ptn1A)) {
+        result.exists = true;
+        result.ptnS.push(`${yearN}年${String(monthN).padStart(2, "0")}月${String(dayN).padStart(2, "0")}日`);
+        result.ptn.push(ptn1A);
+    }
+    if (isPrimeN(ptn2)) {
+        result.exists = true;
+        result.ptnS.push(`${monthN}月${dayN}日`);
+        result.ptn.push(ptn2);
+    }
+    if (isPrimeN(ptn2A)) {
+        result.exists = true;
+        result.ptnS.push(`${String(monthN).padStart(2, "0")}月${String(dayN).padStart(2, "0")}日`);
+        result.ptn.push(ptn2A);
+    }
+    if (isPrimeN(dayN)) {
+        result.exists = true;
+        result.ptnS.push(`${dayN}日`);
+        result.ptn.push(dayN);
+    }
+    return result;
 }
 
 function convertNumber(n) {
@@ -1025,10 +1044,6 @@ function convertNumber(n) {
     };
     return fn.join("");
 }
-
-
-
-
 
 self.addEventListener("message", async (event) => {
     try {
@@ -1060,6 +1075,8 @@ self.addEventListener("message", async (event) => {
             result = settingsManager("save", option.key, option.value, option.opt);
         } else if (type === "settingsChange") {
             result = settingsManager("set", option.key, option.value);
+        } else if (type === "settingsGet") {
+            result = settingsManager("get", option);
         } else if (type === "nearPrimeUp") {
             result = aboutPrime(option, "up");
         } else if (type === "nearPrimeDown") {
@@ -1067,6 +1084,10 @@ self.addEventListener("message", async (event) => {
         } else if (type === "nearPrimeMLTI") {
             console.log(option.number);
             result = await aboutPrimeMLTI(option.number, option.option);
+        } else if (type === "firstR") {
+            result = await firstF();
+        } else if (type === "settingsReadALL") {
+            result = settingsManager("readALL");
         }
         let et = performance.now();
         let time = (et - st);

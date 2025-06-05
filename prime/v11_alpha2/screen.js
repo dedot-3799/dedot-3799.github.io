@@ -135,6 +135,7 @@ function toggleView(f) {
                     document.getElementById(e).classList.remove('closeS');
                 }
             });
+            changePrefScreen();
             document.getElementById("prime-result").style.display = "none";
             document.getElementById("inputBox").style.display = "none";
             break;
@@ -193,7 +194,7 @@ function appendMessage(message, className, name, iconSrc, timestampClass) {
     function typeWriter() {
         const chatBox1 = document.getElementById('chat-box');
         chatBox1.scrollTop = chatBox.scrollHeight
-        if (message.length > 5000 || className == "user") {
+        if (message.length > 1000 || className == "user") {
             textElem.innerHTML = markdownToHTML(message);
             chatBox1.scrollTop = chatBox.scrollHeight
         } else if (index < message.length) {
@@ -423,8 +424,8 @@ function loadGoogleFont(font) {
     document.head.appendChild(link);
 }
 
-function updateFontPreview() {
-    let font = settings.view.fontFamily;
+async function updateFontPreview() {
+    let font = await main.settingsRead("view.fontFamily");
     // フォントプレビューを更新
     loadGoogleFont(font);
     document.querySelector("body").style.fontFamily = font;
@@ -470,4 +471,23 @@ function getSelectedText() {
 // 選択されたテキストを変更する関数
 function setSelectedText(text) {
     document.getElementById('selected-text').textContent = modeName[text];
+}
+
+async function changePrefScreen() {
+    let set = await main.settingsReadALL();
+    console.log(set, Object.keys(set));
+    for (let i = 0; i < Object.keys(set).length; i++) {
+        const el = set[Object.keys(set)[i]];
+        for (let j = 0; j < Object.keys(el).length; j++) {
+            const elm = el[Object.keys(el)[j]];
+            if (["main.threads","view.theme"].includes(`${Object.keys(set)[i]}.${Object.keys(el)[j]}`)) {
+                continue
+            }
+            let optionsA = document.getElementById(`${Object.keys(set)[i]}.${Object.keys(el)[j]}`).options;
+            for (let optionA of optionsA) {
+                if (optionA.value === elm) optionA.selected = true;
+                else optionA.selected = false;
+            }
+        }
+    }
 }

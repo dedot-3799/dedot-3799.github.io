@@ -1,7 +1,23 @@
 <!DOCTYPE html>
-<div class="loading-screen"><link rel="stylesheet" href="load.css"><div class="loading-isprime"><p><div class="loading-text">Loading...</div></p><p><h1>素数判定</h1></p><p><input type="number"id="ldisP"placeholder="整数を入力"/></p><p id="Lrslt"></p></div><script>document.getElementById("ldisP").addEventListener("input",()=>{const n=parseInt(document.getElementById("ldisP").value);if(isNaN(n)||n<2||n>2**53){document.getElementById("Lrslt").innerText="2以上2^53以下の整数を入力してください";return};document.getElementById("Lrslt").innerText=iPN(n)?`${n}は素数です`:`${n}は素数ではありません`;});function iPN(n){if(n<=1)return false;if(n<=3)return true;if(n%2==0||n%3==0)return false;for(let i=5;i*i<=n;i+=6){if(n%i==0||n%(i+2)==0)return false;};return true;}</script></div>
+<div class="loading-screen">
+    <link rel="stylesheet" href="load.css">
+    <div class="loading-isprime">
+        <p>
+        <div class="loading-text" id="Lo_condition">Loading...</div>
+        </p>
+        <p>
+        <h1>素数判定機</h1>
+        </p>
+        <p>
+            Version XI (alpha 2.0) - 11.0.48.0
+        </p>
+    </div>
+</div>
 <html lang="ja">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:title" content="素数判定機 Version XI (alpha 2.0)" />
@@ -12,7 +28,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <title>素数判定機</title>
 </head>
-    <body>
+
+<body>
     <div class="chat-container">
         <div class="title-div">
             <h1 id="title">
@@ -90,6 +107,7 @@
                     <option value="old.v9">旧型試し割り法</option>
                     <option value="new.v7">新型試し割り法</option>
                     <option value="APR-CL">APR-CL</option>
+                    <option value="MILLER-RABIN">ミラーラビン素数判定法</option>
                 </select>
                 <h3>チャット時のキャラクター</h3>
                 <select id="chat.character"
@@ -138,28 +156,29 @@
     <footer>Primality Tester (Version XI alpha) &copy; 2025 dedot-3799.</footer>
 
 </body>
-<script src="main.js"></script>
 <script src="screen.js"></script>
+<script src="main.js"></script>
 <link rel="stylesheet" href="style.css">
 <script>
-    window.onload = () => {
+    window.onload = async () => {
         if (window.innerWidth < 330 || window.innerHeight < 330) {
             // 画面が小さすぎて表示が崩れるかもしれないことを警告
             alert("画面が小さいため表示が崩れる可能性があります。ご留意ください。");
         }
-        document.querySelector('.loading-screen').style.display = 'none';
         appendTypingIndicator();
         settingsManager('set', 'main.threads', String(navigator.hardwareConcurrency || 4));
-        setTimeout(() => {
-            removeTypingIndicator();
-            appendMessage(getCharacterGreeting("first"), 'bot', "素数判定機", 'prime.png', '');
-        }, 1000)
+        let GreetingText = await main.sendGreeting("first");
+        setTimeout(async () => {
+            appendMessage(GreetingText, 'bot', "素数判定機", 'prime.png', '');
+            await removeTypingIndicator();
+        }, 1000);
         toggleView("chat")
         setSelectedText('chat');
         setTimeout(() => {
-            removeDisplayNone()
+            removeDisplayNone();
             document.getElementById("cli-box").style.display = "none"
-        }, 500)
+        }, 500);
+        Lo_condition.textContent = "Starting..."
     };
     document.addEventListener('keypress', (e) => {
         if (e.key === "Enter") {

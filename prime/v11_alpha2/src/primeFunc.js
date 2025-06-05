@@ -8,6 +8,8 @@ function factor_isPRIME_v6(n) {
     return true;
 }
 
+const isPrimeN = factor_isPRIME_v6;
+
 function PRIME_v1(num) {
     if (num <= 1) return false;
     if (num == 2) return true;
@@ -923,3 +925,37 @@ class Montgomery {
     }
 }
 
+function estimateUpperBound(n) {
+  if (n < 6) return 15;
+  const logn = Math.log(n);
+  return Math.ceil(n * (logn + Math.log(logn)));
+}
+
+function nthPrime(n) {
+  if (n < 1) throw new Error("n must be >= 1");
+
+  const upperBound = estimateUpperBound(n);
+  const isPrime = new Uint8Array(upperBound + 1);
+  isPrime.fill(1);
+  isPrime[0] = isPrime[1] = 0;
+
+  const sqrt = Math.floor(Math.sqrt(upperBound));
+
+  for (let i = 2; i <= sqrt; i++) {
+    if (isPrime[i]) {
+      for (let j = i * i; j <= upperBound; j += i) {
+        isPrime[j] = 0;
+      }
+    }
+  }
+
+  let count = 0;
+  for (let i = 2; i <= upperBound; i++) {
+    if (isPrime[i]) {
+      count++;
+      if (count === n) return i;
+    }
+  }
+
+  throw new Error("Prime not found within estimated bound.");
+}
