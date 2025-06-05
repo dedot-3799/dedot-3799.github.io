@@ -903,3 +903,4 @@ function splitLatexByFifthX(latexString) {
 }
 
 function wait(msec) { return new Promise(function (resolve) { setTimeout(function () { resolve() }, msec); }) }
+

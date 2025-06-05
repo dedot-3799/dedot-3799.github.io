@@ -980,7 +980,7 @@ function getCharacterGreeting(character) {
     }
 
     const characters = Object.keys(greetings);
-    const randomCharacter = characters.includes(character) ? character : settingsManager("get","chat.character") || "AI"
+    const randomCharacter = characters.includes(character) ? character : settingsManager("get","chat.character") || "AI";
     const timeOfDay = getGreetingByTime();
     if (character === "first") {
         settingsManager("set", "chat.character", randomCharacter);
