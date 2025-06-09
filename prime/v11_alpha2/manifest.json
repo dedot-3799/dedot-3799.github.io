@@ -1,0 +1,16 @@
+{
+    "lang": "ja-jp",
+    "name": "Primality Testing Tools",
+    "short_name": "Prime Number",
+    "description": "Ultra-fast primality testing and prime factorisation with chat style, CLI and conventional form style.",
+    "start_url": "/prime/v11_alpha2/",
+    "orientation": "any",
+    "display": "standalone",
+    "version": "11.48.5",
+    "icons": [
+        {
+            "src": "https://dedot-3799.github.io/prime/v11_alpha2/prime.png",
+            "sizes": "2048x2048"
+        }
+    ]
+}
