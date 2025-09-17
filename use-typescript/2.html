@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript - より良い開発体験</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        /* スクロールコンテナ */
+        .scroll-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: #f5f5f5;
+            position: relative;
+        }
+
+        /* 各セクションのスタイル */
+        section {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #fff;
+            color: #333;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* スクロールアニメーションのスタイル */
+        .animation {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+                @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        
+        code {
+            display: block;
+            background-color: #282c34;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            text-align:left;
+        }
+
+        /* ボタンスタイル */
+        button {
+            background-color: #007acc;
+            color: #fff;
+
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px; /* ボタンとテキストの間にスペースを追加 */
+        }
+        
+        button:hover {
+            background-color: #005999;
+        }
+
+   
+        
+        /* styles.css */
+pre {
+    background-color: #282c34;
+    color: #abb2bf;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+    animation: fadeIn 2s ease-out 2s forwards;
+            opacity: 0;
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    overflow-x:scroll;
+    max-width:80vw;
+    font-size:2vmin;
+    animation: fadeIn 2s ease-out 3s forwards;
+            opacity: 0;
+}
+
+
+/* Basic syntax highlighting */
+.code-block .keyword {
+    color: #0074d9; /* Blue for keywords */
+}
+
+.code-block .string {
+    color: #d14; /* Red for strings */
+}
+
+.code-block .function {
+    color: #e74c3c; /* Dark red for functions */
+}
+h1,h2 {
+            margin: 0;
+            animation: fadeIn 2s ease-out 1s forwards;
+            opacity: 0;
+        }
+        
+        h1 {
+            font-size:12vmin;
+        }
+        
+        h2 {
+            font-size:10vmin;
+        }
+        
+        p {
+            font-size: 3vmin;
+            animation: fadeIn 2s ease-out 2s forwards;
+            opacity: 0;
+        }
+     /* スマホ対応 */
+        @media (max-width: 768px) {
+            section {
+                font-size: 14px;
+                padding: 10px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        
+        h1 {
+            font-size:12vmin;
+        }
+        code {
+         font-size:15px;   
+        }
+        h2 {
+            font-size:8vmin;
+        }
+        p {
+        font-size:20px;
+        }}
+        
+        @media(prefers-color-scheme: dark) {
+                    section {
+            background-color: #000;
+            color:#fff;
+        }
+        html {
+        background-color:#000;
+        }
+        }
+        
+        #title {
+            background-color: #000;
+            color:#fff;
+        }
+    </style>
+</head>
+<body>
+<div class="scroll-container">
+    <section class="animation" id="title">
+        <h1>次のステップはTypeScript</h1>
+        <p>型が明確なコードで、あなたの開発を次のレベルへ。</p>
+    </section>
+    
+    <section id="why-ts" class="animation">
+    <h2>なぜTypeScript？</h2>
+    <p>JavaScriptの強みはそのままに、TypeScriptは型のサポートを追加し、より信頼性の高い開発を実現します。</p>
+    <pre><code>// JavaScript
+function add(x, y) {
+    return x + y;
+}
+console.log(add(10, "20")); // 1020（期待通りではない）</code></pre>
+<p>TypeScriptなら、こうした問題を事前に防ぎます。</p>
+</section>
+
+<section class="animation" id="benefits">
+    <h2>開発体験の向上</h2>
+    <p>TypeScriptはデコレータなどのJavaScriptにはない高度な機能を搭載しています。これにより、冗長なコードを減らし、メンテナンスが容易になります。</p>
+    <pre><code>function logMethod(target: any, key: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+  descriptor.value = function(...args: any[]) {
+    console.log(`Method ${key} called with args: ${args}`);
+    return originalMethod.apply(this, args);
+  };
+};
+
+class MyClass {
+  @logMethod
+  greet(name: string) {
+    return `Hello, ${name}`;
+  };
+};</code></pre>
+    <p>この機能が、今までにない開発体験を与えてくれるでしょう。</p>
+</section>
+
+<section class="amimation" id="cta">
+    <h2>今すぐTypeScriptを始めよう</h2>
+    <p>TypeScriptへの移行は簡単です。既存のJavaScriptプロジェクトにスムーズに統合できます。</p>
+    <button onclick="alert('TypeScriptをインストールしましょう！ npm install -g typescript')">今すぐ始める</button>
+</section>
+</div>
+
+</body>
+</html>
