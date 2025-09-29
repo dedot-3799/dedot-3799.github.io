@@ -226,6 +226,7 @@ function searchRoute() {
             let timelineData = [];
             Object.keys(bus).forEach(key => {
                 if (["備考", "乗り場Bus", "乗り場"].includes(key)) return;
+                if (key.match(/乗り場/)) return;
                 if (key == start) {
                     timelineData.push({ time: bus[key], location: key, type: 'start' });
                     return;
@@ -339,4 +340,5 @@ window.onload = function () {
 // ラジオボタンにもイベント追加
 document.querySelectorAll('input[name="option"]').forEach((el) => {
     el.addEventListener("change", settingsSave);
+
 });
