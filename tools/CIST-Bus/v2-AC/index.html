@@ -928,6 +928,7 @@
                     let timelineData = [];
                     Object.keys(bus).forEach(key => {
                         if (["備考", "乗り場Bus", "乗り場"].includes(key)) return;
+                        if (key.match(/乗り場/)) return;
                         if (key == start) {
                             timelineData.push({ time: bus[key], location: key, type: 'start' });
                             return;
