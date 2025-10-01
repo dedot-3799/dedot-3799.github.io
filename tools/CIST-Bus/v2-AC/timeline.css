@@ -1,0 +1,169 @@
+.timeline-container {
+    width: 350px;
+    background-color: var(--background);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.timeline-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    overflow-x: auto;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    left: 10px;
+    /* ドットの左位置に合わせる */
+    width: 2px;
+    height: calc(100% - 75px);
+    /* 最初のドットと最後のドットの間 */
+    background-color: var(--primary);
+    z-index: 0;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 25px;
+}
+
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    background-color: var(--text-color);
+    border-radius: 50%;
+    position: absolute;
+    left: 5.5px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.timeline-start .timeline-dot,.timeline-end .timeline-dot {
+    left: 3.5px;
+    background-color: var(--result-bg2);
+    border: 3px solid var(--text-color);
+}
+
+.timeline-content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+}
+
+.timeline-time {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-bottom: 2px;
+}
+
+.timeline-location {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+
+@media screen and (min-width: 784px) {
+
+    .timeline-container {
+        width: 90%;
+        max-width: 1000px;
+        /* 最大幅を設定してPC表示で広がりすぎないようにする */
+        border-radius: 12px;
+        padding: 30px 20px;
+        overflow-x: auto;
+    }
+
+    .timeline {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        /* ここを修正：下揃えにする */
+        position: relative;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 79px;
+        /* ドットの垂直位置に合わせて調整 */
+        left: 75px;
+        width: auto;
+        right: 36.5px;
+        height: 2px;
+        z-index: 0;
+    }
+
+    .timeline-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        min-width: 80px;
+        /* 項目が狭くなりすぎないように最小幅を設定 */
+    }
+
+    .timeline-dot-wrapper {
+        position: relative;
+        padding-bottom: 20px;
+    }
+
+    .timeline-start .timeline-dot,.timeline-end .timeline-dot {
+        top: 72.5px;
+        left: calc(50% + 22.5px);
+    }
+
+    .timeline-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 0;
+        /* ここを修正：親要素の下端に配置 */
+        left: calc(50% + 22.5px);
+        transform: translateX(-50%);
+        /* ここを修正：X軸で中央揃えにする */
+        z-index: 1;
+        top: 75px;
+    }
+
+    .timeline-content {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        /* テキストを中央揃えにする */
+        margin-top: 20px;
+    }
+
+    .timeline-location {
+        font-size: 16px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .timeline-time {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+}

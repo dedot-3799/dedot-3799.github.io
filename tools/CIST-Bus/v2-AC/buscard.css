@@ -1,0 +1,95 @@
+/* 検索結果カードデザイン */
+#result {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.bus-result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 12px;
+}
+
+.bus-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.08);
+    border: 1px solid var(--primary);
+    padding: 18px 20px 14px 20px;
+    position: relative;
+    transition: box-shadow 0.2s, max-height 0.3s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.bus-card.open {
+    box-shadow: 0 4px 24px rgba(60, 80, 120, 0.08);
+    max-height: 500px;
+}
+
+.bus-card strong {
+    font-size: 2.1em;
+    color: var(--text-color);
+    letter-spacing: 0.5px;
+}
+
+.bus-card .bus-times {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 8px 0 4px 0;
+    font-size: 1.05em;
+}
+
+.bus-card .bus-times .arrow {
+    font-size: 1.2em;
+    color: var(--text-color);
+}
+
+.bus-card .bus-meta {
+    font-size: 0.98em;
+    color: var(--text-color);
+    margin-top: 4px;
+}
+
+.bus-card .bus-meta span {
+    margin-right: 16px;
+}
+
+.bus-card .bus-note {
+    color: var(--primary);
+    font-size: 0.95em;
+    font-weight: 500;
+}
+
+.bus-detail-content {
+    border-top: 1px solid var(--text-color);
+    transition: max-height .4s cubic-bezier(.4, 0, .2, 1), opacity .3s;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: auto;
+    margin-top: 8px;
+}
+
+.bus-card.open .bus-detail-content {
+    max-height: 300px;
+    opacity: 1;
+    pointer-events: auto;
+    display: block;
+}
+
+.detail-bus {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.bus-countdown {
+    font-size: 200%;
+    width: max-content;
+}

@@ -1,0 +1,32 @@
+.radio-group {
+    display: flex;
+    gap: 16px;
+    margin: 8px 0;
+}
+
+.radio-group label {
+    background: var(--background);
+    border-radius: 20px;
+    padding: 8px 18px;
+    cursor: pointer;
+    border: 2px solid var(--primary);
+    transition: background 0.2s, border 0.2s;
+    font-weight: 500;
+}
+
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-group input[type="radio"]:checked+span,
+.radio-group input[type="radio"]:checked~label {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
+
+.radio-group label:has(input[type="radio"]:checked) {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+}
