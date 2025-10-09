@@ -24,7 +24,7 @@
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: sans-serif;
     background: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -206,4 +206,10 @@ input[type="radio"] {
     text-align: center;
     display: block;
     color: var(--text-color);
+}
+
+@media screen and (min-width:546px) {
+    #reverseDirection{
+        transform: rotate(90deg);
+    }
 }
