@@ -25,7 +25,6 @@
 
 .bus-card.open {
     box-shadow: 0 4px 24px rgba(60, 80, 120, 0.08);
-    max-height: 500px;
 }
 
 .bus-card strong {
@@ -75,7 +74,7 @@
 }
 
 .bus-card.open .bus-detail-content {
-    max-height: 300px;
+    max-height: 700px;
     opacity: 1;
     pointer-events: auto;
     display: block;

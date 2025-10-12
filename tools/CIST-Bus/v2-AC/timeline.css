@@ -1,169 +1,202 @@
-.timeline-container {
-    width: 350px;
-    background-color: var(--background);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+    :root {
+        --dot-size: 12px;
+        --dot-size-terminal: 20px;
+        --line-thickness: 3px;
+        --gap: 12px;
+        --label-font: 14px;
+    }
 
-.timeline-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
-.timeline {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    overflow-x: auto;
-}
-
-.timeline::before {
-    content: '';
-    position: absolute;
-    top: 25px;
-    left: 10px;
-    /* ドットの左位置に合わせる */
-    width: 2px;
-    height: calc(100% - 75px);
-    /* 最初のドットと最後のドットの間 */
-    background-color: var(--primary);
-    z-index: 0;
-}
-
-.timeline-item {
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding-left: 30px;
-    margin-bottom: 25px;
-}
-
-.timeline-dot {
-    width: 10px;
-    height: 10px;
-    background-color: var(--text-color);
-    border-radius: 50%;
-    position: absolute;
-    left: 5.5px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-}
-
-.timeline-start .timeline-dot,.timeline-end .timeline-dot {
-    left: 3.5px;
-    background-color: var(--result-bg2);
-    border: 3px solid var(--text-color);
-}
-
-.timeline-content {
-    display: flex;
-    flex-direction: column;
-    margin-left: 15px;
-}
-
-.timeline-time {
-    font-size: 14px;
-    color: var(--text-color);
-    margin-bottom: 2px;
-}
-
-.timeline-location {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-
-@media screen and (min-width: 862px) {
-
-    .timeline-container {
-        width: 90%;
-        max-width: 1000px;
-        /* 最大幅を設定してPC表示で広がりすぎないようにする */
-        border-radius: 12px;
-        padding: 30px 20px;
-        overflow-x: auto;
+    .timeline-wrapper {
+        max-width: 800px;
+        margin: 0 auto
     }
 
     .timeline {
-        list-style: none;
-        padding: 0;
-        margin: 0;
         display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        /* ここを修正：下揃えにする */
-        position: relative;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: var(--gap);
+        justify-content: center;
+        
     }
 
-    .timeline::before {
-        content: '';
-        position: absolute;
-        top: 79px;
-        /* ドットの垂直位置に合わせて調整 */
-        left: 75px;
-        width: auto;
-        right: 36.5px;
-        height: 2px;
-        z-index: 0;
-    }
-
-    .timeline-item {
-        display: flex;
+    .timeline.vertical {
         flex-direction: column;
+        align-items: flex-start;
+        width: 162px;
+    }
+
+    .timeline.horizontal {
+        flex-direction: row;
         align-items: center;
-        text-align: center;
-        position: relative;
-        z-index: 1;
-        min-width: 80px;
-        /* 項目が狭くなりすぎないように最小幅を設定 */
+        justify-content: center;
     }
 
-    .timeline-dot-wrapper {
-        position: relative;
-        padding-bottom: 20px;
-    }
-
-    .timeline-start .timeline-dot,.timeline-end .timeline-dot {
-        top: 72.5px;
-        left: calc(50% + 22.5px);
-    }
-
-    .timeline-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        position: absolute;
-        bottom: 0;
-        /* ここを修正：親要素の下端に配置 */
-        left: calc(50% + 22.5px);
-        transform: translateX(-50%);
-        /* ここを修正：X軸で中央揃えにする */
-        z-index: 1;
-        top: 75px;
-    }
-
-    .timeline-content {
+    .segment {
         display: flex;
-        flex-direction: column-reverse;
         align-items: center;
-        /* テキストを中央揃えにする */
-        margin-top: 20px;
+        gap: 10px;
     }
 
-    .timeline-location {
-        font-size: 16px;
-        font-weight: 500;
+    .vertical .segment {
+        flex-direction: row;
+    }
+
+    .horizontal .segment {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .dot {
+        width: var(--dot-size);
+        height: var(--dot-size);
+        border-radius: 50%;
+        background: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .dot.terminal {
+        width: var(--dot-size-terminal);
+        height: var(--dot-size-terminal);
+        background: var(--primary);
+    }
+
+    .station-name {
+        font-size: var(--label-font);
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 180px;
     }
 
-    .timeline-time {
-        font-size: 14px;
-        margin-top: 5px;
+    .horizontal .station-name {
+        max-width: 100px;
     }
-}
+
+    .label {
+        font-size: 13px;
+        color: var(--result-bg2);
+    }
+
+    .time {
+        font-size: 13px;
+        color: var(--primary);
+        margin-right: 6px;
+    }
+
+    .connector {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .vertical .connector {
+        width: 4px;
+        height: 60px;
+        margin-left: calc(var(--dot-size)/2 - 2px);
+    }
+
+    .horizontal .connector {
+        height: 4px;
+        width: 100px;
+        margin-top: calc(var(--dot-size)/2 + 1px);
+    }
+
+    .connector .line {
+        position: relative;
+        left: 3.5px;
+        width: 100%;
+        height: 100%;
+    }
+
+    .vertical .connector.walking .line {
+        background: repeating-linear-gradient(180deg, var(--result-bg2) 0 6px, transparent 6px 12px);
+    }
+
+    .horizontal .connector.walking .line {
+        background: repeating-linear-gradient(90deg, var(--result-bg2) 0 6px, transparent 6px 12px);
+    }
+
+    .connector.solid .line {
+        background: var(--result-bg2);
+    }
+
+    .transport-label {
+        position: absolute;
+        white-space: nowrap;
+        border-radius: 8px;
+        padding: 2px 6px;
+        font-size: 12px;
+        color: var(--text-color);
+    }
+
+    .vertical .transport-label {
+        top: 30%;
+        left: 12px;
+        transform: translateY(-50%);
+    }
+
+    .horizontal .transport-label {
+        top: -28px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .duration-label,
+    .transfer-label {
+        position: absolute;
+        white-space: nowrap;
+        font-size: 12px;
+        color: var(--text-color);
+        border-radius: 6px;
+        padding: 2px 4px;
+    }
+
+    .vertical .duration-label,
+    .vertical .transfer-label {
+        bottom: 0px;
+        left: 12px;
+    }
+
+    .horizontal .duration-label,
+    .horizontal .transfer-label {
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .transfer-label {
+        background: var(--transfer-bg);
+    }
+
+    @media (max-width:800px) {
+        :root {
+            --dot-size: 10px;
+            --dot-size-terminal: 16px;
+        }
+
+        .timeline {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .dot {
+            position: relative;
+            left: -45px;
+        }
+
+        .dot.terminal {
+            left: -48px;
+        }
+
+        .time {
+            position: relative;
+            left: 24px;
+        }
+
+        .station-name {
+            position: relative;
+            left: -4px;
+        }
+    }

@@ -4,9 +4,9 @@
     --card-bg: #fff;
     --primary: #d98d1c;
     --primary-dark: #a76b26;
-    --result-bg: #f6efe8;
+    --result-bg: #f5e4d3;
     --result-text: #222;
-    --result-bg2: #ffead0;
+    --result-bg2: #d85353;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,7 +18,7 @@
         --primary-dark: #9a633f;
         --result-bg: #4a402c;
         --result-text: #fff;
-        --result-bg2: #806142;
+        --result-bg2: #804242;
     }
 }
 
@@ -54,8 +54,7 @@ label {
     font-weight: bold;
 }
 
-select,
-input {
+select,input {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
@@ -66,8 +65,7 @@ input {
     color: var(--text-color);
 }
 
-select:focus,
-input:focus {
+select:focus,input:focus {
     border-color: var(--primary);
 }
 
@@ -114,14 +112,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     display: none;
 }
 
-
-
 input[type="radio"] {
     display: none;
 }
 
-.toggle-search,
-.toggle-search:hover {
+.toggle-search,.toggle-search:hover {
     margin-top: 1rem;
     display: none;
     background: transparent;
@@ -155,6 +150,10 @@ input[type="radio"] {
     display: block;
 }
 
+.schB{
+    display: flex;
+}
+
 @media screen and (max-width: 480px) {
     body {
         justify-content: center;
@@ -176,6 +175,11 @@ input[type="radio"] {
 
     .form-section {
         display: block;
+    }
+
+    .schB {
+        display: flex;
+        width: 40%;
     }
 
     select {
@@ -209,7 +213,7 @@ input[type="radio"] {
 }
 
 @media screen and (min-width:546px) {
-    #reverseDirection{
+    #reverseDirectionS{
         transform: rotate(90deg);
     }
 }

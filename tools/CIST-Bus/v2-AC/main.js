@@ -1,57 +1,7 @@
 let data = [];
 let tdata = {};
 var stpwd = "乗り場";
-
-fetch(`https://script.google.com/macros/s/AKfycbwFaXX9a-PRN8nruO75vsLAbOGbZAmMOQeoI5bU1z7MNoIPcARLQHSvFiEeF-bkZpvT/exec`, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'text/plain'
-    },
-})
-    // data.jsonは同じディレクトリ内のファイル名
-    .then(response => {
-        if (!response.ok) throw new Error('ファイル取得に失敗しました');
-        return response.json(); // JSONとしてパース
-    })
-    .then(dataD => {
-        // データをHTMLに表示（例として "name" を表示）
-        console.log(dataD)
-        data = dataD;
-        let d = document.getElementsByTagName('*');
-        for (let i = 0; i < d.length; i++) {
-            d[i].classList.remove('load');
-        }
-        let b = Object.keys(data[1][0]);
-        b.forEach(v => {
-            if (v.match(/乗り場/)) stpwd = v;
-        });
-        console.log(stpwd);
-    })
-    .catch(error => {
-        loadStatus.textContent = error;
-        console.error('エラー:', error);
-    });
-
-fetch(`https://script.google.com/macros/s/AKfycbwWfnCBAIWII2TzLiqx3UB1DLECGGKDG0hXTf3-RtJYkVGkteqnbJuocZsirbMZEWXO/exec`, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'text/plain'
-    },
-})
-    // data.jsonは同じディレクトリ内のファイル名
-    .then(response => {
-        if (!response.ok) throw new Error('ファイル取得に失敗しました');
-        return response.json(); // JSONとしてパース
-    })
-    .then(dataD => {
-        // データをHTMLに表示（例として "name" を表示）
-        console.log(dataD)
-        tdata = dataD;
-    })
-    .catch(error => {
-        loadStatus.textContent = error;
-        console.error('エラー:', error);
-    });
+let loaded = false, loaded1 = false, loaded2 = false, loadederrord = false;
 
 // 出発地と到着地の入れ替えボタン
 document.getElementById("reverseDirection").addEventListener("click", () => {
@@ -85,14 +35,14 @@ document.getElementById("nowLocation").addEventListener("click", () => {
         "新札幌駅": [43.038789, 141.472469],
         "札幌駅": [43.068611, 141.350778]
     };
-    let distance = Infinity, result = "", resltAr=[];
+    let distance = Infinity, result = "", resltAr = [];
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition((crd) => {
             const latitude = crd.coords.latitude, longitude = crd.coords.longitude, lDk = Object.keys(locationData);
             for (let i = 0; i < lDk.length; i++) {
                 const el = locationData[lDk[i]];
-                const Ndistance = 6378.137*Math.acos(Math.sin(degToRad(longitude))*Math.sin(degToRad(el[1]))+Math.cos(degToRad(longitude))*Math.cos(degToRad(el[1]))*Math.cos(degToRad(el[0]) - degToRad(latitude)));
-                resltAr.push({place:lDk[i],distance:Ndistance});
+                const Ndistance = 6378.137 * Math.acos(Math.sin(degToRad(longitude)) * Math.sin(degToRad(el[1])) + Math.cos(degToRad(longitude)) * Math.cos(degToRad(el[1])) * Math.cos(degToRad(el[0]) - degToRad(latitude)));
+                resltAr.push({ place: lDk[i], distance: Ndistance });
                 if (distance > Ndistance) {
                     distance = Ndistance;
                     result = lDk[i];
@@ -107,7 +57,7 @@ document.getElementById("nowLocation").addEventListener("click", () => {
                 }
             }
             console.log(resltAr);
-        }, () => { alert("位置情報の取得に失敗しました。") },{enableHighAccuracy:true});
+        }, () => { alert("位置情報の取得に失敗しました。") }, { enableHighAccuracy: true });
     } else {
         alert("お使いのブラウザでは位置情報を取得できません。")
     }
@@ -116,7 +66,6 @@ document.getElementById("nowLocation").addEventListener("click", () => {
 function degToRad(n) {
     return n / 180 * Math.PI;
 }
-
 
 //時間(分)を比較するために数値化する関数
 function timeToNumber(timeStr) {
@@ -304,7 +253,7 @@ function parseDetail(t) {
         const l = g[i];
         if (new RegExp(`${new Date().getMonth() + 1}/${new Date().getDate()}`).test(l)) return l.split("：")[1];
     }
-    return "";
+    return "運行情報なし";
 };
 
 function searchRoute() {
@@ -328,6 +277,23 @@ function searchRoute() {
         toggleBtn.style.display = "block";
         return;
     }
+
+    if (!loaded) {
+        resultDiv.innerHTML = "経路情報を取得中です。";
+        resultDiv.style.display = "block";
+        form.classList.add("collapsed");
+        toggleBtn.style.display = "block";
+        return;
+    }
+
+    if (loadederrord) {
+        resultDiv.innerHTML = "経路情報の取得に失敗しました。再読み込みしてください。";
+        resultDiv.style.display = "block";
+        form.classList.add("collapsed");
+        toggleBtn.style.display = "block";
+        return;
+    }
+
     let routes;
     if ((end == "札幌駅" && (start == "本部棟" || start == "研究実験棟")) ||
         (end == "新札幌駅" && (start == "本部棟" || start == "研究実験棟")) ||
@@ -372,7 +338,7 @@ function searchRoute() {
         let countdownId = "bus-countdown-" + Math.random().toString(36).slice(2);
         output += `
                 <div class="bus-card" data-idx="${idx}">
-                    <strong>${bus[start]} → ${bus[end]} </strong>  <span style="display:block;">(${timeToNumber(bus[end]) - timeToNumber(bus[start])}分)</span>
+                    <strong>${bus[start]} → ${bus[end]} </strong> <span>(${timeToNumber(bus[end]) - timeToNumber(bus[start])}分)</span>
                     <div class="bus-times">
                         ${typeof bus["南千歳駅発"] != "undefined" || typeof bus["南千歳駅着"] != "undefined" ? (timeToNumber(bus["南千歳駅発"]) - timeToNumber(bus["南千歳駅着"]) < 5 ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--text-color)" viewBox="0 0 256 256"><path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"></path></svg>乗換時間が短いです ' : "") : ""}${typeof bus["備考"] === "undefined" ? "" : (`<div class="bus-note">${parseDetail(bus["備考"])}</div>`)}${typeof bus[stpwd] === "undefined" ? "" : (start == "本部棟" ? `<span>乗り場: ${bus[stpwd]}</span>` : "")}<span style="margin-left:auto;font-weight:500;" id="${countdownId}">${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "あと" : ""}${formatTotalMinutes(Math.abs(timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5))))}${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "" : "前"} </span>
                     </div>
@@ -465,51 +431,54 @@ function searchRoute() {
             } catch { fl = false }
 
             let countdownId = "bus-countdown-" + Math.random().toString(36).slice(2);
+            let contentID = "bus-countdown-" + Math.random().toString(36).slice(2);
             detail.innerHTML = `
                         <div class="detail-bus">
-                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span>${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span>${typeof routes[idx].trainNumber !== "undefined" ? "<span>" + (start.match(/駅/) ? "" : "南千歳駅から ") + trainumbertoname(routes[idx].trainNumber) + " に乗車</span>" : ""}</div>
-                            <ul class="timeline"></ul>
-                        ${typeof bus["備考"] === "undefined" ? "" : `<div>※${bus["備考"]}</div>`}
-                        ${typeof bus[stpwd] === "undefined" ? "" : `<div">乗り場: ${bus[stpwd]}</div>`}</div>
+                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span id="isDepartured">${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span>${typeof routes[idx].trainNumber !== "undefined" ? "<span>" + (start.match(/駅/) ? "" : "南千歳駅から ") + trainumbertoname(routes[idx].trainNumber) + " に乗車</span>" : ""}</div>
+                            <div id="timeline-${contentID}" class="timeline"></div>
+  </div>
+                        ${typeof bus["備考"] === "undefined" ? "" : `<div>※${bus["備考"]}</div>`}</div>
                     `;
-            const timelineList = document.querySelector('.timeline');
+            console.log(timelineData);
+            let busD = createRouteDetail(timelineData, typeof routes[idx].trainNumber == "undefined" ? "" : trainumbertoname(routes[idx].trainNumber), bus[stpwd]);
+
             // タイムラインの項目を動的に生成
-            timelineData.forEach(item => {
-                const li = document.createElement('li');
-                li.classList.add('timeline-item');
-                if (item.type === 'start' || item.type === 'end') {
-                    li.classList.add(`timeline-${item.type}`);
-                }
-
-                li.innerHTML = `
-        <div class="timeline-dot"></div>
-        <div class="timeline-content">
-            <span class="timeline-time">${item.time}</span>
-            <span class="timeline-location">${item.location}</span>
-        </div>
-    `
-                timelineList.appendChild(li);
-            });
-
+            createTimeline("#timeline-" + contentID, busD);
+            window.addEventListener('resize', () => createTimeline('#timeline-' + contentID, busD));
             // カウントダウン
             function updateCountdown() {
                 let now = new Date();
-                let [h, m] = bus[start].split(":").map(Number);
-                let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
-                if (target < now) target.setDate(target.getDate() + 1); // 翌日対応
-                let diff = Math.floor((target - now) / 1000);
-                let sign = diff < 0 ? "-" : "";
-                diff = Math.abs(diff);
-                let hh = String(Math.floor(diff / 3600)).padStart(2, "0");
-                let mm = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
-                let ss = String(diff % 60).padStart(2, "0");
+                let stp = Object.keys(bus).filter(v => bus[v].match(/\d+:\d+/) && timeToNumber(`${now.getHours()}:${now.getMinutes()}`) - timeToNumber(bus[v]) < 0);
                 let el = document.getElementById(countdownId);
-                if (el) el.textContent = `${sign}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${ss + "秒"}`;
-                let next = 1000 - (now.getMilliseconds());
-                detail._timer = setTimeout(updateCountdown, next);
+                if (stp.length < 1) {
+                    el.textContent = "到着済み";
+                    let ga = Object.keys(bus).filter(v => bus[v].match(/\d+:\d+/));
+                    isDepartured.textContent = ga[ga.length - 1];
+                } else {
+                    let [h, m] = bus[stp[0]].split(":").map(Number);
+                    let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+                    let diff = Math.floor((target - now) / 1000);
+                    let sign = diff < 0 ? "-" : "";
+                    diff = Math.abs(diff);
+                    let hh = String(Math.floor(diff / 3600)).padStart(2, "0");
+                    let mm = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+                    let ss = String(diff % 60).padStart(2, "0");
+
+                    if (el) el.textContent = `${sign}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${ss + "秒"}`;
+                    if (sign == "-" && document.getElementById("result").style.display == "none") {
+                        el.textContent = "発車済み";
+                        isDepartured.textContent = isDepartured.textContent.split(" ")[0];
+                    } else {
+                        try {
+                            document.getElementById("isDepartured").textContent = `${stp[0]} ${["発", "着"].includes(stp[0].slice(-1)) ? "" : stp.length == 1 ? "到着" : "出発"}まで`;
+                            let next = 1000 - (now.getMilliseconds());
+                            detail._timer = setTimeout(updateCountdown, next);
+                        } catch { }
+                    }
+                }
             }
             updateCountdown();
-            detail.style.maxHeight = "300px";
+            detail.style.maxHeight = "";
             detail.style.opacity = "1";
             detail.style.pointerEvents = "auto";
         });
@@ -567,3 +536,103 @@ window.onload = function () {
 document.querySelectorAll('input[name="option"]').forEach((el) => {
     el.addEventListener("change", settingsSave);
 });
+
+function shouldReloadBusData() {
+    const saved = JSON.parse(localStorage.getItem("busDataMeta"));
+    if (!saved) return true;
+    const lastWeek = saved.week;
+    const now = new Date();
+    // 日曜を週の区切りとする
+    const currentWeek = now.getFullYear() + "-" + getWeekNumber(now);
+    return lastWeek !== currentWeek;
+}
+
+function getWeekNumber(d) {
+    // 日曜始まりの週番号
+    const date = new Date(d.getTime());
+    date.setHours(0, 0, 0, 0);
+    // 日曜まで戻す
+    date.setDate(date.getDate() - date.getDay());
+    const yearStart = new Date(date.getFullYear(), 0, 1);
+    const weekNo = Math.floor(((date - yearStart) / 86400000 + yearStart.getDay()) / 7);
+    return weekNo;
+}
+
+function saveBusDataToLocal(data, tdata) {
+    localStorage.setItem("busData", JSON.stringify({ data, tdata }));
+    const now = new Date();
+    localStorage.setItem("busDataMeta", JSON.stringify({
+        week: now.getFullYear() + "-" + getWeekNumber(now),
+        saved: now.toISOString()
+    }));
+}
+
+function loadBusDataFromLocal() {
+    const saved = JSON.parse(localStorage.getItem("busData"));
+    if (!saved) return null;
+    return saved;
+}
+
+// データ取得処理
+function fetchBusData() {
+    return Promise.all([
+        fetch(`https://script.google.com/macros/s/AKfycbwFaXX9a-PRN8nruO75vsLAbOGbZAmMOQeoI5bU1z7MNoIPcARLQHSvFiEeF-bkZpvT/exec`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'text/plain' }
+        }).then(response => {
+            if (!response.ok) throw new Error('ファイル取得に失敗しました');
+            return response.json();
+        }),
+        fetch(`https://script.google.com/macros/s/AKfycbwWfnCBAIWII2TzLiqx3UB1DLECGGKDG0hXTf3-RtJYkVGkteqnbJuocZsirbMZEWXO/exec`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'text/plain' }
+        }).then(response => {
+            if (!response.ok) throw new Error('ファイル取得に失敗しました');
+            return response.json();
+        })
+    ]);
+}
+
+// 初期ロード
+(function () {
+    let local = loadBusDataFromLocal();
+    if (local && !shouldReloadBusData()) {
+        data = local.data;
+        tdata = local.tdata;
+        let b = Object.keys(data[1][0]);
+        b.forEach(v => {
+            if (v.match(/乗り場/)) stpwd = v;
+        });
+        loaded = loaded1 = loaded2 = true;
+    } else {
+        fetchBusData().then(([dataD, tdataD]) => {
+            data = dataD;
+            tdata = tdataD;
+            let b = Object.keys(data[1][0]);
+            b.forEach(v => {
+                if (v.match(/乗り場/)) stpwd = v;
+            });
+            saveBusDataToLocal(data, tdata);
+            loaded = loaded1 = loaded2 = true;
+        }).catch(error => {
+            if (typeof loadStatus !== "undefined") loadStatus.textContent = error;
+            loadederrord = true;
+        });
+    }
+})();
+
+function reloadData() {
+    fetchBusData().then(([dataD, tdataD]) => {
+        data = dataD;
+        tdata = tdataD;
+        let b = Object.keys(data[1][0]);
+        b.forEach(v => {
+            if (v.match(/乗り場/)) stpwd = v;
+        });
+        saveBusDataToLocal(data, tdata);
+        loaded = loaded1 = loaded2 = true;
+    }).catch(error => {
+        if (typeof loadStatus !== "undefined") loadStatus.textContent = error;
+        loadederrord = true;
+    });
+}
