@@ -75,8 +75,8 @@ function createRouteDetail(busb, train, stp) {
     let routeDetail = [];
     busD.forEach((item) => { if (["発", "着"].includes(item.location.slice(-1))) item.location = item.location.slice(0, -1) });
     busD.forEach((item, index) => {
-        if (item.type) routeDetail.push({ type: "station", time: item.time, name: item.location, terminal: true });
-        else routeDetail.push({ type: "station", time: item.time, name: item.location });
+        if (item.type) routeDetail.push({ type: "station", time: formatTimeData(item.time), name: item.location, terminal: true });
+        else routeDetail.push({ type: "station", time: formatTimeData(item.time), name: item.location });
         if (busD.length - 1 > index) {
             let nm = "シャトルバス", mv = "bus", tr = false;
             if (busD[index + 1].location == item.location) mv = "walk", tr = true, nm = "徒歩2分";
@@ -95,6 +95,12 @@ function createRouteDetail(busb, train, stp) {
         }
     }
     if (!routeDetail[routeDetail.length - 1].terminal) routeDetail.splice(routeDetail.length - 2, 2);
+    if (!routeDetail[0].terminal) routeDetail.splice(0, 2);
     if (routeDetail[0].name == "本部棟" && stp) routeDetail[0].name = `${routeDetail[0].name} (乗り場:${stp})`;
     return routeDetail;
+}
+
+function formatTimeData(n) {
+    if (!n) return "";
+    return n.split(":").map(x => x.padStart(2, '0')).join(":");
 }
