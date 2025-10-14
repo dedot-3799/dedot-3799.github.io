@@ -1,4 +1,4 @@
-const CACHE_NAME = "cist-bus-v2.34.1";
+const CACHE_NAME = "cist-bus-v2.34.2";
 const urlsToCache = [
   "./",
   "./index.html",
