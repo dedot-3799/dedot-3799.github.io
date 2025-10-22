@@ -1,8 +1,9 @@
-const CACHE_NAME = "cist-bus-v2.34.2";
+const CACHE_NAME = "cist-bus-v2.36.1";
 const urlsToCache = [
   "./",
   "./index.html",
   "./style.css",
+  "./style2.css",
   "./radio.css",
   "./timeline.css",
   "./buscard.css",

@@ -54,7 +54,8 @@ label {
     font-weight: bold;
 }
 
-select,input {
+select,
+input {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #ccc;
@@ -65,7 +66,8 @@ select,input {
     color: var(--text-color);
 }
 
-select:focus,input:focus {
+select:focus,
+input:focus {
     border-color: var(--primary);
 }
 
@@ -93,7 +95,8 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     opacity: 0;
 }
 
-#result {
+#result,
+.settings {
     margin-top: 1.5rem;
     padding: 1rem;
     background-color: var(--result-bg);
@@ -103,12 +106,36 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     text-align: left;
 }
 
-.form-section {
+.form-section,
+.settings {
     display: flex;
     flex-wrap: wrap;
 }
 
-.form-section.collapsed {
+.settings {
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-basis: content;
+    h4 {
+        margin: 0;
+        max-width: 200px;
+    }
+    p {
+        display: flex;
+        flex-direction: column;
+    }
+
+    p.ch {
+        flex-direction: row;
+    }
+    p.ch input[type="checkbox"] {
+        height: 32px;
+        width: 32px;
+    }
+}
+
+.form-section.collapsed,
+.settings.collapsed {
     display: none;
 }
 
@@ -116,7 +143,8 @@ input[type="radio"] {
     display: none;
 }
 
-.toggle-search,.toggle-search:hover {
+.toggle-search,
+.toggle-search:hover {
     margin-top: 1rem;
     display: none;
     background: transparent;
@@ -150,8 +178,14 @@ input[type="radio"] {
     display: block;
 }
 
-.schB{
+.schB {
     display: flex;
+}
+
+.icnbt {
+    display: flex;
+    width: 50px;
+    height: 50px;
 }
 
 @media screen and (max-width: 480px) {
@@ -213,7 +247,11 @@ input[type="radio"] {
 }
 
 @media screen and (min-width:546px) {
-    #reverseDirectionS{
+    #reverseDirectionS {
         transform: rotate(90deg);
     }
+}
+
+.none {
+    display: none;
 }

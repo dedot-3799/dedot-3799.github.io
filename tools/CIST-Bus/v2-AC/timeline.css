@@ -23,7 +23,7 @@
     .timeline.vertical {
         flex-direction: column;
         align-items: flex-start;
-        width: 162px;
+        width: 185px;
     }
 
     .timeline.horizontal {
