@@ -5,13 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>バス</title>
-    <meta name="description" content="千歳科学技術大学のシャトルバスを検索する非公式アプリです。" />
-    <meta name="keywords" content="CIST,BUS" />
+    <meta name="description" content="千歳科学技術大学のバスを検索するアプリです。" />
+    <meta name="keywords" content="千歳科学技術大学,バス,バス案内,CIST,BUS" />
     <meta name="author" content="dedot-3799" />
     <meta name="theme-color" content="#3f51b5" />
-    <meta property="og:title" content="CIST Bus Times" />
-    <meta property="og:description" content="千歳科学技術大学のシャトルバスを検索する非公式アプリです。" />
-    <meta property="og:image" content="https://dedot-3799.github.io/tools/CIST-Bus/v2/ogp.png" />
+    <meta property="og:title" content="CISTのバス" />
+    <meta property="og:description" content="千歳科学技術大学のバスを検索するアプリです。" />
+    <meta property="og:image" content="https://dedot-3799.github.io/v2/ogp.png" />
     <meta property="og:type" content="website" />
 
     <link rel="stylesheet" href="./style.css" />
@@ -19,43 +19,53 @@
     <link rel="stylesheet" href="./timeline.css" />
     <link rel="stylesheet" href="./buscard.css" />
 </head>
-<div class="sc load">
-    <span id="loadStatus">Loading...</span>
-</div>
 
 <body>
-    <div class="container load">
+    <div class="container">
         <h1>CIST Bus Times</h1>
 
         <div class="form-section" id="searchForm">
             <label for="start" class="srhf">出発
-            <select type="text" id="start">
-                <option value="千歳駅">千歳駅</option>
-                <option value="南千歳駅" selected>南千歳駅</option>
-                <option value="本部棟">本部棟</option>
-                <option value="研究実験棟">研究・実験棟</option>
-            </select></label>
-
+                <select type="text" id="start">
+                    <option value="千歳駅">千歳駅</option>
+                    <option value="南千歳駅" selected>南千歳駅</option>
+                    <option value="本部棟">本部棟</option>
+                    <option value="研究実験棟">研究・実験棟</option>
+                </select></label>
+            <div class="schB">
+                <label><button id="nowLocation"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            fill="#fff" viewBox="0 0 256 256">
+                            <path
+                                d="M200,224H150.54A266.56,266.56,0,0,0,174,200.25c27.45-31.57,42-64.85,42-96.25a88,88,0,0,0-176,0c0,31.4,14.51,64.68,42,96.25A266.56,266.56,0,0,0,105.46,224H56a8,8,0,0,0,0,16H200a8,8,0,0,0,0-16ZM56,104a72,72,0,0,1,144,0c0,57.23-55.47,105-72,118C111.47,209,56,161.23,56,104Zm112,0a40,40,0,1,0-40,40A40,40,0,0,0,168,104Zm-64,0a24,24,0,1,1,24,24A24,24,0,0,1,104,104Z">
+                            </path>
+                        </svg></button></label><label><button id="reverseDirection"><svg id="reverseDirectionS"
+                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#fff" viewBox="0 0 256 256">
+                            <path
+                                d="M117.66,170.34a8,8,0,0,1,0,11.32l-32,32a8,8,0,0,1-11.32,0l-32-32a8,8,0,0,1,11.32-11.32L72,188.69V48a8,8,0,0,1,16,0V188.69l18.34-18.35A8,8,0,0,1,117.66,170.34Zm96-96-32-32a8,8,0,0,0-11.32,0l-32,32a8,8,0,0,0,11.32,11.32L168,67.31V208a8,8,0,0,0,16,0V67.31l18.34,18.35a8,8,0,0,0,11.32-11.32Z">
+                            </path>
+                        </svg></button></label>
+            </div>
             <label for="end" class="srhf">到着
-            <select type="text" id="end">
-                <option value="千歳駅">千歳駅</option>
-                <option value="南千歳駅">南千歳駅</option>
-                <option value="本部棟" selected>本部棟</option>
-                <option value="研究実験棟">研究・実験棟</option>
-            </select></label>
+                <select type="text" id="end">
+                    <option value="千歳駅">千歳駅</option>
+                    <option value="南千歳駅">南千歳駅</option>
+                    <option value="本部棟" selected>本部棟</option>
+                    <option value="研究実験棟">研究・実験棟</option>
+                </select></label>
 
             <label class="srhf">
-            <div id="option-group" class="radio-group">
-                <label>
-                    <input type="radio" name="option" value="departure" checked>
-                    出発時刻
-                </label>
-                <label>
-                    <input type="radio" name="option" value="arrival">
-                    到着時刻
-                </label>
-            </div></label>
-            <input type="time" id="time" value="08:00"/>
+                <div id="option-group" class="radio-group">
+                    <label>
+                        <input type="radio" name="option" value="departure" checked>
+                        出発時刻
+                    </label>
+                    <label>
+                        <input type="radio" name="option" value="arrival">
+                        到着時刻
+                    </label>
+                </div>
+            </label>
+            <input type="time" id="time" value="08:00" />
 
             <h6 style="color: #888; margin: 18px 0 -12px 0;">最大5件まで表示されます。</h6>
             <button onclick="searchRoute()">検索</button>

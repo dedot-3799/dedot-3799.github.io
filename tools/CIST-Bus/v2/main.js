@@ -1,4 +1,7 @@
 let data = [];
+let loaded = false;
+var stpwd = "乗り場";
+var offset = 0;
 
 fetch(`https://script.google.com/macros/s/AKfycbwFaXX9a-PRN8nruO75vsLAbOGbZAmMOQeoI5bU1z7MNoIPcARLQHSvFiEeF-bkZpvT/exec`, {
     method: 'GET',
@@ -15,15 +18,99 @@ fetch(`https://script.google.com/macros/s/AKfycbwFaXX9a-PRN8nruO75vsLAbOGbZAmMOQ
         // データをHTMLに表示（例として "name" を表示）
         console.log(dataD)
         data = dataD;
-        let d = document.getElementsByTagName('*');
-        for (let i = 0; i < d.length; i++) {
-            d[i].classList.remove('load');
-        }
+        let b = Object.keys(data[1][0]);
+        b.forEach(v => {
+            if (v.match(/乗り場/)) stpwd = v;
+        });
+        loaded = true;
     })
     .catch(error => {
         loadStatus.textContent = error;
         console.error('エラー:', error);
     });
+
+getNtpOffset();
+
+async function getNtpOffset() {
+    const clientTime = Date.now();
+    const T1 = performance.now();
+    const res = await fetch('https://worldtimeapi.org/api/timezone/Asia/Tokyo');
+    const T4 = performance.now();
+
+    const data = await res.json();
+    const serverTime = new Date(data.datetime).getTime(); // T3 ≒ T2（WorldTimeAPIは1時刻のみ）
+
+
+    const RTT = T4 - T1;
+    offset = serverTime-(clientTime + RTT / 2);
+
+    console.log(clientTime,serverTime,serverTime-clientTime,offset)
+
+    console.log(`推定RTT: ${RTT.toFixed(2)} ms`);
+    console.log(`推定offset: ${offset.toFixed(2)} ms`);
+}
+
+// 出発地と到着地の入れ替えボタン
+document.getElementById("reverseDirection").addEventListener("click", () => {
+    var st = document.getElementById("start");
+    var et = document.getElementById("end");
+    var gh = {
+        start: st.value,
+        end: et.value
+    };
+    var g = JSON.parse(JSON.stringify(gh));
+    var b = ["start", "end"];
+    for (let k = 0; k < b.length; k++) {
+        const selectElement = document.getElementById(b[k]);
+        let options = selectElement.options;
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === g[b[b.length - k - 1]]) {
+                options[i].selected = true;
+                break;
+            }
+        }
+    };
+    settingsSave();
+});
+
+document.getElementById("nowLocation").addEventListener("click", () => {
+    const locationData = {
+        "本部棟": [42.792765, 141.696332],
+        "研究実験棟": [42.797254, 141.700024],
+        "南千歳駅": [42.808879, 141.675847],
+        "千歳駅": [42.828800, 141.652444]
+    };
+    let distance = Infinity, result = "", resltAr = [];
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((crd) => {
+            const latitude = crd.coords.latitude, longitude = crd.coords.longitude, lDk = Object.keys(locationData);
+            for (let i = 0; i < lDk.length; i++) {
+                const el = locationData[lDk[i]];
+                const Ndistance = 6378.137 * Math.acos(Math.sin(degToRad(longitude)) * Math.sin(degToRad(el[1])) + Math.cos(degToRad(longitude)) * Math.cos(degToRad(el[1])) * Math.cos(degToRad(el[0]) - degToRad(latitude)));
+                resltAr.push({ place: lDk[i], distance: Ndistance });
+                if (distance > Ndistance) {
+                    distance = Ndistance;
+                    result = lDk[i];
+                }
+            }
+            const selectElement = document.getElementById("start");
+            let options = selectElement.options;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value === result) {
+                    options[i].selected = true;
+                    break;
+                }
+            }
+            console.log(resltAr);
+        }, () => { alert("位置情報の取得に失敗しました。") }, { enableHighAccuracy: true });
+    } else {
+        alert("お使いのブラウザでは位置情報を取得できません。")
+    }
+});
+
+function degToRad(n) {
+    return n / 180 * Math.PI;
+}
 
 function timeToNumber(timeStr) {
     let a = timeStr.split(":").map(x => parseInt(x));
@@ -54,7 +141,7 @@ function busFinder(time, from, to, option = "departure", length) {
             for (let i = 0; i < busData.length; i++) {
                 if (c >= length) break;
                 if (typeof busData[i][to] == "undefined" || typeof busData[i][from] == "undefined") continue;
-                if ((timeToNumber(time) < timeToNumber(busData[i][from]))) {
+                if ((timeToNumber(time) <= timeToNumber(busData[i][from]))) {
                     result.push(busData[i]);
                     c++;
                 }
@@ -75,7 +162,7 @@ function busFinder(time, from, to, option = "departure", length) {
             for (let i = busData.length - 1; i >= 0; i--) {
                 if (c >= length) break;
                 if (typeof busData[i][to] == "undefined" || typeof busData[i][from] == "undefined") continue;
-                if ((timeToNumber(time) > timeToNumber(busData[i][to]))) {
+                if ((timeToNumber(time) >= timeToNumber(busData[i][to]))) {
                     result.push(busData[i]);
                     c++;
                 }
@@ -129,6 +216,14 @@ function searchRoute() {
         return;
     }
 
+    if (!loaded) {
+        resultDiv.innerHTML = "バスデータを読み込み中。";
+        resultDiv.style.display = "block";
+        form.classList.add("collapsed");
+        toggleBtn.style.display = "block";
+        return;
+    }
+
     const routes = busFinder(
         document.getElementById("time").value,
         start,
@@ -152,7 +247,7 @@ function searchRoute() {
         return;
     }
 
-    let output = `<strong>検索結果: ${routes.length}件</strong><h6 style="margin-bottom:10px;">検索条件: ${option === "departure" ? `${start} を ${document.getElementById("time").value} に出発して ${end} に到着するようなバス` : `${start} を出発して ${document.getElementById("time").value} までに ${end} に到着するようなバス`}</h6>`;
+    let output = `<strong>検索結果: ${routes.length}件</strong><h6 style="margin-bottom:10px;">検索条件: ${option === "departure" ? `${start} を ${document.getElementById("time").value} に出発して ${end} に到着するバス` : `${start} を出発して ${document.getElementById("time").value} までに ${end} に到着するバス`}</h6>`;
     output += `<div class="bus-result-list">`;
     routes.forEach((bus, idx) => {
         let countdownId = "bus-countdown-" + Math.random().toString(36).slice(2);
@@ -160,7 +255,7 @@ function searchRoute() {
                 <div class="bus-card" data-idx="${idx}">
                     <strong>${bus[start]} → ${bus[end]}</strong>
                     <div class="bus-times">
-                        ${typeof bus["備考"] === "undefined" ? "" : (bus["備考"].length > 7 ? "詳細な運行情報あり":`<div class="bus-note">${bus["備考"]}</div>`)}${typeof bus["乗り場"] === "undefined" ? "" : (start == "本部棟" ? `<span>乗り場: ${bus["乗り場"]}</span>` : "")}<span style="margin-left:auto;font-weight:500;" id="${countdownId}">${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "あと" : ""}${formatTotalMinutes(Math.abs(timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5))))}${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "" : "前"} </span>
+                        ${typeof bus["備考"] === "undefined" ? "" : (bus["備考"].length > 7 ? "詳細な運行情報あり" : `<div class="bus-note">${bus["備考"]}</div>`)}${typeof bus["乗り場"] === "undefined" ? "" : (start == "本部棟" ? `<span>乗り場: ${bus["乗り場"]}</span>` : "")}<span style="margin-left:auto;font-weight:500;" id="${countdownId}">${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "あと" : ""}${formatTotalMinutes(Math.abs(timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5))))}${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "" : "前"} </span>
                     </div>
                     
                     <div class="bus-detail-content"></div>
@@ -179,7 +274,7 @@ function searchRoute() {
             let mm = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
             let ss = String(diff % 60).padStart(2, "0");
             let el = document.getElementById(countdownId);
-            if (el) el.textContent = `${sign ? "":"あと"}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${(hh != "00" || mm != "00") ? "" : ss + "秒"}${sign ? "前":""}`;
+            if (el) el.textContent = `${sign ? "" : "あと"}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${(hh != "00" || mm != "00") ? "" : ss + "秒"}${sign ? "前" : ""}`;
             let next = 1000 - (now.getMilliseconds());
             timer = setTimeout(updateCountdown, next);
         }
@@ -225,7 +320,7 @@ function searchRoute() {
 
             let timelineData = [];
             Object.keys(bus).forEach(key => {
-                if (["備考", "乗り場Bus", "乗り場"].includes(key)) return;
+                if (["備考", stpwd].includes(key)) return;
                 if (key.match(/乗り場/)) return;
                 if (key == start) {
                     timelineData.push({ time: bus[key], location: key, type: 'start' });
@@ -241,7 +336,7 @@ function searchRoute() {
             let countdownId = "bus-countdown-" + Math.random().toString(36).slice(2);
             detail.innerHTML = `
                         <div class="detail-bus">
-                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span>${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span></div>
+                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span id="isDepartured">${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span></div>
                             <ul class="timeline"></ul>
                         ${typeof bus["備考"] === "undefined" ? "" : `<div class="text-xs" style="color:#d32f2f;">※${bus["備考"]}</div>`}
                         ${typeof bus["乗り場Bus"] === "undefined" ? "" : `<div class="text-xs" style="color:#555;">乗り場: ${bus["乗り場Bus"]}</div>`}</div>
@@ -267,20 +362,35 @@ function searchRoute() {
 
             // カウントダウン
             function updateCountdown() {
-                let now = new Date();
-                let [h, m] = bus[start].split(":").map(Number);
-                let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
-                if (target < now) target.setDate(target.getDate() + 1); // 翌日対応
-                let diff = Math.floor((target - now) / 1000);
-                let sign = diff < 0 ? "-" : "";
-                diff = Math.abs(diff);
-                let hh = String(Math.floor(diff / 3600)).padStart(2, "0");
-                let mm = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
-                let ss = String(diff % 60).padStart(2, "0");
+                let now = new Date(Date.now()+offset);
+                let stp = Object.keys(bus).filter(v => bus[v].match(/\d+:\d+/) && timeToNumber(`${now.getHours()}:${now.getMinutes()}`) - timeToNumber(bus[v]) < 0);
                 let el = document.getElementById(countdownId);
-                if (el) el.textContent = `${sign}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${ss + "秒"}`;
-                let next = 1000 - (now.getMilliseconds());
-                detail._timer = setTimeout(updateCountdown, next);
+                if (stp.length < 1) {
+                    el.textContent = "到着済み";
+                    let ga = Object.keys(bus).filter(v => bus[v].match(/\d+:\d+/));
+                    isDepartured.textContent = ga[ga.length - 1];
+                } else {
+                    let [h, m] = bus[stp[0]].split(":").map(Number);
+                    let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0);
+                    let diff = Math.floor((target - now) / 1000);
+                    let sign = diff < 0 ? "-" : "";
+                    diff = Math.abs(diff);
+                    let hh = String(Math.floor(diff / 3600)).padStart(2, "0");
+                    let mm = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+                    let ss = String(diff % 60).padStart(2, "0");
+
+                    if (el) el.textContent = `${sign}${hh == "00" ? "" : hh + "時間"}${mm == "00" ? "" : mm + "分"}${ss + "秒"}`;
+                    if (sign == "-" && document.getElementById("result").style.display == "none") {
+                        el.textContent = "発車済み";
+                        isDepartured.textContent = isDepartured.textContent.split(" ")[0];
+                    } else {
+                        try {
+                            document.getElementById("isDepartured").textContent = `${stp[0]} ${["発", "着"].includes(stp[0].slice(-1)) ? "" : stp.length == 1 ? "到着" : "出発"}まで`;
+                            let next = (1000 - (now.getMilliseconds() + offset)%1000) % 1000;
+                            detail._timer = setTimeout(updateCountdown, next);
+                        } catch (er) { console.error(er) }
+                    }
+                }
             }
             updateCountdown();
             detail.style.maxHeight = "300px";
@@ -340,5 +450,4 @@ window.onload = function () {
 // ラジオボタンにもイベント追加
 document.querySelectorAll('input[name="option"]').forEach((el) => {
     el.addEventListener("change", settingsSave);
-
 });
