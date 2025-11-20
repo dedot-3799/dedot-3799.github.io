@@ -1,4 +1,4 @@
-const CACHE_NAME = "cist-bus-v2.36.1";
+const CACHE_NAME = "cist-bus-v2.36.10";
 const urlsToCache = [
   "./",
   "./index.html",
@@ -32,8 +32,9 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
+          console.log(cacheName,cacheWhitelist.indexOf(cacheName));
           // ホワイトリストにない（＝古い）キャッシュを削除
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (!cacheWhitelist.includes(cacheName)) {
             return caches.delete(cacheName);
           }
         })

@@ -9,3 +9,11 @@
     right: 30px;
     top: 16px;
 }
+
+@media screen  and (max-width: 480px) {
+    .settings-label {
+        right: unset;
+        top: unset;
+        bottom: 16px;
+    }
+}

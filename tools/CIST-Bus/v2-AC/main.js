@@ -347,16 +347,22 @@ function trainumbertoname(trainnm) {
     }
 }
 
-function parseDetail(t) {
-    t = t.replace(/\s+/g, "").replace(/\n+/g, "");
-    if (!t.match(/・/) && (t.endsWith("発") || t.endsWith("行"))) return t + "バス" ;
-    else if (!t.match(/・/)) return t;
+function parseDetail(n) {
+    t = n.replace(/\s+/g, "").replace(/\n+/g, "");
+    let reslt = [];
+    if ((/発/.test(t) || /行/.test(t))) reslt.push(t.match(/※?.*?(行|発)/)[0] + "バス");
+    else if (!t.match(/・/)) return n;
     let g = t.split("・");
     for (let i = 0; i < g.length; i++) {
         const l = g[i];
-        if (new RegExp(`${new Date().getMonth() + 1}[/]?${new Date().getDate()}`).test(l)) return l.split("：")[1];
+        if (new RegExp(`${new Date().getMonth() + 1}[/]?${new Date().getDate()}`).test(l) && /:/.test(l)) reslt.push(l.split("：")[1]);
+        else if (new RegExp(`${new Date().getMonth() + 1}[/]?${new Date().getDate()}`).test(l)) {
+            let ga = l.split(/\(.\)/)[1];
+            if (!/運/.test(ga)) ga += "運行";
+            reslt.push("本日"+ga);
+        }
     }
-    return "運行情報なし";
+    return reslt.length == 0 ? "運行情報なし":reslt.join("\n");
 };
 
 function searchRoute() {
