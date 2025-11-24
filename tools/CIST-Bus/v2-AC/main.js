@@ -148,10 +148,10 @@ function trainBusFinder(time, from, to, option = "departure", length) {
                 if (typeof trainData[i][!flag ? "stopTime" : "bus"][from] == "undefined" || typeof trainData[i][flag ? "stopTime" : "bus"][to] == "undefined") continue;
                 if ((timeToNumber(time) <= timeToNumber(trainData[i][!flag ? "stopTime" : "bus"][from]))) {
                     if (!settings.isIncludesOfUnrealisticChange && Math.abs(timeToNumber(time) - timeToNumber(trainData[i][!flag ? "stopTime" : "bus"][from])) < 4) continue;
-                    if (settings.isOnlySpecialRapidTrain && !trainumbertoname(trainData[i].trainNumber).startsWith("特別快速")) continue;
-                    if (settings.isOnlySemiRapidTrain && !trainumbertoname(trainData[i].trainNumber).startsWith("区間快速")) continue;
-                    if (!settings.isIncludesOfLimitedExpressTrain && trainumbertoname(trainData[i].trainNumber).startsWith("特急")) continue;
-                    if (!settings.isIncludesOfLocalTrain && trainumbertoname(trainData[i].trainNumber).startsWith("普通列車")) continue;
+                    if (settings.isOnlySpecialRapidTrain && !trainNumberToName(trainData[i].trainNumber).startsWith("特別快速")) continue;
+                    if (settings.isOnlySemiRapidTrain && !trainNumberToName(trainData[i].trainNumber).startsWith("区間快速")) continue;
+                    if (!settings.isIncludesOfLimitedExpressTrain && trainNumberToName(trainData[i].trainNumber).startsWith("特急")) continue;
+                    if (!settings.isIncludesOfLocalTrain && trainNumberToName(trainData[i].trainNumber).startsWith("普通列車")) continue;
                     let tmp = {};
                     delete trainData[i]["bus"]["千歳駅"];
                     trainData[i]["stopTime"][flag ? "南千歳駅発" : "南千歳駅着"] = trainData[i]["stopTime"]["南千歳駅"];
@@ -174,10 +174,10 @@ function trainBusFinder(time, from, to, option = "departure", length) {
                 if (c >= length) break;
                 if (typeof trainData[i][!flag ? "stopTime" : "bus"][from] == "undefined" || typeof trainData[i][flag ? "stopTime" : "bus"][to] == "undefined") continue;
                 if ((timeToNumber(time) >= timeToNumber(trainData[i][flag ? "stopTime" : "bus"][to]))) {
-                    if (settings.isOnlySpecialRapidTrain && !trainumbertoname(trainData[i].trainNumber).startsWith("特別快速")) continue;
-                    if (settings.isOnlySemiRapidTrain && !trainumbertoname(trainData[i].trainNumber).startsWith("区間快速")) continue;
-                    if (!settings.isIncludesOfLimitedExpressTrain && trainumbertoname(trainData[i].trainNumber).startsWith("特急")) continue;
-                    if (!settings.isIncludesOfLocalTrain && trainumbertoname(trainData[i].trainNumber).startsWith("普通列車")) continue;
+                    if (settings.isOnlySpecialRapidTrain && !trainNumberToName(trainData[i].trainNumber).startsWith("特別快速")) continue;
+                    if (settings.isOnlySemiRapidTrain && !trainNumberToName(trainData[i].trainNumber).startsWith("区間快速")) continue;
+                    if (!settings.isIncludesOfLimitedExpressTrain && trainNumberToName(trainData[i].trainNumber).startsWith("特急")) continue;
+                    if (!settings.isIncludesOfLocalTrain && trainNumberToName(trainData[i].trainNumber).startsWith("普通列車")) continue;
                     let tmp;
                     delete trainData[i]["bus"]["千歳駅"];
                     trainData[i]["stopTime"][flag ? "南千歳駅発" : "南千歳駅着"] = trainData[i]["stopTime"]["南千歳駅"];
@@ -316,7 +316,7 @@ function formatTotalMinutes(totalMinutes) {
     return formattedString;
 }
 
-function trainumbertoname(trainnm) {
+function trainNumberToName(trainnm) {
     if (!trainnm) return "";
     if (trainnm.length == 2) {
         return `特急北斗${Number(trainnm.substr(0, 1))}号`;
@@ -350,7 +350,7 @@ function trainumbertoname(trainnm) {
 function parseDetail(n) {
     t = n.replace(/\s+/g, "").replace(/\n+/g, "");
     let reslt = [];
-    if ((/発/.test(t) || /行/.test(t))) reslt.push(t.match(/※?.*?(行|発)/)[0] + "バス");
+    if ((/発/.test(t) || /行/.test(t)) && !/運/.test(t)) reslt.push(t.match(/※?.*?(行|発)/)[0] + "バス");
     else if (!t.match(/・/)) return n;
     let g = t.split("・");
     for (let i = 0; i < g.length; i++) {
@@ -448,7 +448,7 @@ function searchRoute() {
                 <div class="bus-card" data-idx="${idx}">
                     <strong>${bus[start]} → ${bus[end]} </strong> <span>(${timeToNumber(bus[end]) - timeToNumber(bus[start])}分)</span>
                     <div class="bus-times">
-                        ${(typeof bus["南千歳駅発"] != "undefined" || typeof bus["南千歳駅着"] != "undefined") && trainumbertoname(routes[idx].trainNumber).startsWith("特急") ? "<div class='bus-note'>特急利用</div>" : ""}${typeof bus["備考"] === "undefined" ? "" : (`<div class="bus-note">${parseDetail(bus["備考"])}</div>`)}${typeof bus["南千歳駅発"] != "undefined" || typeof bus["南千歳駅着"] != "undefined" ? (timeToNumber(bus["南千歳駅発"]) - timeToNumber(bus["南千歳駅着"]) < 5 ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--text-color)" viewBox="0 0 256 256"><path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"></path></svg>乗換時間が短いです ' : "") : ""}${typeof bus[stpwd] === "undefined" ? "" : (start == "本部棟" ? `<span>乗り場: ${bus[stpwd]}</span>` : "")}<span style="margin-left:auto;font-weight:500;" id="${countdownId}">${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "あと" : ""}${formatTotalMinutes(Math.abs(timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5))))}${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "" : "前"} </span>
+                        ${(typeof bus["南千歳駅発"] != "undefined" || typeof bus["南千歳駅着"] != "undefined") && trainNumberToName(routes[idx].trainNumber).startsWith("特急") ? "<div class='bus-note'>特急利用</div>" : ""}${typeof bus["備考"] === "undefined" ? "" : (`<div class="bus-note">${parseDetail(bus["備考"])}</div>`)}${typeof bus["南千歳駅発"] != "undefined" || typeof bus["南千歳駅着"] != "undefined" ? (timeToNumber(bus["南千歳駅発"]) - timeToNumber(bus["南千歳駅着"]) < 5 ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="var(--text-color)" viewBox="0 0 256 256"><path d="M236.8,188.09,149.35,36.22h0a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM222.93,203.8a8.5,8.5,0,0,1-7.48,4.2H40.55a8.5,8.5,0,0,1-7.48-4.2,7.59,7.59,0,0,1,0-7.72L120.52,44.21a8.75,8.75,0,0,1,15,0l87.45,151.87A7.59,7.59,0,0,1,222.93,203.8ZM120,144V104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,180Z"></path></svg>乗換時間が短いです ' : "") : ""}${typeof bus[stpwd] === "undefined" ? "" : (start == "本部棟" ? `<span>乗り場: ${bus[stpwd]}</span>` : "")}<span style="margin-left:auto;font-weight:500;" id="${countdownId}">${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "あと" : ""}${formatTotalMinutes(Math.abs(timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5))))}${timeToNumber(bus[start]) - timeToNumber(new Date().toTimeString().slice(0, 5)) >= 0 ? "" : "前"} </span>
                     </div>
                     
                     <div class="bus-detail-content"></div>
@@ -542,13 +542,13 @@ function searchRoute() {
             let contentID = "bus-countdown-" + Math.random().toString(36).slice(2);
             detail.innerHTML = `
                         <div class="detail-bus">
-                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span id="isDepartured">${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span>${typeof routes[idx].trainNumber !== "undefined" ? "<span>" + (start.match(/駅/) ? "" : "南千歳駅から ") + trainumbertoname(routes[idx].trainNumber) + " に乗車</span>" : ""}</div>
+                        <div class="text-center mb-2 text-lg" style="display:flex;flex-direction:column;"><span id="isDepartured">${start} 出発まで</span> <span class="bus-countdown" id="${countdownId}" class="font-bold">--:--:--</span>${typeof routes[idx].trainNumber !== "undefined" ? "<span>" + (start.match(/駅/) ? "" : "南千歳駅から ") + trainNumberToName(routes[idx].trainNumber) + " に乗車</span>" : ""}</div>
                             <div id="timeline-${contentID}" class="timeline"></div>
   </div>
                         ${typeof bus["備考"] === "undefined" ? "" : `<div>※${bus["備考"]}</div>`}</div>
                     `;
             console.log(timelineData);
-            let busD = createRouteDetail(timelineData, typeof routes[idx].trainNumber == "undefined" ? "" : trainumbertoname(routes[idx].trainNumber), bus[stpwd]);
+            let busD = createRouteDetail(timelineData, typeof routes[idx].trainNumber == "undefined" ? "" : trainNumberToName(routes[idx].trainNumber), bus[stpwd]);
 
             // タイムラインの項目を動的に生成
             createTimeline("#timeline-" + contentID, busD);
