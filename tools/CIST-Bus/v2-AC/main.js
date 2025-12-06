@@ -261,13 +261,13 @@ function toggleForm() {
     const toggleBtn = document.getElementById("toggle-search");
     const prf = document.getElementById("settings-screen");
     if (!firstSearch) {
-        if (prf.classList.contains("collapsed") && !form.classList.contains("collapsed")) { 
-            return; 
+        if (prf.classList.contains("collapsed") && !form.classList.contains("collapsed")) {
+            return;
         } else if (!prf.classList.contains("collapsed")) {
             form.classList.toggle("collapsed"); prf.classList.add("collapsed");
         } else {
             form.classList.toggle("collapsed");
-        } 
+        }
     } else {
         if (!prf.classList.contains("collapsed")) {
             if (form.classList.contains("collapsed")) {
@@ -322,8 +322,8 @@ function trainNumberToName(trainnm) {
         return `特急北斗${Number(trainnm.substr(0, 1))}号`;
     }
     if (trainnm.length == 3) {
-        if (trainnm.startsWith("3")) {
-            return `特急とかち${Number(trainnm.substr(0, 2))-30}号`;
+        if (trainnm.startsWith("3") || trainnm.startsWith("4")) {
+            return `特急とかち${Number(trainnm.substr(0, 2)) - 30}号`;
         } else if (trainnm.startsWith("1")) {
             return `特急北斗${Number(trainnm.substr(0, 2))}号`;
         } else if (trainnm.startsWith("2")) {
@@ -359,10 +359,10 @@ function parseDetail(n) {
         else if (new RegExp(`${new Date().getMonth() + 1}[/]?${new Date().getDate()}`).test(l)) {
             let ga = l.split(/\(.\)/)[1];
             if (!/運/.test(ga)) ga += "運行";
-            reslt.push("本日"+ga);
+            reslt.push("本日" + ga);
         }
     }
-    return reslt.length == 0 ? "運行情報なし":reslt.join("\n");
+    return reslt.length == 0 ? "運行情報なし" : reslt.join("\n");
 };
 
 function searchRoute() {
