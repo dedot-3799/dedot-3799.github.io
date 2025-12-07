@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta property="og:title" content="Bye, frameworks." />
+    <meta property="og:description" content="vanilaなHTML,CSS,JSであなたのページを最高のロードパフォーマンスにしましょう。" />
+    <meta property="og:url" content="https://dedot-3799.github.io/use-typescript/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="dedot-3799からの提案" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bye, frameworks.</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .scroll-container {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: #f5f5f5;
+            position: relative;
+        }
+
+        section {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #fff;
+            color: #333;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .animation {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            animation: fadeIn 2s ease-out 1s forwards;
+            opacity: 0;
+        }
+
+        h1 {
+            font-size: 12vmin;
+        }
+
+        h2 {
+            font-size: 10vmin;
+        }
+
+        p {
+            font-size: 3vmin;
+            animation: fadeIn 2s ease-out 2s forwards;
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 12vmin;
+            }
+
+            code {
+                font-size: 15px;
+            }
+
+            h2 {
+                font-size: 8vmin;
+            }
+
+            p {
+                font-size: min(3vmin, 20px);
+            }
+        }
+
+        @media(prefers-color-scheme: dark) {
+            section {
+                background-color: #000;
+                color: #fff;
+            }
+
+            html {
+                background-color: #000;
+            }
+        }
+
+        #title {
+            background-color: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scroll-container">
+        <section class="animation" id="title">
+            <h1>Bye, frameworks.</h1>
+            <p>そのWeb開発、vanilaなHTML+CSS+JSで良くない？</p>
+        </section>
+
+        <section id="why-ts" class="animation">
+            <h2>なぜvanila?</h2>
+            <p>もし、あなたがWebフレームワークを使っているなら、ユーザーのモバイルデータ通信量を奪っています。</p>
+            <p>スマートフォン利用者の</p>
+            <h1>約60%</h1>
+            <p>は通信制限を経験しているのです！</p>
+            <div style="font-size: 2vmin;">引用: 株式会社ネオマーケティング(2016).「スマホのデータ通信量に関する調査」. <a
+                    href="https://corp.neo-m.jp/report/investigation/appliance_002_mobile-data-traffic"
+                    style="color: #f5f5f5;">https://corp.neo-m.jp/report/investigation/appliance_002_mobile-data-traffic</a>,
+                (accessed 2025-12-06).</div>
+            <p>また、同調査によれば、通信制限にかかった人の<strong></strong>9割は</strong>イライラしています。</p>
+            <p>vanilaを使うことで、このようなユーザーの不満を解消できます。</p>
+        </section>
+
+        <section class="animation" id="benefits">
+            <h2>ロードパフォーマンス</h2>
+            <p>必要なものは、最初からそこにあります。ブラウザという名の、最も強力で普遍的なプラットフォームを使いこなす。余計なものはもういりません。本来、あなたのコードは無駄のない形で動くべきなのです。</p>
+        </section>
+
+        <section class="amimation" id="cta">
+            <h2>それ、vanilaで良くない？</h2>
+            <p>フレームワークを完全に否定するわけではありません。確かに、Reactなどのフレームワークは、大規模で複雑なWebアプリの構築に向いています。現代の複雑なWeb開発においては不可欠なものと言っても過言ではないほどです。しかし、あなたが小規模かつ単純なWebサイトを作っているならば、殆どのフレームワークは不要なことが多く、パフォーマンスを低下させる要因となります。実際に、このページはHTML+CSSだけで書かれています。「Web開発にはフレームワークが必須だ」という固定概念を捨て、是非vanilaを検討してください。
+            </p>
+            <p>dedot-3799.</p>
+        </section>
+    </div>
+
+</body>
+
+</html>
