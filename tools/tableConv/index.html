@@ -526,7 +526,60 @@ th { background: var(--head); font-weight: 600; }
     setStatus('出力をコピーしました', 'ok');
   });
 
+  /* ---------- 括弧・引用符の自動閉じ ---------- */
+  const PAIRS = {
+    '(': ')', '[': ']', '{': '}',
+    '（': '）', '［': '］', '｛': '｝', '「': '」', '『': '』',
+    '"': '"', "'": "'", '`': '`'
+  };
+  const QUOTES = new Set(['"', "'", '`']);
+  const CLOSERS = new Set(Object.values(PAIRS));
+  const isWordChar = ch => !!ch && /[A-Za-z0-9_\u3040-\u30ff\u3400-\u9fff]/.test(ch);
+
+  const replaceInput = (text, start, end, caret) => {
+    const v = inputEl.value;
+    inputEl.value = v.slice(0, start) + text + v.slice(end);
+    inputEl.selectionStart = inputEl.selectionEnd = caret;
+    inputEl.dispatchEvent(new Event('input'));
+  };
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.isComposing || e.ctrlKey || e.metaKey || e.altKey) return;
+    const v = inputEl.value;
+    const s = inputEl.selectionStart, t = inputEl.selectionEnd;
+    const key = e.key;
+    const hasSel = s !== t;
+
+    // 閉じ記号を打ったとき、直後に同じ記号があれば上書き（移動）する
+    if (!hasSel && (CLOSERS.has(key) || QUOTES.has(key)) && v[s] === key) {
+      e.preventDefault();
+      inputEl.selectionStart = inputEl.selectionEnd = s + 1;
+      return;
+    }
+
+    // 開き記号：選択範囲があれば囲む、なければ対を挿入
+    if (PAIRS[key]) {
+      if (QUOTES.has(key) && !hasSel && isWordChar(v[s - 1])) return; // don't などの ' は閉じない
+      e.preventDefault();
+      if (hasSel) {
+        replaceInput(key + v.slice(s, t) + PAIRS[key], s, t, t + 2);
+        inputEl.selectionStart = s + 1;
+        inputEl.selectionEnd = t + 1;
+      } else {
+        replaceInput(key + PAIRS[key], s, t, s + 1);
+      }
+      return;
+    }
+
+    // 対になった空の括弧・引用符を削除するとき、両方を消す
+    if (key === 'Backspace' && !hasSel && s > 0 && PAIRS[v[s - 1]] === v[s]) {
+      e.preventDefault();
+      replaceInput('', s - 1, s + 1, s - 1);
+    }
+  });
+
   inputEl.addEventListener('input', convert);
+
   [inFmt, outFmt, $('csvDelim'), $('jsNumeric'), $('texAlign'), $('texVRule'), $('texHRule')]
     .forEach(el => el.addEventListener('change', convert));
 
